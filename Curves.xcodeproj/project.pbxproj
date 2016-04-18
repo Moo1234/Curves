@@ -1,0 +1,515 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		58C176031CC526B700EDD256 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C176021CC526B700EDD256 /* AppDelegate.swift */; };
+		58C176051CC526B700EDD256 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 58C176041CC526B700EDD256 /* GameScene.sks */; };
+		58C176071CC526B700EDD256 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C176061CC526B700EDD256 /* GameScene.swift */; };
+		58C176091CC526B700EDD256 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C176081CC526B700EDD256 /* GameViewController.swift */; };
+		58C1760C1CC526B700EDD256 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58C1760A1CC526B700EDD256 /* Main.storyboard */; };
+		58C1760E1CC526B700EDD256 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58C1760D1CC526B700EDD256 /* Assets.xcassets */; };
+		58C176111CC526B700EDD256 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58C1760F1CC526B700EDD256 /* LaunchScreen.storyboard */; };
+		58C1761C1CC526B700EDD256 /* CurvesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C1761B1CC526B700EDD256 /* CurvesTests.swift */; };
+		58C176271CC526B700EDD256 /* CurvesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C176261CC526B700EDD256 /* CurvesUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		58C176181CC526B700EDD256 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 58C175F71CC526B700EDD256 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 58C175FE1CC526B700EDD256;
+			remoteInfo = Curves;
+		};
+		58C176231CC526B700EDD256 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 58C175F71CC526B700EDD256 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 58C175FE1CC526B700EDD256;
+			remoteInfo = Curves;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		58C175FF1CC526B700EDD256 /* Curves.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Curves.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		58C176021CC526B700EDD256 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		58C176041CC526B700EDD256 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
+		58C176061CC526B700EDD256 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		58C176081CC526B700EDD256 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		58C1760B1CC526B700EDD256 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		58C1760D1CC526B700EDD256 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		58C176101CC526B700EDD256 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		58C176121CC526B700EDD256 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		58C176171CC526B700EDD256 /* CurvesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CurvesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		58C1761B1CC526B700EDD256 /* CurvesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurvesTests.swift; sourceTree = "<group>"; };
+		58C1761D1CC526B700EDD256 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		58C176221CC526B700EDD256 /* CurvesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CurvesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		58C176261CC526B700EDD256 /* CurvesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurvesUITests.swift; sourceTree = "<group>"; };
+		58C176281CC526B700EDD256 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		58C175FC1CC526B700EDD256 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58C176141CC526B700EDD256 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58C1761F1CC526B700EDD256 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		58C175F61CC526B700EDD256 = {
+			isa = PBXGroup;
+			children = (
+				58C176011CC526B700EDD256 /* Curves */,
+				58C1761A1CC526B700EDD256 /* CurvesTests */,
+				58C176251CC526B700EDD256 /* CurvesUITests */,
+				58C176001CC526B700EDD256 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		58C176001CC526B700EDD256 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				58C175FF1CC526B700EDD256 /* Curves.app */,
+				58C176171CC526B700EDD256 /* CurvesTests.xctest */,
+				58C176221CC526B700EDD256 /* CurvesUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		58C176011CC526B700EDD256 /* Curves */ = {
+			isa = PBXGroup;
+			children = (
+				58C176021CC526B700EDD256 /* AppDelegate.swift */,
+				58C176041CC526B700EDD256 /* GameScene.sks */,
+				58C176061CC526B700EDD256 /* GameScene.swift */,
+				58C176081CC526B700EDD256 /* GameViewController.swift */,
+				58C1760A1CC526B700EDD256 /* Main.storyboard */,
+				58C1760D1CC526B700EDD256 /* Assets.xcassets */,
+				58C1760F1CC526B700EDD256 /* LaunchScreen.storyboard */,
+				58C176121CC526B700EDD256 /* Info.plist */,
+			);
+			path = Curves;
+			sourceTree = "<group>";
+		};
+		58C1761A1CC526B700EDD256 /* CurvesTests */ = {
+			isa = PBXGroup;
+			children = (
+				58C1761B1CC526B700EDD256 /* CurvesTests.swift */,
+				58C1761D1CC526B700EDD256 /* Info.plist */,
+			);
+			path = CurvesTests;
+			sourceTree = "<group>";
+		};
+		58C176251CC526B700EDD256 /* CurvesUITests */ = {
+			isa = PBXGroup;
+			children = (
+				58C176261CC526B700EDD256 /* CurvesUITests.swift */,
+				58C176281CC526B700EDD256 /* Info.plist */,
+			);
+			path = CurvesUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		58C175FE1CC526B700EDD256 /* Curves */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 58C1762B1CC526B700EDD256 /* Build configuration list for PBXNativeTarget "Curves" */;
+			buildPhases = (
+				58C175FB1CC526B700EDD256 /* Sources */,
+				58C175FC1CC526B700EDD256 /* Frameworks */,
+				58C175FD1CC526B700EDD256 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Curves;
+			productName = Curves;
+			productReference = 58C175FF1CC526B700EDD256 /* Curves.app */;
+			productType = "com.apple.product-type.application";
+		};
+		58C176161CC526B700EDD256 /* CurvesTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 58C1762E1CC526B700EDD256 /* Build configuration list for PBXNativeTarget "CurvesTests" */;
+			buildPhases = (
+				58C176131CC526B700EDD256 /* Sources */,
+				58C176141CC526B700EDD256 /* Frameworks */,
+				58C176151CC526B700EDD256 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				58C176191CC526B700EDD256 /* PBXTargetDependency */,
+			);
+			name = CurvesTests;
+			productName = CurvesTests;
+			productReference = 58C176171CC526B700EDD256 /* CurvesTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		58C176211CC526B700EDD256 /* CurvesUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 58C176311CC526B700EDD256 /* Build configuration list for PBXNativeTarget "CurvesUITests" */;
+			buildPhases = (
+				58C1761E1CC526B700EDD256 /* Sources */,
+				58C1761F1CC526B700EDD256 /* Frameworks */,
+				58C176201CC526B700EDD256 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				58C176241CC526B700EDD256 /* PBXTargetDependency */,
+			);
+			name = CurvesUITests;
+			productName = CurvesUITests;
+			productReference = 58C176221CC526B700EDD256 /* CurvesUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		58C175F71CC526B700EDD256 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = "Moritz Martin";
+				TargetAttributes = {
+					58C175FE1CC526B700EDD256 = {
+						CreatedOnToolsVersion = 7.3;
+					};
+					58C176161CC526B700EDD256 = {
+						CreatedOnToolsVersion = 7.3;
+						TestTargetID = 58C175FE1CC526B700EDD256;
+					};
+					58C176211CC526B700EDD256 = {
+						CreatedOnToolsVersion = 7.3;
+						TestTargetID = 58C175FE1CC526B700EDD256;
+					};
+				};
+			};
+			buildConfigurationList = 58C175FA1CC526B700EDD256 /* Build configuration list for PBXProject "Curves" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 58C175F61CC526B700EDD256;
+			productRefGroup = 58C176001CC526B700EDD256 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				58C175FE1CC526B700EDD256 /* Curves */,
+				58C176161CC526B700EDD256 /* CurvesTests */,
+				58C176211CC526B700EDD256 /* CurvesUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		58C175FD1CC526B700EDD256 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				58C176051CC526B700EDD256 /* GameScene.sks in Resources */,
+				58C176111CC526B700EDD256 /* LaunchScreen.storyboard in Resources */,
+				58C1760E1CC526B700EDD256 /* Assets.xcassets in Resources */,
+				58C1760C1CC526B700EDD256 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58C176151CC526B700EDD256 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58C176201CC526B700EDD256 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		58C175FB1CC526B700EDD256 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				58C176071CC526B700EDD256 /* GameScene.swift in Sources */,
+				58C176091CC526B700EDD256 /* GameViewController.swift in Sources */,
+				58C176031CC526B700EDD256 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58C176131CC526B700EDD256 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				58C1761C1CC526B700EDD256 /* CurvesTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58C1761E1CC526B700EDD256 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				58C176271CC526B700EDD256 /* CurvesUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		58C176191CC526B700EDD256 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 58C175FE1CC526B700EDD256 /* Curves */;
+			targetProxy = 58C176181CC526B700EDD256 /* PBXContainerItemProxy */;
+		};
+		58C176241CC526B700EDD256 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 58C175FE1CC526B700EDD256 /* Curves */;
+			targetProxy = 58C176231CC526B700EDD256 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		58C1760A1CC526B700EDD256 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				58C1760B1CC526B700EDD256 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		58C1760F1CC526B700EDD256 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				58C176101CC526B700EDD256 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		58C176291CC526B700EDD256 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		58C1762A1CC526B700EDD256 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		58C1762C1CC526B700EDD256 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = Curves/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Mo.Curves;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		58C1762D1CC526B700EDD256 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = Curves/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Mo.Curves;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		58C1762F1CC526B700EDD256 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = CurvesTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Mo.CurvesTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Curves.app/Curves";
+			};
+			name = Debug;
+		};
+		58C176301CC526B700EDD256 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = CurvesTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Mo.CurvesTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Curves.app/Curves";
+			};
+			name = Release;
+		};
+		58C176321CC526B700EDD256 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = CurvesUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Mo.CurvesUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = Curves;
+			};
+			name = Debug;
+		};
+		58C176331CC526B700EDD256 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = CurvesUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Mo.CurvesUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = Curves;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		58C175FA1CC526B700EDD256 /* Build configuration list for PBXProject "Curves" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				58C176291CC526B700EDD256 /* Debug */,
+				58C1762A1CC526B700EDD256 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		58C1762B1CC526B700EDD256 /* Build configuration list for PBXNativeTarget "Curves" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				58C1762C1CC526B700EDD256 /* Debug */,
+				58C1762D1CC526B700EDD256 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		58C1762E1CC526B700EDD256 /* Build configuration list for PBXNativeTarget "CurvesTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				58C1762F1CC526B700EDD256 /* Debug */,
+				58C176301CC526B700EDD256 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		58C176311CC526B700EDD256 /* Build configuration list for PBXNativeTarget "CurvesUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				58C176321CC526B700EDD256 /* Debug */,
+				58C176331CC526B700EDD256 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 58C175F71CC526B700EDD256 /* Project object */;
+}
