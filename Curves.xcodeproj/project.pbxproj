@@ -199,6 +199,7 @@
 				TargetAttributes = {
 					58C175FE1CC526B700EDD256 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = D24AGHC9PF;
 					};
 					58C176161CC526B700EDD256 = {
 						CreatedOnToolsVersion = 7.3;
@@ -407,6 +408,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Curves/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Mo.Curves;
@@ -418,6 +420,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Curves/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Mo.Curves;
