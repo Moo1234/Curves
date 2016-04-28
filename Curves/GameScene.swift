@@ -58,7 +58,8 @@ class GameScene: SKScene {
         rightBtn.position = CGPoint(x: frame.width - ((frame.width/10)/2), y: frame.height/2)
         rightBtn.fillColor = SKColor.blueColor()
         
-        
+        oldPosX = p1.position.x
+        oldPosY = p1.position.y
         
         p1.physicsBody = SKPhysicsBody(circleOfRadius: 2)
         p1.physicsBody?.categoryBitMask = PhysicsCat.p1
@@ -72,50 +73,13 @@ class GameScene: SKScene {
         wayPoints.append(CGPoint(x: 100,y: 100))
         let targetPoint = wayPoints[0]
         changeDirection(targetPoint)
-        
-//                        let circle = UIBezierPath(arcCenter: CGPoint(x: 100,y: 100), radius: CGFloat(50), startAngle: CGFloat(0), endAngle:CGFloat(M_PI * 2), clockwise: true)
-//                        let followCircle = SKAction.followPath(circle.CGPath, asOffset: true, orientToPath: true, duration: 5.0)
-//                        let endless = SKAction.repeatActionForever(followCircle)
-//                        p1.runAction(endless)
-        
-        let currentPosition = position
-        var newPosition = position
-        wayPoints.append(CGPoint(x: 100,y: 100))
-        let targetPoint = wayPoints[0]
-        changeDirection(targetPoint)
-        
-        //                        let circle = UIBezierPath(arcCenter: CGPoint(x: 100,y: 100), radius: CGFloat(50), startAngle: CGFloat(0), endAngle:CGFloat(M_PI * 2), clockwise: true)
-        //                        let followCircle = SKAction.followPath(circle.CGPath, asOffset: true, orientToPath: true, duration: 5.0)
-        //                        let endless = SKAction.repeatActionForever(followCircle)
-        //                        p1.runAction(endless)
+
         
         addChild(leftBtn)
         addChild(rightBtn)
         addChild(p1)
         
-//        let circlePath = UIBezierPath(arcCenter: CGPoint(x: 100,y: 100), radius: CGFloat(20), startAngle: CGFloat(0), endAngle:CGFloat(M_PI * 2), clockwise: true)
-//        
-//        let shapeLayer = CAShapeLayer()
-//        shapeLayer.path = circlePath.CGPath
-//        
-//        //change the fill color
-//        shapeLayer.fillColor = UIColor.clearColor().CGColor
-//        //you can change the stroke color
-//        shapeLayer.strokeColor = UIColor.redColor().CGColor
-//        //you can change the line width
-//        shapeLayer.lineWidth = 3.0
-//        
-//        view.layer.addSublayer(shapeLayer)
-        //
-        //        let movePoint = SKAction.runBlock({
-        //            ()
-        //
-        //            self.movePlayers(p1X, p1Y: p1Y)
-        //        })
-        //
-        //        let movePointForever = SKAction.repeatActionForever(movePoint)
-        //        self.runAction(movePointForever)
-        //
+
     }
     
     func pointToRadian(targetPoint: CGPoint) -> Double{
@@ -143,43 +107,33 @@ class GameScene: SKScene {
         for touch in touches {
             let location = touch.locationInNode(self)
             if leftBtn.containsPoint(location){
-                print("left")
-//                print(p1.position.x)
-//                let circle = UIBezierPath(arcCenter: CGPoint(x: 100,y: 100), radius: CGFloat(20), startAngle: CGFloat(0), endAngle:CGFloat(M_PI * 2), clockwise: true)
-//                let followCircle = SKAction.followPath(circle.CGPath, asOffset: true, orientToPath: true, duration: 10.0)
-//                let endless = SKAction.repeatActionForever(followCircle)
-//                p1.runAction(endless)
-                wayPoints[0] = radianToPoint(alt+10)
-                changeDirection(wayPoints[0])
-                pressed = true
-                myTimer = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: "changeDirectionL", userInfo: nil, repeats: pressed)
+                
+                changeDirectionL()
+                myTimer = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: "changeDirectionL", userInfo: nil, repeats: true)
                 
             }
             else if rightBtn.containsPoint(location){
-                print("right")
-                wayPoints[0] = radianToPoint(alt-10)
-                changeDirection(wayPoints[0])
-                pressed = true
-                myTimer = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: "changeDirectionR", userInfo: nil, repeats: pressed)
+                changeDirectionR()
+                
+                myTimer = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: "changeDirectionR", userInfo: nil, repeats: true)
             }
         }
-        //movePlayers()
     
     }
     var myTimer : NSTimer = NSTimer()
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        pressed = false
         myTimer.invalidate()
     }
     
     func changeDirectionL(){
+//        print(timer.userInfo)
         var alt = pointToRadian(wayPoints[0])
-        wayPoints[0] = radianToPoint(alt+10)
+        wayPoints[0] = radianToPoint(alt+5)
         changeDirection(wayPoints[0])
     }
     func changeDirectionR(){
         var alt = pointToRadian(wayPoints[0])
-        wayPoints[0] = radianToPoint(alt-10)
+        wayPoints[0] = radianToPoint(alt-5)
         changeDirection(wayPoints[0])
     }
     
@@ -195,14 +149,6 @@ class GameScene: SKScene {
         var locationY = p1.position.y
         
         
-        //        wayPoints.append(CGPoint(x: locationX, y: locationY))
-        //
-        //        locationX = locationX * POINTS_PER_SEC
-        //        locationY = locationY * POINTS_PER_SEC
-        
-        
-        // move()
-        
         
         CGPathMoveToPoint(pathToDraw, nil, oldPosX, oldPosY)
         CGPathAddLineToPoint(pathToDraw, nil, locationX, locationY)
@@ -213,58 +159,9 @@ class GameScene: SKScene {
         myLine.path = pathToDraw
         myLine.strokeColor = SKColor.greenColor()
         myLine.lineWidth = 3.0
-        let myLineNew = myLine
         
+        self.addChild(myLine)
         
-        
-        
-        if i % 2 == 0 {
-            myLineNew.removeFromParent()
-            self.addChild(myLine)
-        }else{
-            myLine.removeFromParent()
-            self.addChild(myLineNew)
-        }
-        
-        i += 1
     }
 
-    
-    func movePlayers(){
-//        var alt = pointToRadian(wayPoints[0])
-//        print(alt)
-//        wayPoints[0] = radianToPoint(alt+10)
-//        
-//        changeDirection(radianToPoint(alt+10))
-
-        
-        
-//        let offset = CGPoint(x: targetPoint.x - currentPosition.x, y: targetPoint.y - currentPosition.y)
-//        let length = Double(sqrtf(Float(offset.x * offset.x) + Float(offset.y * offset.y)))
-//        let direction = CGPoint(x:CGFloat(offset.x) / CGFloat(length), y: CGFloat(offset.y) / CGFloat(length))
-//        p1.physicsBody?.velocity = CGVectorMake(direction.x * 80, direction.y * 80)
-        
-//        var dx = p1.position.x - self.frame.width / 2
-//        var dy = p1.position.y - self.frame.height / 2
-//        
-//        var rad = atan2(dy, dx)
-//        print(p1.physicsBody?.velocity.dx)
-//        p1.physicsBody?.velocity = CGVectorMake((p1.physicsBody?.velocity.dx)!+10, (p1.physicsBody?.velocity.dy)!-10)
-        
-     //   path = UIBezierPath(arcCenter: CGPoint(x: frame.width / 4 , y: frame.height / 4), radius: 120, startAngle: rad, endAngle: rad + CGFloat(M_PI*4), clockwise: true)
-        
-     //   let follow = SKAction.followPath(path.CGPath, speed: 100)
-     //   p1.runAction(SKAction.repeatActionForever(follow))
-        
-        
-        
-        
-        //        let moveX = SKAction.moveBy(CGVectorMake(2, 3), duration: 1.0)
-        ////
-        ////        let moveX =  SKAction.moveByX(1, y: 1, duration: 0.07)
-        //////        let moveY = SKAction.moveByX(0, y: 1, duration: 0.01)
-        //////        let seq = SKAction.sequence([moveX, moveY])
-        //        let moveP1endless = SKAction.repeatActionForever(moveX)
-        //        p1.runAction(moveP1endless)
-    }
 }
