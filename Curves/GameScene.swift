@@ -35,10 +35,12 @@ class GameScene: SKScene {
     var i = 0
     
     
+    var myTimer1 : NSTimer = NSTimer()
+    var myTimer2 : NSTimer = NSTimer()
+    
+    
     
     override func didMoveToView(view: SKView) {
-        var p1X = self.frame.width / 2
-        var p1Y = self.frame.height / 2
         backgroundColor = SKColor.blackColor()
         
         
@@ -67,9 +69,6 @@ class GameScene: SKScene {
      //   p1.physicsBody?.velocity = CGVectorMake(20 , 20)
         p1.physicsBody?.linearDamping = 0
 
-        
-        let currentPosition = position
-        var newPosition = position
         wayPoints.append(CGPoint(x: 100,y: 100))
         let targetPoint = wayPoints[0]
         changeDirection(targetPoint)
@@ -95,7 +94,6 @@ class GameScene: SKScene {
     
     func changeDirection(targetPoint: CGPoint){
         let currentPosition = position
-        var newPosition = position
         let offset = CGPoint(x: targetPoint.x - currentPosition.x, y: targetPoint.y - currentPosition.y)
         let length = Double(sqrtf(Float(offset.x * offset.x) + Float(offset.y * offset.y)))
         let direction = CGPoint(x:CGFloat(offset.x) / CGFloat(length), y: CGFloat(offset.y) / CGFloat(length))
@@ -103,36 +101,35 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        var alt = pointToRadian(wayPoints[0])
         for touch in touches {
             let location = touch.locationInNode(self)
             if leftBtn.containsPoint(location){
                 
                 changeDirectionL()
-                myTimer = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: "changeDirectionL", userInfo: nil, repeats: true)
+                myTimer1 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionL), userInfo: nil, repeats: true)
                 
             }
             else if rightBtn.containsPoint(location){
                 changeDirectionR()
                 
-                myTimer = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: "changeDirectionR", userInfo: nil, repeats: true)
+                myTimer2 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionR), userInfo: nil, repeats: true)
             }
         }
     
     }
-    var myTimer : NSTimer = NSTimer()
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        myTimer.invalidate()
+        myTimer1.invalidate()
+        myTimer2.invalidate()
     }
     
     func changeDirectionL(){
 //        print(timer.userInfo)
-        var alt = pointToRadian(wayPoints[0])
+        let alt = pointToRadian(wayPoints[0])
         wayPoints[0] = radianToPoint(alt+5)
         changeDirection(wayPoints[0])
     }
     func changeDirectionR(){
-        var alt = pointToRadian(wayPoints[0])
+        let alt = pointToRadian(wayPoints[0])
         wayPoints[0] = radianToPoint(alt-5)
         changeDirection(wayPoints[0])
     }
