@@ -199,7 +199,7 @@
 				TargetAttributes = {
 					58C175FE1CC526B700EDD256 = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = D24AGHC9PF;
+						DevelopmentTeam = 42N696HKU5;
 					};
 					58C176161CC526B700EDD256 = {
 						CreatedOnToolsVersion = 7.3;
@@ -495,6 +495,7 @@
 				58C1762D1CC526B700EDD256 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		58C1762E1CC526B700EDD256 /* Build configuration list for PBXNativeTarget "CurvesTests" */ = {
 			isa = XCConfigurationList;
@@ -503,6 +504,7 @@
 				58C176301CC526B700EDD256 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		58C176311CC526B700EDD256 /* Build configuration list for PBXNativeTarget "CurvesUITests" */ = {
 			isa = XCConfigurationList;
@@ -511,6 +513,7 @@
 				58C176331CC526B700EDD256 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
