@@ -25,7 +25,7 @@ class LineObject{
         self.line = SKShapeNode(circleOfRadius: dotThickness)
         self.myLine = SKShapeNode(path: CGPathCreateMutable())
     }
-
+    
     
     
 }
