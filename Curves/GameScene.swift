@@ -10,6 +10,8 @@ import SpriteKit
 
 struct PhysicsCat{
     static let p1 : UInt32 = 0x1 << 1
+    static let gameArea : UInt32 = 0x1 << 2
+    
 }
 
 class GameScene: SKScene {
@@ -20,7 +22,8 @@ class GameScene: SKScene {
     let pathP1 = CGPathCreateMutable()
     var leftBtn = SKShapeNode()
     var rightBtn = SKShapeNode()
-    let gameArea = SKSpriteNode()
+    var gameArea = SKShapeNode()
+    
     
     var wayPoints: [CGPoint] = []
     var pressed: Bool = false
@@ -44,7 +47,14 @@ class GameScene: SKScene {
         backgroundColor = SKColor.blackColor()
         
         
-        
+    
+        gameArea = SKShapeNode(rect: CGRect(x: 130, y: 100, width: frame.width - 250, height: frame.height - 200))
+        gameArea.lineWidth = 5
+        gameArea.strokeColor = SKColor.whiteColor()
+        gameArea.position = CGPoint(x: 0, y: 0 )
+        gameArea.fillColor = SKColor.blackColor()
+
+            
         leftBtn = SKShapeNode(rectOfSize: CGSize(width: frame.width / 10, height: frame.height))
         rightBtn = SKShapeNode(rectOfSize: CGSize(width: frame.width / 10, height: frame.height))
         
@@ -66,17 +76,24 @@ class GameScene: SKScene {
         p1.physicsBody = SKPhysicsBody(circleOfRadius: 2)
         p1.physicsBody?.categoryBitMask = PhysicsCat.p1
         p1.physicsBody?.affectedByGravity = false
-     //   p1.physicsBody?.velocity = CGVectorMake(20 , 20)
         p1.physicsBody?.linearDamping = 0
-
+        
+        
+        gameArea.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width:frame.width - 250 , height: frame.height - 200))
+        gameArea.physicsBody?.categoryBitMask = PhysicsCat.gameArea
+        gameArea.physicsBody?.collisionBitMask = PhysicsCat.p1
+        gameArea.physicsBody?.contactTestBitMask = PhysicsCat.p1
+        gameArea.physicsBody?.affectedByGravity = false
+        
+      
         wayPoints.append(CGPoint(x: 100,y: 100))
         let targetPoint = wayPoints[0]
         changeDirection(targetPoint)
 
-        
+        addChild(gameArea)
         addChild(leftBtn)
         addChild(rightBtn)
-        addChild(p1)
+        gameArea.addChild(p1)
         
 
     }
@@ -157,7 +174,7 @@ class GameScene: SKScene {
         myLine.strokeColor = SKColor.greenColor()
         myLine.lineWidth = 3.0
         
-        self.addChild(myLine)
+        gameArea.addChild(myLine)
         
     }
 
