@@ -79,11 +79,11 @@ class GameScene: SKScene {
         p1.physicsBody?.linearDamping = 0
         
         
-        gameArea.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width:frame.width - 250 , height: frame.height - 200))
-        gameArea.physicsBody?.categoryBitMask = PhysicsCat.gameArea
-        gameArea.physicsBody?.collisionBitMask = PhysicsCat.p1
-        gameArea.physicsBody?.contactTestBitMask = PhysicsCat.p1
-        gameArea.physicsBody?.affectedByGravity = false
+//        gameArea.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width:frame.width - 250 , height: frame.height - 200))
+//        gameArea.physicsBody?.categoryBitMask = PhysicsCat.gameArea
+//        gameArea.physicsBody?.collisionBitMask = PhysicsCat.p1
+//        gameArea.physicsBody?.contactTestBitMask = PhysicsCat.p1
+//        gameArea.physicsBody?.affectedByGravity = false
         
       
         wayPoints.append(CGPoint(x: 100,y: 100))
@@ -97,6 +97,42 @@ class GameScene: SKScene {
         
 
     }
+    
+    override func update(currentTime: NSTimeInterval) {
+        
+        let pathToDraw: CGMutablePath = CGPathCreateMutable()
+        let myLine: SKShapeNode = SKShapeNode(path: pathToDraw)
+        
+        
+        
+        
+        var locationX = p1.position.x
+        var locationY = p1.position.y
+        
+        
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            
+            
+            CGPathMoveToPoint(pathToDraw, nil, self.oldPosX, self.oldPosY)
+            CGPathAddLineToPoint(pathToDraw, nil, locationX, locationY)
+            
+            self.oldPosX = locationX
+            self.oldPosY = locationY
+            
+            myLine.path = pathToDraw
+            myLine.strokeColor = SKColor.greenColor()
+            myLine.lineWidth = 3.0
+
+            self.gameArea.addChild(myLine)
+            
+        })
+
+        
+        
+        
+    }
+
     
     func pointToRadian(targetPoint: CGPoint) -> Double{
         let deltaX = targetPoint.x;
@@ -151,31 +187,5 @@ class GameScene: SKScene {
         changeDirection(wayPoints[0])
     }
     
-    override func update(currentTime: NSTimeInterval) {
-        
-        let pathToDraw: CGMutablePath = CGPathCreateMutable()
-        let myLine: SKShapeNode = SKShapeNode(path: pathToDraw)
-        
-        
-        
-        
-        var locationX = p1.position.x
-        var locationY = p1.position.y
-        
-        
-        
-        CGPathMoveToPoint(pathToDraw, nil, oldPosX, oldPosY)
-        CGPathAddLineToPoint(pathToDraw, nil, locationX, locationY)
-        
-        oldPosX = locationX
-        oldPosY = locationY
-        
-        myLine.path = pathToDraw
-        myLine.strokeColor = SKColor.greenColor()
-        myLine.lineWidth = 3.0
-        
-        gameArea.addChild(myLine)
-        
-    }
-
+    
 }
