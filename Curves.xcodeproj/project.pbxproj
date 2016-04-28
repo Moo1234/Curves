@@ -411,7 +411,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Curves/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Mo.Curves;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Mo.Curves;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -423,7 +423,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Curves/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Mo.Curves;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Mo.Curves;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -495,6 +495,7 @@
 				58C1762D1CC526B700EDD256 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		58C1762E1CC526B700EDD256 /* Build configuration list for PBXNativeTarget "CurvesTests" */ = {
 			isa = XCConfigurationList;
@@ -503,6 +504,7 @@
 				58C176301CC526B700EDD256 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		58C176311CC526B700EDD256 /* Build configuration list for PBXNativeTarget "CurvesUITests" */ = {
 			isa = XCConfigurationList;
@@ -511,6 +513,7 @@
 				58C176331CC526B700EDD256 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
