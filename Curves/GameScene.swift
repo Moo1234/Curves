@@ -47,7 +47,7 @@ class GameScene: SKScene {
         backgroundColor = SKColor.blackColor()
         
         
-    
+    //bgg
         gameArea = SKShapeNode(rect: CGRect(x: 130, y: 100, width: frame.width - 250, height: frame.height - 200))
         gameArea.lineWidth = 5
         gameArea.strokeColor = SKColor.whiteColor()
