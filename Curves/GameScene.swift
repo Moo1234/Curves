@@ -78,6 +78,17 @@ class GameScene: SKScene {
 //                        let endless = SKAction.repeatActionForever(followCircle)
 //                        p1.runAction(endless)
         
+        let currentPosition = position
+        var newPosition = position
+        wayPoints.append(CGPoint(x: 100,y: 100))
+        let targetPoint = wayPoints[0]
+        changeDirection(targetPoint)
+        
+        //                        let circle = UIBezierPath(arcCenter: CGPoint(x: 100,y: 100), radius: CGFloat(50), startAngle: CGFloat(0), endAngle:CGFloat(M_PI * 2), clockwise: true)
+        //                        let followCircle = SKAction.followPath(circle.CGPath, asOffset: true, orientToPath: true, duration: 5.0)
+        //                        let endless = SKAction.repeatActionForever(followCircle)
+        //                        p1.runAction(endless)
+        
         addChild(leftBtn)
         addChild(rightBtn)
         addChild(p1)
