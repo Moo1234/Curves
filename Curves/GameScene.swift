@@ -11,7 +11,7 @@ import SpriteKit
 struct PhysicsCat{
     static let p1Cat : UInt32 = 0x1 << 1
     static let gameAreaCat : UInt32 = 0x1 << 2
-    
+
 }
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
@@ -41,7 +41,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var myTimer1 : NSTimer = NSTimer()
     var myTimer2 : NSTimer = NSTimer()
-    
+    var test : NSTimer = NSTimer()
     
     
     override func didMoveToView(view: SKView) {
@@ -50,7 +50,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.contactDelegate = self
         
         
-    //bgg
         gameArea = SKShapeNode(rect: CGRect(x: 130, y: 100, width: frame.width - 250, height: frame.height - 200))
         gameArea.lineWidth = 5
         gameArea.strokeColor = SKColor.whiteColor()
@@ -94,6 +93,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         wayPoints.append(CGPoint(x: 100,y: 100))
         let targetPoint = wayPoints[0]
         changeDirection(targetPoint)
+        
+        CGPathMoveToPoint(pathToDraw, nil, self.oldPosX, self.oldPosY)
+
+        
+        myLine.path = pathToDraw
+        myLine.strokeColor = SKColor.greenColor()
+        myLine.lineWidth = 3.0
+        
+        
+        self.gameArea.addChild(myLine)
 
         addChild(gameArea)
         addChild(leftBtn)
@@ -101,43 +110,70 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //        addChild(p1)
         gameArea.addChild(p1)
         
+        test = NSTimer.scheduledTimerWithTimeInterval(0.0001, target: self, selector: #selector(GameScene.update2), userInfo: nil, repeats: true)
 
     }
     
-    override func update(currentTime: NSTimeInterval) {
-        
-        let pathToDraw: CGMutablePath = CGPathCreateMutable()
-        let myLine: SKShapeNode = SKShapeNode(path: pathToDraw)
-        
-        
+    
+    let pathToDraw: CGMutablePath = CGPathCreateMutable()
+    let myLine: SKShapeNode = SKShapeNode()
+    
+    func update2(){
+      
         var locationX = p1.position.x
         var locationY = p1.position.y
-//        print(p1.physicsBody)
         
         
-        if !dead {
-            dispatch_async(dispatch_get_main_queue(), {
-                
-                
-                CGPathMoveToPoint(pathToDraw, nil, self.oldPosX, self.oldPosY)
-                CGPathAddLineToPoint(pathToDraw, nil, locationX, locationY)
-                
-                self.oldPosX = locationX
-                self.oldPosY = locationY
-                
-                myLine.path = pathToDraw
-                myLine.strokeColor = SKColor.greenColor()
-                myLine.lineWidth = 3.0
-
-                self.gameArea.addChild(myLine)
-                
-            })
+        if (myLine.containsPoint(CGPoint(x: locationX, y: locationY))) {
+        
+            print("YO")
+        } else{
+            myLine.path = pathToDraw
+            CGPathAddLineToPoint(pathToDraw, nil, locationX, locationY)
+        
+            self.oldPosX = locationX
+            self.oldPosY = locationY
         }
-
-        
-        
         
     }
+    
+    
+    
+//    override func update(currentTime: NSTimeInterval) {
+//        
+//        let pathToDraw: CGMutablePath = CGPathCreateMutable()
+//        let myLine: SKShapeNode = SKShapeNode(path: pathToDraw)
+//        
+//        
+//        var locationX = p1.position.x
+//        var locationY = p1.position.y
+////        print(p1.physicsBody)
+//        
+//        
+//        if !dead {
+//            dispatch_async(dispatch_get_main_queue(), {
+//                
+//                
+//                CGPathMoveToPoint(pathToDraw, nil, self.oldPosX, self.oldPosY)
+//                CGPathAddLineToPoint(pathToDraw, nil, locationX, locationY)
+//                
+//                self.oldPosX = locationX
+//                self.oldPosY = locationY
+//                
+//                myLine.path = pathToDraw
+//                myLine.strokeColor = SKColor.greenColor()
+//                myLine.lineWidth = 3.0
+//              
+//                
+//                self.gameArea.addChild(myLine)
+//                
+//            })
+//        }
+//
+//        
+//        
+//        
+//    }
 
     
     func pointToRadian(targetPoint: CGPoint) -> Double{
