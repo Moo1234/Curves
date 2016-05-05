@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		3CF757761CD24795006FD5AB /* LineObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CF757751CD24795006FD5AB /* LineObject.swift */; };
+		58630CF51CDB435C005380B0 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58630CF41CDB435C005380B0 /* LoginViewController.swift */; };
+		58630CF71CDB5AFB005380B0 /* NewAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58630CF61CDB5AFB005380B0 /* NewAccountViewController.swift */; };
 		58C176031CC526B700EDD256 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C176021CC526B700EDD256 /* AppDelegate.swift */; };
 		58C176051CC526B700EDD256 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 58C176041CC526B700EDD256 /* GameScene.sks */; };
 		58C176071CC526B700EDD256 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C176061CC526B700EDD256 /* GameScene.swift */; };
@@ -38,6 +40,8 @@
 
 /* Begin PBXFileReference section */
 		3CF757751CD24795006FD5AB /* LineObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineObject.swift; sourceTree = "<group>"; };
+		58630CF41CDB435C005380B0 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = ../LoginViewController.swift; sourceTree = "<group>"; };
+		58630CF61CDB5AFB005380B0 /* NewAccountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewAccountViewController.swift; sourceTree = "<group>"; };
 		58C175FF1CC526B700EDD256 /* Curves.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Curves.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58C176021CC526B700EDD256 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		58C176041CC526B700EDD256 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -103,12 +107,14 @@
 		58C176011CC526B700EDD256 /* Curves */ = {
 			isa = PBXGroup;
 			children = (
+				58630CF41CDB435C005380B0 /* LoginViewController.swift */,
 				58C176021CC526B700EDD256 /* AppDelegate.swift */,
 				58C176041CC526B700EDD256 /* GameScene.sks */,
 				58C176061CC526B700EDD256 /* GameScene.swift */,
 				58C176081CC526B700EDD256 /* GameViewController.swift */,
 				3CF757751CD24795006FD5AB /* LineObject.swift */,
 				58C1760A1CC526B700EDD256 /* Main.storyboard */,
+				58630CF61CDB5AFB005380B0 /* NewAccountViewController.swift */,
 				58C1760D1CC526B700EDD256 /* Assets.xcassets */,
 				58C1760F1CC526B700EDD256 /* LaunchScreen.storyboard */,
 				58C176121CC526B700EDD256 /* Info.plist */,
@@ -267,10 +273,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58630CF51CDB435C005380B0 /* LoginViewController.swift in Sources */,
 				58C176071CC526B700EDD256 /* GameScene.swift in Sources */,
 				58C176091CC526B700EDD256 /* GameViewController.swift in Sources */,
 				3CF757761CD24795006FD5AB /* LineObject.swift in Sources */,
 				58C176031CC526B700EDD256 /* AppDelegate.swift in Sources */,
+				58630CF71CDB5AFB005380B0 /* NewAccountViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
