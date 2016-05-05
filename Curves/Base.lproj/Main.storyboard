@@ -78,6 +78,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pp0-nP-5oZ">
                                 <rect key="frame" x="321" y="317" width="49" height="30"/>
                                 <state key="normal" title="Submit"/>
+                                <connections>
+                                    <action selector="submitButton:" destination="7Hp-Dq-PP9" eventType="touchUpInside" id="1eh-rA-GDF"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -108,6 +111,11 @@
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
+                    <connections>
+                        <outlet property="emailTxtField" destination="2HW-A8-DnH" id="2xF-g6-BEu"/>
+                        <outlet property="nameTxtField" destination="w7T-Zm-tTU" id="8of-gM-IfC"/>
+                        <outlet property="pwTxtField" destination="HZu-Ri-1kX" id="qOv-he-dHe"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qvx-Qh-aCp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

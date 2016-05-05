@@ -10,6 +10,14 @@ import UIKit
 
 class NewAccountViewController: UIViewController {
 
+    @IBOutlet weak var emailTxtField: UITextField!
+    @IBOutlet weak var nameTxtField: UITextField!
+    @IBOutlet weak var pwTxtField: UITextField!
+    
+    
+    @IBAction func submitButton(sender: AnyObject) {
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
