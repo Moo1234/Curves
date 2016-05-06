@@ -12,7 +12,11 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
 
     var data : NSMutableData = NSMutableData()
     
-    let urlPath: String = "http://localhost/service.php"
+    //vom eigenen pc
+    //let urlPath: String = "http://localhost/service.php"
+    
+    //von fremden geräten
+    let urlPath: String = "http://134.60.170.88:80/service.php"
     
     @IBOutlet weak var nameTxtField: UITextField!
     @IBOutlet weak var pwTxtField: UITextField!
@@ -29,7 +33,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
 
         UIApplication.sharedApplication().statusBarHidden = false
         self.view.backgroundColor = UIColor.blackColor()
-        
+       
         
         // Do any additional setup after loading the view.
     }
@@ -124,7 +128,9 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
     func checkData(userList: [AccountModel]){
         
         if userList.contains({ $0.name == nameTxt && $0.password == pwTxt}){
-            self.performSegueWithIdentifier("loginSuccessfull", sender: self)
+            dispatch_async(dispatch_get_main_queue(), {
+                self.performSegueWithIdentifier("loginSuccessfull", sender: self)
+            })
             print("YO")
         }else{
             print("NO")
@@ -137,6 +143,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
     }
     
    
+    
     /*
     // MARK: - Navigation
 
