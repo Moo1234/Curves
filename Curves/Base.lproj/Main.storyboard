@@ -191,6 +191,9 @@
                                 <state key="normal" title="Login">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="loginButton:" destination="I4G-EI-Wd2" eventType="touchUpInside" id="KoI-Iy-0ym"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="KnH-PO-7rc">
                                 <rect key="frame" x="559" y="242" width="151" height="118"/>
@@ -240,10 +243,44 @@
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
+                    <connections>
+                        <outlet property="loginBtn" destination="WNN-YL-azB" id="a71-WJ-wOS"/>
+                        <outlet property="nameTxtField" destination="tnn-RN-Ybn" id="rba-2A-Kxm"/>
+                        <outlet property="pwTxtField" destination="OaX-kq-VKf" id="cMn-6l-vbT"/>
+                        <segue destination="RMW-l0-DlT" kind="show" identifier="loginSuccessfull" id="JKG-EW-D6t"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vdU-aQ-kOA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="328" y="273"/>
+        </scene>
+        <!--Find Players View Controller-->
+        <scene sceneID="0Xi-Q2-TYH">
+            <objects>
+                <viewController id="RMW-l0-DlT" customClass="FindPlayersViewController" customModule="Curves" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="XV4-Mk-dw8"/>
+                        <viewControllerLayoutGuide type="bottom" id="PkR-JE-6JP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="igh-7q-DbD">
+                        <rect key="frame" x="0.0" y="0.0" width="736" height="414"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Hallo" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wuV-YN-Kig">
+                                <rect key="frame" x="271" y="161" width="236" height="131"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aJG-Fr-uwx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="0.0" y="895"/>
         </scene>
     </scenes>
 </document>
