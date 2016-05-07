@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3CBDA2E51CDE0079009D916A /* NewGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBDA2E41CDE0079009D916A /* NewGameViewController.swift */; };
 		3CF757761CD24795006FD5AB /* LineObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CF757751CD24795006FD5AB /* LineObject.swift */; };
 		5831FE121CDC9566003C6297 /* AccountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5831FE111CDC9566003C6297 /* AccountModel.swift */; };
 		5831FE141CDCB032003C6297 /* FindPlayersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5831FE131CDCB032003C6297 /* FindPlayersViewController.swift */; };
@@ -41,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3CBDA2E41CDE0079009D916A /* NewGameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewGameViewController.swift; sourceTree = "<group>"; };
 		3CF757751CD24795006FD5AB /* LineObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineObject.swift; sourceTree = "<group>"; };
 		5831FE111CDC9566003C6297 /* AccountModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountModel.swift; sourceTree = "<group>"; };
 		5831FE131CDCB032003C6297 /* FindPlayersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindPlayersViewController.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				3CF757751CD24795006FD5AB /* LineObject.swift */,
 				58C1760A1CC526B700EDD256 /* Main.storyboard */,
 				58630CF61CDB5AFB005380B0 /* NewAccountViewController.swift */,
+				3CBDA2E41CDE0079009D916A /* NewGameViewController.swift */,
 				58C1760D1CC526B700EDD256 /* Assets.xcassets */,
 				58C1760F1CC526B700EDD256 /* LaunchScreen.storyboard */,
 				58C176121CC526B700EDD256 /* Info.plist */,
@@ -281,6 +284,7 @@
 			files = (
 				58630CF51CDB435C005380B0 /* LoginViewController.swift in Sources */,
 				58C176071CC526B700EDD256 /* GameScene.swift in Sources */,
+				3CBDA2E51CDE0079009D916A /* NewGameViewController.swift in Sources */,
 				5831FE141CDCB032003C6297 /* FindPlayersViewController.swift in Sources */,
 				5831FE121CDC9566003C6297 /* AccountModel.swift in Sources */,
 				58C176091CC526B700EDD256 /* GameViewController.swift in Sources */,

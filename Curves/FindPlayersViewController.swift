@@ -8,8 +8,11 @@
 
 import UIKit
 
-class FindPlayersViewController: UIViewController {
+class FindPlayersViewController: UIViewController, UITableViewDataSource {
 
+    @IBOutlet weak var tableView: UITableView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -21,6 +24,17 @@ class FindPlayersViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 0
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("RankingTableViewCell", forIndexPath: indexPath)
+        
+        return cell
+    }
 
     /*
     // MARK: - Navigation
