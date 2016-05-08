@@ -16,16 +16,19 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
     //let urlPath: String = "http://localhost/service.php"
     
     //von fremden geräten
-    let urlPath: String = "http://134.60.170.88:80/service.php"
+//    let urlPath: String = "http://134.60.170.88:80/service.php"
+    let urlPath: String = "http://192.168.178.21:80/service.php"
     
     @IBOutlet weak var nameTxtField: UITextField!
     @IBOutlet weak var pwTxtField: UITextField!
     @IBOutlet weak var loginBtn: UIButton!
     
     
-    var nameTxt: String = String()
-    var pwTxt: String = String()
+//    var nameTxt: String = String()
+//    var pwTxt: String = String()
+//    
     
+    var userList = [AccountModel]()
     
     
     override func viewDidLoad() {
@@ -34,21 +37,6 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
         UIApplication.sharedApplication().statusBarHidden = false
         self.view.backgroundColor = UIColor.blackColor()
        
-        
-        // Do any additional setup after loading the view.
-    }
-    
-    
-    
-    
-    
-    
-    @IBAction func loginButton(sender: AnyObject) {
-        
-        nameTxt = nameTxtField.text!
-        pwTxt = pwTxtField.text!
-        
-        
         
         let url: NSURL = NSURL(string: urlPath)!
         var session: NSURLSession!
@@ -60,6 +48,18 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
         let task = session.dataTaskWithURL(url)
         
         task.resume()
+        
+        // Do any additional setup after loading the view.
+    }
+    
+    
+    
+    
+    
+    
+    @IBAction func loginButton(sender: AnyObject) {
+        
+        checkData()
         
     }
     
@@ -92,8 +92,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
         }
         
         var jsonElement: NSDictionary = NSDictionary()
-        var userList = [AccountModel]()
-        for(var i = 0; i < jsonResult.count; i++)
+        for(var i = 0; i < jsonResult.count; i += 1)
         {
             
             jsonElement = jsonResult[i] as! NSDictionary
@@ -115,25 +114,22 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
                 
             }
             
-            
-            
-            
-            
         }
         print(userList)
-        checkData(userList)
         
     }
 
-    func checkData(userList: [AccountModel]){
-        
-        if userList.contains({ $0.name == nameTxt && $0.password == pwTxt}){
+    func checkData(){
+        if userList.contains({ $0.name == nameTxtField.text && $0.password == pwTxtField.text}){
             dispatch_async(dispatch_get_main_queue(), {
                 self.performSegueWithIdentifier("loginSuccessfull", sender: self)
             })
-            print("YO")
         }else{
-            print("NO")
+            dispatch_async(dispatch_get_main_queue(), {
+                let alert = UIAlertController(title: "Login fehlgeschlagen", message: "Sie haben ein falsches Passwort oder einen falschen Benutzernamen eingegeben", preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "Zurück", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
+            })
         }
     }
 

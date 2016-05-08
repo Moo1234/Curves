@@ -11,6 +11,7 @@ import SpriteKit
 struct PhysicsCat{
     static let p1Cat : UInt32 = 0x1 << 1
     static let gameAreaCat : UInt32 = 0x1 << 2
+    static let p1TailCat : UInt32 = 0x1 << 3
 
 }
 
@@ -77,7 +78,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         p1.physicsBody = SKPhysicsBody(circleOfRadius: 2)
         p1.physicsBody!.categoryBitMask = PhysicsCat.p1Cat
-        p1.physicsBody!.contactTestBitMask = PhysicsCat.gameAreaCat | PhysicsCat.p1Cat
+        p1.physicsBody!.contactTestBitMask = PhysicsCat.gameAreaCat | PhysicsCat.p1Cat | PhysicsCat.p1TailCat
         p1.physicsBody?.affectedByGravity = false
         p1.physicsBody?.linearDamping = 0
         
@@ -138,7 +139,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //    }
     
     
-    
     override func update(currentTime: NSTimeInterval) {
         
         let pathToDraw: CGMutablePath = CGPathCreateMutable()
@@ -148,6 +148,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var locationX = p1.position.x
         var locationY = p1.position.y
 //        print(p1.physicsBody)
+
+//        p1.physicsBody!.contactTestBitMask = PhysicsCat.gameAreaCat | PhysicsCat.p1Cat
         
         
         if !dead {
@@ -163,17 +165,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 myLine.path = pathToDraw
                 myLine.strokeColor = SKColor.greenColor()
                 myLine.lineWidth = 3.0
+                
+//                let bla = CGPoint(x: locationX, y: locationY)
+//                let wrappedLocation = NSValue(CGPoint: bla)
+//                NSTimer.scheduledTimerWithTimeInterval(3, target: self, selector: #selector(GameScene.jo), userInfo: ["touchLocation" : wrappedLocation], repeats: true)
+                
               
                 
                 self.gameArea.addChild(myLine)
                 
             })
         }
-
-        
-        
         
     }
+    
+//    func jo(timer: NSTimer){
+//        let userInfo = timer.userInfo as! Dictionary<String, AnyObject>
+//        var touchLocation: CGPoint = (userInfo["touchLocation"] as! NSValue).CGPointValue()
+//        if !dead {
+//            
+//            let p1Body = SKShapeNode(circleOfRadius: 2.0)
+//            p1Body.position = CGPoint(x: touchLocation.x , y: touchLocation.y)
+//            p1Body.physicsBody = SKPhysicsBody(circleOfRadius: 2)
+//            p1Body.physicsBody?.categoryBitMask = PhysicsCat.p1TailCat
+//            p1Body.physicsBody?.affectedByGravity = false
+//            p1Body.physicsBody?.dynamic = false
+//            p1Body.physicsBody?.linearDamping = 0
+//            
+//            self.gameArea.addChild(p1Body)
+//        }
+//    }
 
     
     func pointToRadian(targetPoint: CGPoint) -> Double{
@@ -218,6 +239,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
+//        print("dead " , contact.bodyA == p1.physicsBody , " " , contact.bodyB)
         print("dead")
         dead = true
         p1.physicsBody?.dynamic = false

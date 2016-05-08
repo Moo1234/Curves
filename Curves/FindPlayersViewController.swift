@@ -15,6 +15,9 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        UIApplication.sharedApplication().statusBarHidden = false
+        self.view.backgroundColor = UIColor.blackColor()
 
         // Do any additional setup after loading the view.
     }
