@@ -16,20 +16,24 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
     //let urlPath: String = "http://localhost/service.php"
     
     //von fremden geräten
-    let urlPath: String = "http://134.60.170.88:80/service.php"
+    let urlPath: String = "http://192.168.178.75:80/service.php"
     
     @IBOutlet weak var nameTxtField: UITextField!
     @IBOutlet weak var pwTxtField: UITextField!
     @IBOutlet weak var loginBtn: UIButton!
+    @IBOutlet weak var wrongInputLbl: UILabel!
     
     
     var nameTxt: String = String()
     var pwTxt: String = String()
     
-    
+    var firstTry: Bool = true
+    var downloadedList = [AccountModel]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        wrongInputLbl.hidden = true
 
         UIApplication.sharedApplication().statusBarHidden = false
         self.view.backgroundColor = UIColor.blackColor()
@@ -44,22 +48,24 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
     
     
     @IBAction func loginButton(sender: AnyObject) {
-        
         nameTxt = nameTxtField.text!
         pwTxt = pwTxtField.text!
         
+        if  firstTry == true {
+        
+            let url: NSURL = NSURL(string: urlPath)!
+            var session: NSURLSession!
+            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         
         
-        let url: NSURL = NSURL(string: urlPath)!
-        var session: NSURLSession!
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
         
+            let task = session.dataTaskWithURL(url)
         
-        session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
-        
-        let task = session.dataTaskWithURL(url)
-        
-        task.resume()
+            task.resume()
+        }else{
+            checkData(downloadedList)
+        }
         
     }
     
@@ -120,6 +126,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
             
             
         }
+        downloadedList = userList
         print(userList)
         checkData(userList)
         
@@ -127,13 +134,17 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
 
     func checkData(userList: [AccountModel]){
         
-        if userList.contains({ $0.name == nameTxt && $0.password == pwTxt}){
+        if userList.contains({ $0.name == nameTxt && $0.password == pwTxt}) || userList.contains({$0.email == nameTxt && $0.password == pwTxt}) {
             dispatch_async(dispatch_get_main_queue(), {
                 self.performSegueWithIdentifier("loginSuccessfull", sender: self)
             })
-            print("YO")
         }else{
             print("NO")
+            firstTry = false
+            dispatch_async(dispatch_get_main_queue(), {
+                self.wrongInputLbl.hidden = false
+            })
+            
         }
     }
 
