@@ -22,6 +22,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
     @IBOutlet weak var nameTxtField: UITextField!
     @IBOutlet weak var pwTxtField: UITextField!
     @IBOutlet weak var loginBtn: UIButton!
+    @IBOutlet weak var wrongInputLbl: UILabel!
     
     
 //    var nameTxt: String = String()
@@ -33,6 +34,8 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        wrongInputLbl.hidden = true
 
         UIApplication.sharedApplication().statusBarHidden = false
         self.view.backgroundColor = UIColor.blackColor()
@@ -42,12 +45,14 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
         var session: NSURLSession!
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         
+            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
         
-        session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+            let task = session.dataTaskWithURL(url)
         
-        let task = session.dataTaskWithURL(url)
-        
-        task.resume()
+            task.resume()
+        }else{
+            checkData(downloadedList)
+        }
         
         self.nameTxtField.delegate = self
         self.pwTxtField.delegate = self
@@ -121,6 +126,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
             }
             
         }
+        downloadedList = userList
         print(userList)
         
     }
