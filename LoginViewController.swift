@@ -39,6 +39,22 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
         UIApplication.sharedApplication().statusBarHidden = false
         self.view.backgroundColor = UIColor.blackColor()
         
+//        if  firstTry == true {
+        
+            let url: NSURL = NSURL(string: urlPath)!
+            var session: NSURLSession!
+            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+            
+            
+            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+            
+            let task = session.dataTaskWithURL(url)
+            
+            task.resume()
+//        }else{
+//            checkData(downloadedList)
+//        }
+        
         
         self.nameTxtField.delegate = self
         self.pwTxtField.delegate = self
@@ -58,21 +74,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
         nameTxt = nameTxtField.text!
         pwTxt = pwTxtField.text!
         
-        if  firstTry == true {
-            
-            let url: NSURL = NSURL(string: urlPath)!
-            var session: NSURLSession!
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-            
-            
-            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
-            
-            let task = session.dataTaskWithURL(url)
-            
-            task.resume()
-        }else{
-            checkData(downloadedList)
-        }
+        checkData()
         
     }
     
@@ -135,13 +137,13 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
         }
         downloadedList = userList
         print(userList)
-        checkData(userList)
+//        checkData()
         
     }
     
-    func checkData(userList: [AccountModel]){
+    func checkData(){
         
-        if userList.contains({ $0.name == nameTxt && $0.password == pwTxt}) || userList.contains({$0.email == nameTxt && $0.password == pwTxt}) {
+        if downloadedList.contains({ $0.name == nameTxtField.text && $0.password == pwTxt}) || downloadedList.contains({$0.email == nameTxt && $0.password == pwTxt}) {
             dispatch_async(dispatch_get_main_queue(), {
                 self.performSegueWithIdentifier("loginSuccessfull", sender: self)
             })
