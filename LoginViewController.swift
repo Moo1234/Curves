@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LoginViewController: UIViewController,  NSURLSessionDelegate {
+class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldDelegate {
 
     var data : NSMutableData = NSMutableData()
     
@@ -49,12 +49,18 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate {
         
         task.resume()
         
+        self.nameTxtField.delegate = self
+        self.pwTxtField.delegate = self
+        
         // Do any additional setup after loading the view.
     }
     
     
     
-    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
     
     
     @IBAction func loginButton(sender: AnyObject) {
