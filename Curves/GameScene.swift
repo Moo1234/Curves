@@ -12,7 +12,7 @@ struct PhysicsCat{
     static let p1Cat : UInt32 = 0x1 << 1
     static let gameAreaCat : UInt32 = 0x1 << 2
     static let p1TailCat : UInt32 = 0x1 << 3
-
+    
 }
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
@@ -30,7 +30,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var wayPoints: [CGPoint] = []
     var pressed: Bool = false
     
-     var velocity = CGPoint(x: 0, y: 0)
+    var velocity = CGPoint(x: 0, y: 0)
     
     var oldPosX: CGFloat = 0.0
     var oldPosY: CGFloat = 0.0
@@ -55,9 +55,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameArea.lineWidth = 5
         gameArea.strokeColor = SKColor.whiteColor()
         gameArea.position = CGPoint(x: 0, y: 0 )
-//        gameArea.fillColor = SKColor.blackColor()
-
-            
+        //        gameArea.fillColor = SKColor.blackColor()
+        
+        
         leftBtn = SKShapeNode(rectOfSize: CGSize(width: frame.width / 10, height: frame.height))
         rightBtn = SKShapeNode(rectOfSize: CGSize(width: frame.width / 10, height: frame.height))
         
@@ -90,53 +90,53 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameArea.physicsBody?.affectedByGravity = false
         gameArea.physicsBody?.dynamic = false
         
-      
+        
         wayPoints.append(CGPoint(x: 100,y: 100))
         let targetPoint = wayPoints[0]
         changeDirection(targetPoint)
         
-//        CGPathMoveToPoint(pathToDraw, nil, self.oldPosX, self.oldPosY)
-
+        //        CGPathMoveToPoint(pathToDraw, nil, self.oldPosX, self.oldPosY)
         
-//        myLine.path = pathToDraw
-//        myLine.strokeColor = SKColor.greenColor()
-//        myLine.lineWidth = 3.0
-//        
-//        
-//        self.gameArea.addChild(myLine)
-
+        
+        //        myLine.path = pathToDraw
+        //        myLine.strokeColor = SKColor.greenColor()
+        //        myLine.lineWidth = 3.0
+        //
+        //
+        //        self.gameArea.addChild(myLine)
+        
         addChild(gameArea)
         addChild(leftBtn)
         addChild(rightBtn)
-//        addChild(p1)
+        //        addChild(p1)
         gameArea.addChild(p1)
         
-       // test = NSTimer.scheduledTimerWithTimeInterval(0.0001, target: self, selector: #selector(GameScene.update2), userInfo: nil, repeats: true)
-
+        // test = NSTimer.scheduledTimerWithTimeInterval(0.0001, target: self, selector: #selector(GameScene.update2), userInfo: nil, repeats: true)
+        
     }
     
     
-//    let pathToDraw: CGMutablePath = CGPathCreateMutable()
-//    let myLine: SKShapeNode = SKShapeNode()
-//    
-//    func update2(){
-//      
-//        var locationX = p1.position.x
-//        var locationY = p1.position.y
-//        
-//        
-//        if (myLine.containsPoint(CGPoint(x: locationX, y: locationY))) {
-//        
-//            print(myLine.path.debugDescription)
-//        } else{
-//            myLine.path = pathToDraw
-//            CGPathAddLineToPoint(pathToDraw, nil, locationX, locationY)
-//        
-//            self.oldPosX = locationX
-//            self.oldPosY = locationY
-//        }
-//        
-//    }
+    //    let pathToDraw: CGMutablePath = CGPathCreateMutable()
+    //    let myLine: SKShapeNode = SKShapeNode()
+    //
+    //    func update2(){
+    //
+    //        var locationX = p1.position.x
+    //        var locationY = p1.position.y
+    //
+    //
+    //        if (myLine.containsPoint(CGPoint(x: locationX, y: locationY))) {
+    //
+    //            print(myLine.path.debugDescription)
+    //        } else{
+    //            myLine.path = pathToDraw
+    //            CGPathAddLineToPoint(pathToDraw, nil, locationX, locationY)
+    //
+    //            self.oldPosX = locationX
+    //            self.oldPosY = locationY
+    //        }
+    //
+    //    }
     
     
     override func update(currentTime: NSTimeInterval) {
@@ -147,9 +147,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         var locationX = p1.position.x
         var locationY = p1.position.y
-//        print(p1.physicsBody)
-
-//        p1.physicsBody!.contactTestBitMask = PhysicsCat.gameAreaCat | PhysicsCat.p1Cat
+        //        print(p1.physicsBody)
+        
+        //        p1.physicsBody!.contactTestBitMask = PhysicsCat.gameAreaCat | PhysicsCat.p1Cat
         
         
         if !dead {
@@ -166,11 +166,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 myLine.strokeColor = SKColor.greenColor()
                 myLine.lineWidth = 3.0
                 
-//                let bla = CGPoint(x: locationX, y: locationY)
-//                let wrappedLocation = NSValue(CGPoint: bla)
-//                NSTimer.scheduledTimerWithTimeInterval(3, target: self, selector: #selector(GameScene.jo), userInfo: ["touchLocation" : wrappedLocation], repeats: true)
+                //                let bla = CGPoint(x: locationX, y: locationY)
+                //                let wrappedLocation = NSValue(CGPoint: bla)
+                //                NSTimer.scheduledTimerWithTimeInterval(3, target: self, selector: #selector(GameScene.jo), userInfo: ["touchLocation" : wrappedLocation], repeats: true)
                 
-              
+                
                 
                 self.gameArea.addChild(myLine)
                 
@@ -179,23 +179,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-//    func jo(timer: NSTimer){
-//        let userInfo = timer.userInfo as! Dictionary<String, AnyObject>
-//        var touchLocation: CGPoint = (userInfo["touchLocation"] as! NSValue).CGPointValue()
-//        if !dead {
-//            
-//            let p1Body = SKShapeNode(circleOfRadius: 2.0)
-//            p1Body.position = CGPoint(x: touchLocation.x , y: touchLocation.y)
-//            p1Body.physicsBody = SKPhysicsBody(circleOfRadius: 2)
-//            p1Body.physicsBody?.categoryBitMask = PhysicsCat.p1TailCat
-//            p1Body.physicsBody?.affectedByGravity = false
-//            p1Body.physicsBody?.dynamic = false
-//            p1Body.physicsBody?.linearDamping = 0
-//            
-//            self.gameArea.addChild(p1Body)
-//        }
-//    }
-
+    //    func jo(timer: NSTimer){
+    //        let userInfo = timer.userInfo as! Dictionary<String, AnyObject>
+    //        var touchLocation: CGPoint = (userInfo["touchLocation"] as! NSValue).CGPointValue()
+    //        if !dead {
+    //
+    //            let p1Body = SKShapeNode(circleOfRadius: 2.0)
+    //            p1Body.position = CGPoint(x: touchLocation.x , y: touchLocation.y)
+    //            p1Body.physicsBody = SKPhysicsBody(circleOfRadius: 2)
+    //            p1Body.physicsBody?.categoryBitMask = PhysicsCat.p1TailCat
+    //            p1Body.physicsBody?.affectedByGravity = false
+    //            p1Body.physicsBody?.dynamic = false
+    //            p1Body.physicsBody?.linearDamping = 0
+    //
+    //            self.gameArea.addChild(p1Body)
+    //        }
+    //    }
+    
     
     func pointToRadian(targetPoint: CGPoint) -> Double{
         let deltaX = targetPoint.x;
@@ -231,7 +231,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 myTimer2 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionR), userInfo: nil, repeats: true)
             }
         }
-    
+        
     }
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         myTimer1.invalidate()
@@ -239,7 +239,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
-//        print("dead " , contact.bodyA == p1.physicsBody , " " , contact.bodyB)
+        //        print("dead " , contact.bodyA == p1.physicsBody , " " , contact.bodyB)
         print("dead")
         dead = true
         p1.physicsBody?.dynamic = false
@@ -250,7 +250,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func changeDirectionL(){
-//        print(timer.userInfo)
+        //        print(timer.userInfo)
         let alt = pointToRadian(wayPoints[0])
         wayPoints[0] = radianToPoint(alt+5)
         changeDirection(wayPoints[0])

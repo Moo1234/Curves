@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewAccountViewController: UIViewController,  NSURLSessionDelegate {
+class NewAccountViewController: UIViewController,  NSURLSessionDelegate, UITextFieldDelegate {
     
     var data : NSMutableData = NSMutableData()
     var userList = [AccountModel]()
@@ -21,7 +21,7 @@ class NewAccountViewController: UIViewController,  NSURLSessionDelegate {
     
     let urlPath: String = "http://192.168.178.21:80/service.php"
     let urlRegister: String = "http://192.168.178.21:80/register.php"
-
+    
     @IBOutlet weak var emailTxtField: UITextField!
     @IBOutlet weak var nameTxtField: UITextField!
     @IBOutlet weak var pwTxtField: UITextField!
@@ -44,9 +44,18 @@ class NewAccountViewController: UIViewController,  NSURLSessionDelegate {
         
         task.resume()
         
+        self.emailTxtField.delegate = self
+        self.nameTxtField.delegate = self
+        self.pwTxtField.delegate = self
+        
         // Do any additional setup after loading the view.
     }
-
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -83,7 +92,7 @@ class NewAccountViewController: UIViewController,  NSURLSessionDelegate {
                     
                     if statusCode == 200 {
                         print("registered")
-
+                        
                     }
                     else{
                         print(response)
@@ -156,15 +165,15 @@ class NewAccountViewController: UIViewController,  NSURLSessionDelegate {
         
     }
     
-
+    
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }

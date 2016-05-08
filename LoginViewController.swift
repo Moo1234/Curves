@@ -9,14 +9,14 @@
 import UIKit
 
 class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldDelegate {
-
+    
     var data : NSMutableData = NSMutableData()
     
     //vom eigenen pc
     //let urlPath: String = "http://localhost/service.php"
     
     //von fremden geräten
-//    let urlPath: String = "http://134.60.170.88:80/service.php"
+//    let urlPath: String = "http://192.168.178.75:80/service.php"
     let urlPath: String = "http://192.168.178.21:80/service.php"
     
     @IBOutlet weak var nameTxtField: UITextField!
@@ -25,34 +25,20 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
     @IBOutlet weak var wrongInputLbl: UILabel!
     
     
-//    var nameTxt: String = String()
-//    var pwTxt: String = String()
-//    
+    var nameTxt: String = String()
+    var pwTxt: String = String()
     
-    var userList = [AccountModel]()
-    
+    var firstTry: Bool = true
+    var downloadedList = [AccountModel]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         wrongInputLbl.hidden = true
-
+        
         UIApplication.sharedApplication().statusBarHidden = false
         self.view.backgroundColor = UIColor.blackColor()
-       
         
-        let url: NSURL = NSURL(string: urlPath)!
-        var session: NSURLSession!
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        
-            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
-        
-            let task = session.dataTaskWithURL(url)
-        
-            task.resume()
-        }else{
-            checkData(downloadedList)
-        }
         
         self.nameTxtField.delegate = self
         self.pwTxtField.delegate = self
@@ -61,16 +47,32 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
     }
     
     
-    
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return false
     }
     
     
+    
     @IBAction func loginButton(sender: AnyObject) {
+        nameTxt = nameTxtField.text!
+        pwTxt = pwTxtField.text!
         
-        checkData()
+        if  firstTry == true {
+            
+            let url: NSURL = NSURL(string: urlPath)!
+            var session: NSURLSession!
+            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+            
+            
+            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+            
+            let task = session.dataTaskWithURL(url)
+            
+            task.resume()
+        }else{
+            checkData(downloadedList)
+        }
         
     }
     
@@ -90,7 +92,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
     }
     
     func parseJSON() {
-       
+        
         var jsonResult: NSMutableArray = NSMutableArray()
         
         
@@ -103,7 +105,8 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
         }
         
         var jsonElement: NSDictionary = NSDictionary()
-        for(var i = 0; i < jsonResult.count; i += 1)
+        var userList = [AccountModel]()
+        for(var i = 0; i < jsonResult.count; i++)
         {
             
             jsonElement = jsonResult[i] as! NSDictionary
@@ -113,10 +116,10 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
             if let email = jsonElement["email"] as? String,
                 let name = jsonElement["name"] as? String,
                 let password = jsonElement["password"] as? String
-
+                
             {
                 let users = AccountModel()
-
+                
                 print(email,name,password)
                 users.email = email
                 users.name = name
@@ -125,41 +128,47 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
                 
             }
             
+            
+            
+            
+            
         }
         downloadedList = userList
         print(userList)
+        checkData(userList)
         
     }
-
-    func checkData(){
-        if userList.contains({ $0.name == nameTxtField.text && $0.password == pwTxtField.text}){
+    
+    func checkData(userList: [AccountModel]){
+        
+        if userList.contains({ $0.name == nameTxt && $0.password == pwTxt}) || userList.contains({$0.email == nameTxt && $0.password == pwTxt}) {
             dispatch_async(dispatch_get_main_queue(), {
                 self.performSegueWithIdentifier("loginSuccessfull", sender: self)
             })
         }else{
+            print("NO")
+            firstTry = false
             dispatch_async(dispatch_get_main_queue(), {
-                let alert = UIAlertController(title: "Login fehlgeschlagen", message: "Sie haben ein falsches Passwort oder einen falschen Benutzernamen eingegeben", preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "Zurück", style: UIAlertActionStyle.Default, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
+                self.wrongInputLbl.hidden = false
             })
+            
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-   
+    
     
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }
