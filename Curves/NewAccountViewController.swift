@@ -95,7 +95,7 @@ class NewAccountViewController: UIViewController,  NSURLSessionDelegate, UITextF
                         
                     }
                     else{
-                        print(response)
+//                        print(response)
                     }
                     let alert = UIAlertController(title: "Registrierung erfolgreich", message: "Sie können sich nun einloggen.", preferredStyle: UIAlertControllerStyle.Alert)
                     alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: {(alert: UIAlertAction!) in

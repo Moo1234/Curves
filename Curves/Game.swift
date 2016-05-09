@@ -15,6 +15,12 @@ class Game: NSObject{
     var name: String!
     var players: String!
     
+    override init(){
+        self.id = 0
+        self.name = ""
+        self.players = ""
+    }
+    
     init(id: Int, name: String, players: String) {
         
         self.id = id

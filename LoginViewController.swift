@@ -44,6 +44,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
             let url: NSURL = NSURL(string: urlPath)!
             var session: NSURLSession!
             let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        
             
             
             session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
@@ -160,6 +161,16 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+        if segue.identifier == "loginSuccessfull" {
+            let findPlayers = segue.destinationViewController as! FindPlayersViewController
+            
+            findPlayers.ownUserName = nameTxtField.text!
+        }
     }
     
     
