@@ -128,10 +128,12 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     
     func reload(){
         loadGames()
-        tableView.reloadData()
-        if(self.game.name != "" || self.game.name != gameNameLabel.text){
-            self.gameNameLabel.text = self.game.name
-        }
+        dispatch_async(dispatch_get_main_queue(), {
+            self.tableView.reloadData()
+            if(self.game.name != "" || self.game.name != self.gameNameLabel.text){
+                self.gameNameLabel.text = self.game.name
+            }
+        })
     }
 
     @IBAction func reloadData(sender: AnyObject) {

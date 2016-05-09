@@ -165,6 +165,9 @@ class NewAccountViewController: UIViewController,  NSURLSessionDelegate, UITextF
         
     }
     
+    @IBAction func goBack(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
     
     /*
      // MARK: - Navigation
