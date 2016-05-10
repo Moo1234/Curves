@@ -86,31 +86,10 @@ class FindPlayersViewController: UIViewController, NSURLSessionDelegate, UITable
         request.HTTPMethod = "POST"
         
         request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding);
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue())
-        {
-            (response, data, error) in
-            
-            
-            if let HTTPResponse = response as? NSHTTPURLResponse {
-                let statusCode = HTTPResponse.statusCode
-                
-                if statusCode == 200 {
-                    print("game joined")
-                    
-                }
-                else{
-                    //                        print(response)
-                }
-                dispatch_async(dispatch_get_main_queue(), {
-//                    self.loadGames()
-                    self.tableView.reloadData()
-                })
-                
-            }
-            
-        }
+        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+            self.tableView.reloadData()
+        })
         self.performSegueWithIdentifier("newGame", sender:self)
-
     }
     
     func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
@@ -193,31 +172,9 @@ class FindPlayersViewController: UIViewController, NSURLSessionDelegate, UITable
             request.HTTPMethod = "POST"
             
             request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding);
-            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue())
-            {
-                (response, data, error) in
-                
-                
-                if let HTTPResponse = response as? NSHTTPURLResponse {
-                    let statusCode = HTTPResponse.statusCode
-                    
-                    if statusCode == 200 {
-                        print("game Created")
-                        
-                    }
-                    else{
-//                        print(response)
-
-                    }
-                    dispatch_async(dispatch_get_main_queue(), {
-                        //                    self.loadGames()
-                        self.tableView.reloadData()
-                        
-                    })
-                    
-                }
-                
-            }
+            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+                self.tableView.reloadData()
+            })
             self.performSegueWithIdentifier("newGame", sender:self)
         }))
         alert.addAction(UIAlertAction(title: "Zurück", style: UIAlertActionStyle.Cancel, handler: nil))

@@ -97,7 +97,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
             }
             
             var jsonElement: NSDictionary = NSDictionary()
-            for(var i = 0; i < jsonResult.count; i++)
+            for(var i = 0; i < jsonResult.count; i += 1)
             {
                 
                 jsonElement = jsonResult[i] as! NSDictionary
@@ -129,30 +129,13 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
             let urlCreateGame: String = "http://192.168.178.21:80/closeGame.php"
             let url: NSURL = NSURL(string: urlCreateGame)!
             let request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
-            var bodyData = "id=" + String(gameId)
+            let bodyData = "id=" + String(gameId)
             request.HTTPMethod = "POST"
             
             request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding);
-            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue())
-            {
-                (response, data, error) in
-                
-                
-                if let HTTPResponse = response as? NSHTTPURLResponse {
-                    let statusCode = HTTPResponse.statusCode
-                    
-                    if statusCode == 200 {
-                        print("game Created")
-                        
-                    }
-                    else{
-                        //                        print(response)
-                        
-                    }
-                    
-                }
-                
-            }
+            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+                self.tableView.reloadData()
+            })
         }else{
             let playernames = game.players.characters.split(",").map(String.init)
             var players = ""
@@ -172,26 +155,9 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
             request.HTTPMethod = "POST"
             
             request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding)
-            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue())
-            {
-                (response, data, error) in
-                
-                
-                if let HTTPResponse = response as? NSHTTPURLResponse {
-                    let statusCode = HTTPResponse.statusCode
-                    
-                    if statusCode == 200 {
-                        print("left game")
-                        
-                    }
-                    else{
-                        //                        print(response)
-                        
-                    }
-                    
-                }
-                
-            }
+            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+                self.tableView.reloadData()
+            })
         }
         self.dismissViewControllerAnimated(true, completion: nil)
     }

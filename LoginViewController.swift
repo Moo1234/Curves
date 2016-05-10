@@ -38,24 +38,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
         
         UIApplication.sharedApplication().statusBarHidden = false
         self.view.backgroundColor = UIColor.blackColor()
-        
-//        if  firstTry == true {
-        
-            let url: NSURL = NSURL(string: urlPath)!
-            var session: NSURLSession!
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        
-            
-            
-            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
-            
-            let task = session.dataTaskWithURL(url)
-            
-            task.resume()
-//        }else{
-//            checkData(downloadedList)
-//        }
-        
+    
         
         self.nameTxtField.delegate = self
         self.pwTxtField.delegate = self
@@ -75,7 +58,24 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
         nameTxt = nameTxtField.text!
         pwTxt = pwTxtField.text!
         
-        checkData()
+        if  firstTry == true {
+            
+            let url: NSURL = NSURL(string: urlPath)!
+            var session: NSURLSession!
+            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+            
+            
+            
+            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+            
+            let task = session.dataTaskWithURL(url)
+            
+            task.resume()
+        }else{
+            checkData()
+        }
+        
+//        checkData()
         
     }
     
@@ -87,6 +87,8 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
     func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
         if error != nil {
             print("Failed to download data")
+            self.wrongInputLbl.hidden = false
+            self.wrongInputLbl.text = "Keine Verbindung zum Server"
         }else {
             print("Data downloaded")
             self.parseJSON()
@@ -138,7 +140,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
         }
         downloadedList = userList
         print(userList)
-//        checkData()
+        checkData()
         
     }
     
@@ -153,6 +155,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
             firstTry = false
             dispatch_async(dispatch_get_main_queue(), {
                 self.wrongInputLbl.hidden = false
+                self.wrongInputLbl.text = "Falsche Eingabe, bitte erneut versuchen!"
             })
             
         }
