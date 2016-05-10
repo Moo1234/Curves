@@ -148,6 +148,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
         
         if downloadedList.contains({ $0.name == nameTxtField.text && $0.password == pwTxt}) || downloadedList.contains({$0.email == nameTxt && $0.password == pwTxt}) {
             dispatch_async(dispatch_get_main_queue(), {
+                self.wrongInputLbl.hidden = true
                 self.performSegueWithIdentifier("loginSuccessfull", sender: self)
             })
         }else{
