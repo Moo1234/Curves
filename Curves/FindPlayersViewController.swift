@@ -207,7 +207,13 @@ class FindPlayersViewController: UIViewController, NSURLSessionDelegate, UITable
                     }
                     else{
 //                        print(response)
+
                     }
+                    dispatch_async(dispatch_get_main_queue(), {
+                        //                    self.loadGames()
+                        self.tableView.reloadData()
+                        
+                    })
                     
                 }
                 

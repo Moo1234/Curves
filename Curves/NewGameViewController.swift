@@ -59,7 +59,9 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as? UITableViewCell
         //        print("Table: " , gameList[indexPath.row].name as String)
-        self.gameNameLabel.text = self.game.name
+//        if(self.game.name != "" || self.game.name != self.gameNameLabel.text){
+//            self.gameNameLabel.text = self.game.name
+//        }
         let player = game.players.characters.split(",").map(String.init)[indexPath.row]
         cell!.textLabel!.text = player
         return cell!
@@ -108,13 +110,13 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
                 {
                     if(gameId == id){
                         game = Game(id: id, name: name, players: players)
-                        dispatch_async(dispatch_get_main_queue(), {
-                            self.tableView.reloadData()
-                            if(self.game.name != "" || self.game.name != self.gameNameLabel.text){
-                                self.gameNameLabel.text = self.game.name
-                            }
-                        })
                     }
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.tableView.reloadData()
+                        if(self.game.name != "" || self.game.name != self.gameNameLabel.text){
+                            self.gameNameLabel.text = self.game.name
+                        }
+                    })
                     
                 }
                 
@@ -123,6 +125,74 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         
     }
     @IBAction func leaveGame(sender: AnyObject) {
+        if game.players.characters.split(",").count == 1 {
+            let urlCreateGame: String = "http://192.168.178.21:80/closeGame.php"
+            let url: NSURL = NSURL(string: urlCreateGame)!
+            let request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
+            var bodyData = "id=" + String(gameId)
+            request.HTTPMethod = "POST"
+            
+            request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding);
+            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue())
+            {
+                (response, data, error) in
+                
+                
+                if let HTTPResponse = response as? NSHTTPURLResponse {
+                    let statusCode = HTTPResponse.statusCode
+                    
+                    if statusCode == 200 {
+                        print("game Created")
+                        
+                    }
+                    else{
+                        //                        print(response)
+                        
+                    }
+                    
+                }
+                
+            }
+        }else{
+            let playernames = game.players.characters.split(",").map(String.init)
+            var players = ""
+            for(var i = 0; i < playernames.count; i += 1){
+                if(playernames[i] != ownUserName){
+                    if(players != ""){
+                        players += ","
+                    }
+                    players += playernames[i]
+                }
+            }
+            let urlCreateGame: String = "http://192.168.178.21:80/leaveGame.php"
+            let url: NSURL = NSURL(string: urlCreateGame)!
+            let request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
+            var bodyData = "id=" + String(gameId)
+            bodyData += "&players=" + players
+            request.HTTPMethod = "POST"
+            
+            request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding)
+            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue())
+            {
+                (response, data, error) in
+                
+                
+                if let HTTPResponse = response as? NSHTTPURLResponse {
+                    let statusCode = HTTPResponse.statusCode
+                    
+                    if statusCode == 200 {
+                        print("left game")
+                        
+                    }
+                    else{
+                        //                        print(response)
+                        
+                    }
+                    
+                }
+                
+            }
+        }
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
