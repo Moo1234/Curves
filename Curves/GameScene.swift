@@ -12,7 +12,7 @@ struct PhysicsCat{
     static let p1Cat : UInt32 = 0x1 << 1
     static let gameAreaCat : UInt32 = 0x1 << 2
     static let p1TailCat : UInt32 = 0x1 << 3
-    static let item : UInt32 = 0x1 << 4
+    static let itemCat : UInt32 = 0x1 << 4
     
 }
 
@@ -55,6 +55,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var btnWidth:CGFloat = 30.0
     var yo = true
+    var item = SKSpriteNode()
+    
+    var test = CGFloat(1)
+    
     
     
     override func didMoveToView(view:SKView) {
@@ -141,8 +145,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let offset = CGPoint(x: targetPoint.x - currentPosition.x, y: targetPoint.y - currentPosition.y)
         let length = Double(sqrtf(Float(offset.x * offset.x) + Float(offset.y * offset.y)))
         let direction = CGPoint(x:CGFloat(offset.x) / CGFloat(length), y: CGFloat(offset.y) / CGFloat(length))
-        xCurve = direction.x
-        yCurve = direction.y
+        xCurve = direction.x * test
+        yCurve = direction.y * test
         
         
     }
@@ -213,10 +217,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var rand = arc4random() % 30
         if rand == 10 && yo == true{
             print("YO")
-            let item1 = ItemObject(imageName: "Spaceship", itemAction: "test", itemPosition: CGPoint(x: 500,y:500), itemName: "test")
+            item = ItemObject(imageName: "testItem", itemAction: "test", itemPosition: CGPoint(x: 500,y:500), itemName: "test")
+            item.setScale(0.5)
 //            item1.position = CGPoint(x: 100, y: 100)
-            item1.setScale(0.2)
-            addChild(item1)
+            addChild(item)
             yo = false
         }
         
@@ -239,9 +243,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func didBeginContact(contact: SKPhysicsContact) {
         //print("dead " , contact.bodyA == p1.physicsBody , " " , contact.bodyB)
-        print("dead")
-        dead = true
-//      p1.physicsBody?.dynamic = false
+       
+        
+        if (contact.bodyA.categoryBitMask == PhysicsCat.itemCat) || contact.bodyB.categoryBitMask == PhysicsCat.itemCat{
+            item.removeFromParent()
+            test = 2
+            xCurve = xCurve * 2
+            yCurve = yCurve * 2
+            
+        }else{
+            print("dead")
+            dead = true
+            //      p1.physicsBody?.dynamic = false
+        }
+        
+        
     }
         
     func didEndContact(contact: SKPhysicsContact) {

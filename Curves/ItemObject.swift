@@ -16,7 +16,7 @@ class ItemObject: SKSpriteNode{
     var itemAction = String()
     var itemPosition = CGPoint()
     var itemName = String()
-    let nodeSize = CGSizeMake(50, 50)
+    let nodeSize = CGSizeMake(20, 50)
     
     init (imageName: String, itemAction: String, itemPosition: CGPoint, itemName: String) {
         super.init (texture: nil, color: UIColor.clearColor(), size: nodeSize)
@@ -37,8 +37,9 @@ class ItemObject: SKSpriteNode{
     func createItem(){
         let item = SKSpriteNode(imageNamed: imageName)
         item.position = itemPosition
-        item.physicsBody = SKPhysicsBody(circleOfRadius: 30)
-        item.physicsBody!.categoryBitMask = PhysicsCat.item
+        item.setScale(0.9)
+        item.physicsBody = SKPhysicsBody(circleOfRadius: item.size.height / 2)
+        item.physicsBody!.categoryBitMask = PhysicsCat.itemCat
         item.physicsBody!.contactTestBitMask =  PhysicsCat.p1Cat
         item.physicsBody?.affectedByGravity = false
         item.physicsBody?.linearDamping = 0
