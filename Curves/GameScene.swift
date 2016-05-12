@@ -12,6 +12,7 @@ struct PhysicsCat{
     static let p1Cat : UInt32 = 0x1 << 1
     static let gameAreaCat : UInt32 = 0x1 << 2
     static let p1TailCat : UInt32 = 0x1 << 3
+    static let item : UInt32 = 0x1 << 4
     
 }
 
@@ -19,10 +20,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var lineContainer = SKNode()
     var lineCanvas:SKSpriteNode?
     var lineNode = SKShapeNode()
+    var linePhy = SKShapeNode()
+    
+    var firstTime = true
+    
     
     var texture = SKTexture()
     var gameArea = SKShapeNode()
     var dead = false
+    
+    var linePoints = [SKShapeNode()]
     
     var leftBtn = SKShapeNode()
     var rightBtn = SKShapeNode()
@@ -43,8 +50,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var myTimer1 : NSTimer = NSTimer()
     var myTimer2 : NSTimer = NSTimer()
+    var jumpTimer: NSTimer = NSTimer()
+    
     
     var btnWidth:CGFloat = 30.0
+    
     
     
     override func didMoveToView(view:SKView) {
@@ -55,7 +65,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         leftBtn = SKShapeNode(rectOfSize: CGSize(width: 2 * btnWidth, height: view.frame.height / 2))
         rightBtn = SKShapeNode(rectOfSize: CGSize(width: 2 * btnWidth, height: view.frame.height / 2))
-        
         
         
         gameArea = SKShapeNode(rect: CGRect(x: 2 * btnWidth + 10, y: 5, width: view.frame.width - (4*btnWidth+20), height: view.frame.height - 10))
@@ -79,24 +88,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rightBtn.fillColor = SKColor.blueColor()
         
         
-        gameArea.physicsBody = SKPhysicsBody(edgeLoopFromRect: CGRect(x: btnWidth + 10, y: 5, width: view.frame.width - (2*btnWidth+20), height: view.frame.height - 10))
+        gameArea.physicsBody = SKPhysicsBody(edgeLoopFromRect: CGRect(x: 2 * btnWidth + 10, y: 5, width: view.frame.width - (4*btnWidth+20), height: view.frame.height - 10))
         gameArea.physicsBody!.categoryBitMask = PhysicsCat.gameAreaCat
         gameArea.physicsBody?.contactTestBitMask = PhysicsCat.p1Cat
         gameArea.physicsBody?.affectedByGravity = false
         gameArea.physicsBody?.dynamic = false
+        
         
         addChild(p1)
         addChild(gameArea)
         addChild(leftBtn)
         addChild(rightBtn)
         
-        // 4. Add the container to the scene and the canvas to the container
+       
         addChild(lineContainer)
         lineCanvas = SKSpriteNode(color:SKColor.clearColor(),size:view.frame.size)
         lineCanvas!.anchorPoint = CGPointZero
         lineCanvas!.position = CGPointZero
         lineContainer.addChild(lineCanvas!)
         lastPoint = CGPointMake(view.frame.size.width/2.0, view.frame.size.height/2.0)
+        
+        
+        
+//        physicsBody = SKPhysicsBody(polygonFromPath: path)
+//        physicsBody?.categoryBitMask = PhysicsCat.p1TailCat
+//        physicsBody?.contactTestBitMask = PhysicsCat.p1Cat
         
         
         
@@ -180,18 +196,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             lineContainer.addChild(lineNode)
         }
         // Add a random line segment
+        
+        
         var x = lastPoint.x + xCurve
         var y = lastPoint.y + yCurve
         CGPathAddLineToPoint(path, nil, x, y)
+        let point = SKShapeNode(circleOfRadius: 2.0)
         lineNode.path = path
-        // Save the current point so we can connect the next line to the end of the last line
+        p1.position = CGPoint(x: x, y: y)
         lastPoint = CGPointMake(x, y)
         wayPoints.append(CGPoint(x:x,y:y))
-        p1.position = CGPoint(x: x, y: y)
         
     }
     
     override func update(currentTime: CFTimeInterval) {
+    //geht noch nicht so wie ich will :D
+//        var rand = arc4random() % 30
+//        if rand == 10{
+//            print("YO")
+//            let item1 = ItemObject(imageName: "Spaceship", itemAction: "test", itemPosition: CGPoint(x: 0, y:0), itemName: "test", color: SKColor.redColor() , size: CGSize(width: 50, height: 50))
+//            addChild(item1)
+//        }
+        
         if !dead{
             drawLine()
             addLinesToTexture()

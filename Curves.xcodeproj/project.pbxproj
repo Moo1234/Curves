@@ -23,6 +23,7 @@
 		58C176111CC526B700EDD256 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58C1760F1CC526B700EDD256 /* LaunchScreen.storyboard */; };
 		58C1761C1CC526B700EDD256 /* CurvesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C1761B1CC526B700EDD256 /* CurvesTests.swift */; };
 		58C176271CC526B700EDD256 /* CurvesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C176261CC526B700EDD256 /* CurvesUITests.swift */; };
+		58DE897A1CE4BC9200B051B8 /* ItemObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58DE89791CE4BC9200B051B8 /* ItemObject.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		58C176221CC526B700EDD256 /* CurvesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CurvesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		58C176261CC526B700EDD256 /* CurvesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurvesUITests.swift; sourceTree = "<group>"; };
 		58C176281CC526B700EDD256 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		58DE89791CE4BC9200B051B8 /* ItemObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemObject.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +124,7 @@
 				58C176041CC526B700EDD256 /* GameScene.sks */,
 				58C176061CC526B700EDD256 /* GameScene.swift */,
 				58C176081CC526B700EDD256 /* GameViewController.swift */,
+				58DE89791CE4BC9200B051B8 /* ItemObject.swift */,
 				3CF757751CD24795006FD5AB /* LineObject.swift */,
 				3C3A46341CE1119300D0FAF4 /* Main.storyboard */,
 				5831FE131CDCB032003C6297 /* FindPlayersViewController.swift */,
@@ -288,6 +291,7 @@
 				58630CF51CDB435C005380B0 /* LoginViewController.swift in Sources */,
 				3C3A46311CDFF17E00D0FAF4 /* Game.swift in Sources */,
 				58C176071CC526B700EDD256 /* GameScene.swift in Sources */,
+				58DE897A1CE4BC9200B051B8 /* ItemObject.swift in Sources */,
 				3CBDA2E51CDE0079009D916A /* NewGameViewController.swift in Sources */,
 				5831FE141CDCB032003C6297 /* FindPlayersViewController.swift in Sources */,
 				5831FE121CDC9566003C6297 /* AccountModel.swift in Sources */,
