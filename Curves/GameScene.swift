@@ -9,13 +9,13 @@ import SpriteKit
 
 
 struct PhysicsCat{
-    static let lineCat : UInt32 = 0x1 << 1
+    static let p1Cat : UInt32 = 0x1 << 1
     static let gameAreaCat : UInt32 = 0x1 << 2
     static let p1TailCat : UInt32 = 0x1 << 3
     
 }
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     var lineContainer = SKNode()
     var lineCanvas:SKSpriteNode?
     var lineNode = SKShapeNode()
@@ -36,7 +36,7 @@ class GameScene: SKScene {
     
     var wayPoints: [CGPoint] = []
     
-    let p1 = SKShapeNode(circleOfRadius: 2.0)
+    let p1 = SKShapeNode(circleOfRadius: 3.0)
     var xCurve: CGFloat = 1.0
     var yCurve: CGFloat = 1.0
     
@@ -51,7 +51,7 @@ class GameScene: SKScene {
         scaleMode = .ResizeFill
         backgroundColor = SKColor.blackColor()
         
-        //physicsWorld.contactDelegate = self
+        physicsWorld.contactDelegate = self
         
         leftBtn = SKShapeNode(rectOfSize: CGSize(width: 2 * btnWidth, height: view.frame.height / 2))
         rightBtn = SKShapeNode(rectOfSize: CGSize(width: 2 * btnWidth, height: view.frame.height / 2))
@@ -63,7 +63,13 @@ class GameScene: SKScene {
         gameArea.strokeColor = SKColor.whiteColor()
         
         
-        
+        p1.fillColor = SKColor.greenColor()
+        p1.strokeColor = SKColor.greenColor()
+        p1.physicsBody = SKPhysicsBody(circleOfRadius: 2)
+        p1.physicsBody!.categoryBitMask = PhysicsCat.p1Cat
+        p1.physicsBody!.contactTestBitMask = PhysicsCat.gameAreaCat | PhysicsCat.p1Cat | PhysicsCat.p1TailCat
+        p1.physicsBody?.affectedByGravity = false
+        p1.physicsBody?.linearDamping = 0
         
         leftBtn.position = CGPoint(x: btnWidth, y: view.frame.height / 4 )
         leftBtn.fillColor = SKColor.blueColor()
@@ -75,11 +81,11 @@ class GameScene: SKScene {
         
         gameArea.physicsBody = SKPhysicsBody(edgeLoopFromRect: CGRect(x: btnWidth + 10, y: 5, width: view.frame.width - (2*btnWidth+20), height: view.frame.height - 10))
         gameArea.physicsBody!.categoryBitMask = PhysicsCat.gameAreaCat
-        gameArea.physicsBody?.contactTestBitMask = PhysicsCat.lineCat
+        gameArea.physicsBody?.contactTestBitMask = PhysicsCat.p1Cat
         gameArea.physicsBody?.affectedByGravity = false
         gameArea.physicsBody?.dynamic = false
         
-        
+        addChild(p1)
         addChild(gameArea)
         addChild(leftBtn)
         addChild(rightBtn)
@@ -102,7 +108,6 @@ class GameScene: SKScene {
         
     }
     
-    // Returns a random value in the specified range
     
     func pointToRadian(targetPoint: CGPoint) -> Double{
         let deltaX = targetPoint.x;
@@ -120,9 +125,9 @@ class GameScene: SKScene {
         let offset = CGPoint(x: targetPoint.x - currentPosition.x, y: targetPoint.y - currentPosition.y)
         let length = Double(sqrtf(Float(offset.x * offset.x) + Float(offset.y * offset.y)))
         let direction = CGPoint(x:CGFloat(offset.x) / CGFloat(length), y: CGFloat(offset.y) / CGFloat(length))
-        p1.physicsBody?.velocity = CGVectorMake(direction.x * 80, direction.y * 80)
         xCurve = direction.x
         yCurve = direction.y
+        
         
     }
     
@@ -160,6 +165,7 @@ class GameScene: SKScene {
         let alt = pointToRadian(wayPoints[0])
         wayPoints[0] = radianToPoint(alt-5)
         changeDirection(wayPoints[0])
+        
     }
     
     
@@ -181,12 +187,16 @@ class GameScene: SKScene {
         // Save the current point so we can connect the next line to the end of the last line
         lastPoint = CGPointMake(x, y)
         wayPoints.append(CGPoint(x:x,y:y))
+        p1.position = CGPoint(x: x, y: y)
+        
     }
     
     override func update(currentTime: CFTimeInterval) {
+        if !dead{
+            drawLine()
+            addLinesToTexture()
+        }
         
-        drawLine()
-        addLinesToTexture()
         
         
     }
@@ -198,6 +208,19 @@ class GameScene: SKScene {
         lineNode.removeFromParent()
         path = CGPathCreateMutable()
     }
+    
+    func didBeginContact(contact: SKPhysicsContact) {
+        //print("dead " , contact.bodyA == p1.physicsBody , " " , contact.bodyB)
+        print("dead")
+        dead = true
+//      p1.physicsBody?.dynamic = false
+    }
+        
+    func didEndContact(contact: SKPhysicsContact) {
+        print("Yo")
+    }
+
+    
 }
 
 
