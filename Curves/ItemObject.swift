@@ -16,23 +16,16 @@ class ItemObject: SKSpriteNode{
     var itemAction = String()
     var itemPosition = CGPoint()
     var itemName = String()
+    let nodeSize = CGSizeMake(50, 50)
     
-    init (imageName: String, itemAction: String, itemPosition: CGPoint, itemName: String, color:SKColor, size: CGSize) {
-        super.init (texture: nil, color: color, size: size)
+    init (imageName: String, itemAction: String, itemPosition: CGPoint, itemName: String) {
+        super.init (texture: nil, color: UIColor.clearColor(), size: nodeSize)
      
         self.imageName = imageName
         self.itemName = itemName
         self.itemPosition = itemPosition
         self.itemAction = itemAction
-        
-        
-        
-        self.physicsBody = SKPhysicsBody(circleOfRadius: 5)
-        self.physicsBody!.categoryBitMask = PhysicsCat.item
-        self.physicsBody!.contactTestBitMask =  PhysicsCat.p1Cat
-        self.physicsBody?.affectedByGravity = false
-        self.physicsBody?.linearDamping = 0
-
+        createItem()
         
         
     }
@@ -41,5 +34,16 @@ class ItemObject: SKSpriteNode{
         fatalError("init(coder:) has not been implemented")
     }
 
-    
+    func createItem(){
+        let item = SKSpriteNode(imageNamed: imageName)
+        item.position = itemPosition
+        item.physicsBody = SKPhysicsBody(circleOfRadius: 30)
+        item.physicsBody!.categoryBitMask = PhysicsCat.item
+        item.physicsBody!.contactTestBitMask =  PhysicsCat.p1Cat
+        item.physicsBody?.affectedByGravity = false
+        item.physicsBody?.linearDamping = 0
+        addChild(item)
+        
+        
+    }
 }

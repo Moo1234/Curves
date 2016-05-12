@@ -54,7 +54,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     var btnWidth:CGFloat = 30.0
-    
+    var yo = true
     
     
     override func didMoveToView(view:SKView) {
@@ -210,13 +210,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func update(currentTime: CFTimeInterval) {
-    //geht noch nicht so wie ich will :D
-//        var rand = arc4random() % 30
-//        if rand == 10{
-//            print("YO")
-//            let item1 = ItemObject(imageName: "Spaceship", itemAction: "test", itemPosition: CGPoint(x: 0, y:0), itemName: "test", color: SKColor.redColor() , size: CGSize(width: 50, height: 50))
-//            addChild(item1)
-//        }
+        var rand = arc4random() % 30
+        if rand == 10 && yo == true{
+            print("YO")
+            let item1 = ItemObject(imageName: "Spaceship", itemAction: "test", itemPosition: CGPoint(x: 500,y:500), itemName: "test")
+//            item1.position = CGPoint(x: 100, y: 100)
+            item1.setScale(0.2)
+            addChild(item1)
+            yo = false
+        }
         
         if !dead{
             drawLine()
