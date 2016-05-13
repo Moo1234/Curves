@@ -250,6 +250,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             test = 2
             xCurve = xCurve * 2
             yCurve = yCurve * 2
+            var myTimer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.lowerSpeed), userInfo: nil, repeats: false)
             
         }else{
             print("dead")
@@ -262,6 +263,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     func didEndContact(contact: SKPhysicsContact) {
         print("Yo")
+    }
+    
+    func lowerSpeed(){
+        test = 1
+//        xCurve = xCurve / 2
+//        yCurve = yCurve / 2
     }
 
     
