@@ -23,7 +23,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var linePhy = SKShapeNode()
     
     
-    var timer = true
+    var gapTimer = true
+    var gapLength = 0.17
     var firstTime = true
     
     
@@ -200,10 +201,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             var holeRandom = arc4random() % 100
             
             if holeRandom == 5{
-                timer = false
-                var holeTimer = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(GameScene.makeHole), userInfo: nil, repeats: false)
+                gapTimer = false
+                let holeTimer = NSTimer.scheduledTimerWithTimeInterval(gapLength, target: self, selector: #selector(GameScene.makeHole), userInfo: nil, repeats: false)
                 
-            }else if timer{
+            }else if gapTimer{
                 lineContainer.addChild(lineNode)
             }
             
@@ -223,12 +224,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func makeHole(){
-        timer = true
+        gapTimer = true
     }
     
     var i = 0
     override func update(currentTime: CFTimeInterval) {
-        var rand = arc4random() % 200
+        var rand = arc4random() % 500
         if rand == 10{
 
             
@@ -282,6 +283,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
           
             self.item.removeFromParent()
             test = 2
+            gapLength = 0.09
             xCurve = xCurve * 2
             yCurve = yCurve * 2
             var myTimer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.lowerSpeed), userInfo: nil, repeats: false)
@@ -301,6 +303,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func lowerSpeed(){
         test = 1
+        gapLength = 0.17
 //        xCurve = xCurve / 2
 //        yCurve = yCurve / 2
     }
