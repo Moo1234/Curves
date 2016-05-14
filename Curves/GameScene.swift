@@ -22,6 +22,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var lineNode = SKShapeNode()
     var linePhy = SKShapeNode()
     
+    
+    var timer = true
     var firstTime = true
     
     
@@ -195,8 +197,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             lineNode.path = nil
             lineNode.lineWidth = 5.0
             lineNode.strokeColor = SKColor.greenColor()
+            var holeRandom = arc4random() % 100
             
-            lineContainer.addChild(lineNode)
+            if holeRandom == 5{
+                timer = false
+                var holeTimer = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(GameScene.makeHole), userInfo: nil, repeats: false)
+                
+            }else if timer{
+                lineContainer.addChild(lineNode)
+            }
+            
         }
         // Add a random line segment
         
@@ -212,6 +222,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    func makeHole(){
+        timer = true
+    }
+    
+    var i = 0
     override func update(currentTime: CFTimeInterval) {
         var rand = arc4random() % 200
         if rand == 10{
@@ -236,10 +251,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var imageName = String()
         var itemAction = String()
         var itemName = String()
-        var minX = (2*btnWidth+20)
-        var maxX = view!.frame.width
-        var minY: CGFloat = 20.0
-        var maxY = view!.frame.height
+        let minX = (2*btnWidth+20)
+        let maxX = view!.frame.width
+        let minY: CGFloat = 20.0
+        let maxY = view!.frame.height
+        
         
         
         position.x = minX +  CGFloat(arc4random()) % (maxX - (2*minX))
@@ -247,7 +263,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         item = ItemObject(imageName: "testItem", itemAction: "test", itemPosition: position, itemName: "test")
         addChild(item)
-        
         
     }
     
@@ -264,6 +279,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        
         
         if (contact.bodyA.categoryBitMask == PhysicsCat.itemCat) || contact.bodyB.categoryBitMask == PhysicsCat.itemCat{
+          
             self.item.removeFromParent()
             test = 2
             xCurve = xCurve * 2
