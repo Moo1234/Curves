@@ -54,7 +54,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     var btnWidth:CGFloat = 30.0
-    var yo = true
     var item = SKSpriteNode()
     
     var test = CGFloat(1)
@@ -214,14 +213,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func update(currentTime: CFTimeInterval) {
-        var rand = arc4random() % 30
-        if rand == 10 && yo == true{
-            print("YO")
-            item = ItemObject(imageName: "testItem", itemAction: "test", itemPosition: CGPoint(x: 500,y:500), itemName: "test")
-            item.setScale(0.5)
-//            item1.position = CGPoint(x: 100, y: 100)
-            addChild(item)
-            yo = false
+        var rand = arc4random() % 200
+        if rand == 10{
+
+            
+            makeRandomItems()
         }
         
         if !dead{
@@ -229,6 +225,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             addLinesToTexture()
         }
         
+        
+       
+        
+    }
+    
+    
+    func makeRandomItems(){
+        var position = CGPoint()
+        var imageName = String()
+        var itemAction = String()
+        var itemName = String()
+        var minX = (2*btnWidth+20)
+        var maxX = view!.frame.width
+        var minY: CGFloat = 20.0
+        var maxY = view!.frame.height
+        
+        
+        position.x = minX +  CGFloat(arc4random()) % (maxX - (2*minX))
+        position.y = minY + CGFloat(arc4random()) % (maxY - 2*minY)
+        
+        item = ItemObject(imageName: "testItem", itemAction: "test", itemPosition: position, itemName: "test")
+        addChild(item)
         
         
     }
@@ -246,7 +264,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        
         
         if (contact.bodyA.categoryBitMask == PhysicsCat.itemCat) || contact.bodyB.categoryBitMask == PhysicsCat.itemCat{
-            item.removeFromParent()
+            self.item.removeFromParent()
             test = 2
             xCurve = xCurve * 2
             yCurve = yCurve * 2

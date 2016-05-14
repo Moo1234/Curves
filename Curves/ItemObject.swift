@@ -37,7 +37,7 @@ class ItemObject: SKSpriteNode{
     func createItem(){
         let item = SKSpriteNode(imageNamed: imageName)
         item.position = itemPosition
-        item.setScale(0.9)
+        item.setScale(0.5)
         item.physicsBody = SKPhysicsBody(circleOfRadius: item.size.height / 2)
         item.physicsBody!.categoryBitMask = PhysicsCat.itemCat
         item.physicsBody!.contactTestBitMask =  PhysicsCat.p1Cat
