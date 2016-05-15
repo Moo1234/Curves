@@ -282,7 +282,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         item = SKSpriteNode(imageNamed: imageName)
         item.name = imageName
-        item.setScale(0.5)
+        item.setScale(0.6)
         item.physicsBody = SKPhysicsBody(circleOfRadius: item.size.height / 2)
         item.physicsBody!.categoryBitMask = PhysicsCat.itemCat
         item.physicsBody!.contactTestBitMask =  PhysicsCat.p1Cat
@@ -323,10 +323,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         gapLength = 0.09
                         xCurve = xCurve * 2
                         yCurve = yCurve * 2
-                        var mySpeedTimer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.lowerSpeed), userInfo: nil, repeats: false)
+                        _ = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.lowerSpeed), userInfo: nil, repeats: false)
                     }else if contact.bodyB.node?.name == "fatItem"{
                         lineThickness = lineThickness + 4.0
-                        var myFatTimer = NSTimer.scheduledTimerWithTimeInterval(8.0, target: self, selector: #selector(GameScene.lowerThickness), userInfo: nil, repeats: false)
+                        gapLength = gapLength + 0.05
+                        _ = NSTimer.scheduledTimerWithTimeInterval(8.0, target: self, selector: #selector(GameScene.lowerThickness), userInfo: nil, repeats: false)
                     }
                 }
                 
@@ -355,6 +356,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func lowerThickness(){
         lineThickness = lineThickness - 4.0
+        gapLength = gapLength-0.05
     }
 
     
