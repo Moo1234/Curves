@@ -50,7 +50,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let p1 = SKShapeNode(circleOfRadius: 3.0)
     var xCurve: CGFloat = 1.0
     var yCurve: CGFloat = 1.0
-    
+    var lineThickness: CGFloat = 5.0
     
     var myTimer1 : NSTimer = NSTimer()
     var myTimer2 : NSTimer = NSTimer()
@@ -199,7 +199,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // Create a new line that starts where the previous line ended
             CGPathMoveToPoint(path, nil, lastPoint.x, lastPoint.y)
             lineNode.path = nil
-            lineNode.lineWidth = 5.0
+            lineNode.lineWidth = lineThickness
             lineNode.strokeColor = SKColor.greenColor()
             var holeRandom = arc4random() % 100
             
@@ -252,7 +252,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
 
-    var itemYo = SKSpriteNode()
+    var item = SKSpriteNode()
     func makeRandomItems(){
         
         var pos = CGPoint()
@@ -272,27 +272,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //wenn es mehr Items gibt, zahl erhöhen
         var nameRandom = 1 + arc4random() % 2
-        print(nameRandom)
         if nameRandom == 1{
             imageName = "testItem"
         }else if nameRandom == 2{
-            imageName = "testItem"
+            imageName = "fatItem"
             //weitere Namen...wenn es mal items gibt
         }//else if...
         
         
-        itemYo = SKSpriteNode(imageNamed: imageName)
-        itemYo.name = imageName
-        itemYo.setScale(0.5)
-        itemYo.physicsBody = SKPhysicsBody(circleOfRadius: itemYo.size.height / 2)
-        itemYo.physicsBody!.categoryBitMask = PhysicsCat.itemCat
-        itemYo.physicsBody!.contactTestBitMask =  PhysicsCat.p1Cat
-        itemYo.physicsBody?.affectedByGravity = false
-        itemYo.physicsBody?.linearDamping = 0
-        itemYo.position = pos
-        if !(itemYo.position == CGPoint(x: 0.0, y: 0.0)){
-            addChild(itemYo)
-            itemList.append(itemYo)
+        item = SKSpriteNode(imageNamed: imageName)
+        item.name = imageName
+        item.setScale(0.5)
+        item.physicsBody = SKPhysicsBody(circleOfRadius: item.size.height / 2)
+        item.physicsBody!.categoryBitMask = PhysicsCat.itemCat
+        item.physicsBody!.contactTestBitMask =  PhysicsCat.p1Cat
+        item.physicsBody?.affectedByGravity = false
+        item.physicsBody?.linearDamping = 0
+        item.position = pos
+        if !(item.position == CGPoint(x: 0.0, y: 0.0)){
+            addChild(item)
+            itemList.append(item)
         }
         
         
@@ -320,12 +319,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     itemList[i].removeFromParent()
                     
                     if contact.bodyB.node!.name == "testItem"{
-                        
                         test = 2
                         gapLength = 0.09
                         xCurve = xCurve * 2
                         yCurve = yCurve * 2
-                        var myTimer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.lowerSpeed), userInfo: nil, repeats: false)
+                        var mySpeedTimer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.lowerSpeed), userInfo: nil, repeats: false)
+                    }else if contact.bodyB.node?.name == "fatItem"{
+                        lineThickness = lineThickness + 4.0
+                        var myFatTimer = NSTimer.scheduledTimerWithTimeInterval(8.0, target: self, selector: #selector(GameScene.lowerThickness), userInfo: nil, repeats: false)
                     }
                 }
                 
@@ -350,6 +351,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gapLength = 0.17
 //        xCurve = xCurve / 2
 //        yCurve = yCurve / 2
+    }
+    
+    func lowerThickness(){
+        lineThickness = lineThickness - 4.0
     }
 
     
