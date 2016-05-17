@@ -30,7 +30,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var lineNode = SKShapeNode()
     var lastPoint = CGPointZero
     var wayPoints: [CGPoint] = []
-    let p1 = SKShapeNode(circleOfRadius: 3.0)
+    var p1 = SKShapeNode(circleOfRadius: 3.0)
+    var p1Size: CGFloat = 3.0
     var xCurve: CGFloat = 1.0
     var yCurve: CGFloat = 1.0
     var path = CGPathCreateMutable()
@@ -91,9 +92,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameArea.strokeColor = SKColor.whiteColor()
         
         
-        p1.fillColor = SKColor.blueColor()
-        p1.strokeColor = SKColor.blueColor()
-        p1.physicsBody = SKPhysicsBody(circleOfRadius: 2)
+        p1.fillColor = SKColor.cyanColor()
+        p1.strokeColor = SKColor.cyanColor()
+        p1.physicsBody = SKPhysicsBody(circleOfRadius: p1Size)
         p1.physicsBody!.categoryBitMask = PhysicsCat.p1Cat
         p1.physicsBody!.contactTestBitMask = PhysicsCat.gameAreaCat | PhysicsCat.p1Cat | PhysicsCat.p1TailCat
         p1.physicsBody?.affectedByGravity = false
@@ -225,7 +226,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             CGPathMoveToPoint(path, nil, lastPoint.x, lastPoint.y)
             lineNode.path = nil
             lineNode.lineWidth = lineThickness
-            lineNode.strokeColor = SKColor.blueColor()
+            lineNode.strokeColor = SKColor.cyanColor()
             var holeRandom = arc4random() % 100
             
             if holeRandom == 5{
@@ -345,6 +346,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         lineThickness = lineThickness + 4.0
                         gapLength = gapLength + 0.05
                         _ = NSTimer.scheduledTimerWithTimeInterval(8.0, target: self, selector: #selector(GameScene.lowerThickness), userInfo: nil, repeats: false)
+                        p1Size = p1Size + 2
+                        p1.lineWidth = p1Size
+                        
+                        
                     default:
                         break
                     }
@@ -381,6 +386,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func lowerThickness(){
         lineThickness = lineThickness - 4.0
         gapLength = gapLength-0.05
+        p1Size = p1Size - 2
+        //p1.physicsBody = SKPhysicsBody(circleOfRadius: p1Size)
+        p1.lineWidth = p1Size
+        
     }
 
     //***********************************************************************************
