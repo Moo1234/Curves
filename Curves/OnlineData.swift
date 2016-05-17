@@ -16,6 +16,7 @@ class OnlineData: NSObject, NSURLSessionDelegate {
     var findPlayersVC = FindPlayersViewController()
     var newAccountVC = NewAccountViewController()
     var loginVC = LoginViewController()
+    var newGameVC = NewGameViewController()
     
     func register(email: String, name: String, password: String){
         var url: NSURL = NSURL(string: urlString + "register.php")!
@@ -107,6 +108,34 @@ class OnlineData: NSObject, NSURLSessionDelegate {
         request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding);
         NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
             self.findPlayersVC.tableView.reloadData()
+        })
+    }
+    func closeGame(viewController: NewGameViewController, gameId: Int){
+        newGameVC = viewController
+        let urlCreateGame: String = urlString + "closeGame.php"
+        let url: NSURL = NSURL(string: urlCreateGame)!
+        let request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
+        let bodyData = "id=" + String(gameId)
+        request.HTTPMethod = "POST"
+        
+        request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding);
+        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+            self.newGameVC.tableView.reloadData()
+        })
+    }
+    
+    func leaveGame(viewController: NewGameViewController, gameId: Int, players: String){
+        newGameVC = viewController
+        let urlCreateGame: String = urlString + "leaveGame.php"
+        let url: NSURL = NSURL(string: urlCreateGame)!
+        let request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
+        var bodyData = "id=" + String(gameId)
+        bodyData += "&players=" + players
+        request.HTTPMethod = "POST"
+        
+        request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding)
+        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+            self.newGameVC.tableView.reloadData()
         })
     }
     

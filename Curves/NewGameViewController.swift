@@ -126,16 +126,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     }
     @IBAction func leaveGame(sender: AnyObject) {
         if game.players.characters.split(",").count == 1 {
-            let urlCreateGame: String = "http://134.60.166.126:80/closeGame.php"
-            let url: NSURL = NSURL(string: urlCreateGame)!
-            let request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
-            let bodyData = "id=" + String(gameId)
-            request.HTTPMethod = "POST"
-            
-            request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding);
-            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
-                self.tableView.reloadData()
-            })
+            OnlineData().closeGame(self, gameId: gameId)
         }else{
             let playernames = game.players.characters.split(",").map(String.init)
             var players = ""
@@ -147,17 +138,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
                     players += playernames[i]
                 }
             }
-            let urlCreateGame: String = "http://134.60.166.126:80/leaveGame.php"
-            let url: NSURL = NSURL(string: urlCreateGame)!
-            let request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
-            var bodyData = "id=" + String(gameId)
-            bodyData += "&players=" + players
-            request.HTTPMethod = "POST"
-            
-            request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding)
-            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
-                self.tableView.reloadData()
-            })
+            OnlineData().leaveGame(self, gameId: gameId, players: players)
         }
         self.dismissViewControllerAnimated(true, completion: nil)
     }
