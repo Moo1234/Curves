@@ -9,7 +9,7 @@
 import Foundation
 
 class OnlineData: NSObject, NSURLSessionDelegate {
-//    let urlString: String = "http://192.168.178.21:80/"
+    //    let urlString: String = "http://192.168.178.21:80/"
     let urlString: String = "http://134.60.166.126:80/"
     
     var data : NSMutableData = NSMutableData()
@@ -78,7 +78,7 @@ class OnlineData: NSObject, NSURLSessionDelegate {
         
         task.resume()
     }
-
+    
     func loadGames(viewController: FindPlayersViewController){
         findPlayersVC = viewController
         findPlayersVC.gameList = [Game]()
@@ -165,7 +165,7 @@ class OnlineData: NSObject, NSURLSessionDelegate {
         if error != nil {
             print("Failed to download data")
         }else {
-//            print("Data downloaded")
+            //            print("Data downloaded")
             self.parseJSON()
         }
         
@@ -207,15 +207,15 @@ class OnlineData: NSObject, NSURLSessionDelegate {
                         let password = jsonElement["password"] as? String
                     {
                         let users = AccountModel()
-                    
-//                        print(email,name,password)
+                        
+                        //                        print(email,name,password)
                         users.email = email
                         users.name = name
                         users.password = password
                         newAccountVC.userList.append(users)
                         //loginVC.downloadedList.append(users)
                     }
-                }                
+                }
             }
         }
         

@@ -43,7 +43,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         let task = session.dataTaskWithURL(url)
         
         task.resume()
-       // NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(NewGameViewController.reload), userInfo: nil, repeats: true)
+        // NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(NewGameViewController.reload), userInfo: nil, repeats: true)
     }
     
     
@@ -59,9 +59,9 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as? UITableViewCell
         //        print("Table: " , gameList[indexPath.row].name as String)
-//        if(self.game.name != "" || self.game.name != self.gameNameLabel.text){
-//            self.gameNameLabel.text = self.game.name
-//        }
+        //        if(self.game.name != "" || self.game.name != self.gameNameLabel.text){
+        //            self.gameNameLabel.text = self.game.name
+        //        }
         let player = game.players.characters.split(",").map(String.init)[indexPath.row]
         cell!.textLabel!.text = player
         return cell!
@@ -124,6 +124,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         }
         
     }
+    
     @IBAction func leaveGame(sender: AnyObject) {
         if game.players.characters.split(",").count == 1 {
             OnlineData().closeGame(self, gameId: gameId)
@@ -152,7 +153,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
             }
         })
     }
-
+    
     @IBAction func reloadData(sender: AnyObject) {
         reload()
     }
