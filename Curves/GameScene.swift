@@ -46,6 +46,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var btnWidth:CGFloat = 30.0
     var lineContainer = SKNode()
     var lineCanvas:SKSpriteNode?
+    var leftBtnImage = SKSpriteNode()
+    var rightBtnImage = SKSpriteNode()
 
    
     
@@ -63,6 +65,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gapLength = 0.17
     var test = CGFloat(1)
     var itemList = [SKSpriteNode]()
+    
     
     //***********************************************************************************
     //***********************************************************************************
@@ -82,14 +85,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rightBtn = SKShapeNode(rectOfSize: CGSize(width: 2 * btnWidth, height: view.frame.height / 2))
         
         
+        
         gameArea = SKShapeNode(rect: CGRect(x: 2 * btnWidth + 10, y: 5, width: view.frame.width - (4*btnWidth+20), height: view.frame.height - 10))
         gameArea.lineWidth = 5
         gameArea.strokeColor = SKColor.whiteColor()
         
         
-        p1.fillColor = SKColor.greenColor()
-        p1.name = "penis"
-        p1.strokeColor = SKColor.greenColor()
+        p1.fillColor = SKColor.blueColor()
+        p1.strokeColor = SKColor.blueColor()
         p1.physicsBody = SKPhysicsBody(circleOfRadius: 2)
         p1.physicsBody!.categoryBitMask = PhysicsCat.p1Cat
         p1.physicsBody!.contactTestBitMask = PhysicsCat.gameAreaCat | PhysicsCat.p1Cat | PhysicsCat.p1TailCat
@@ -97,11 +100,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         p1.physicsBody?.linearDamping = 0
         
         leftBtn.position = CGPoint(x: btnWidth, y: view.frame.height / 4 )
-        leftBtn.fillColor = SKColor.blueColor()
-        
+        leftBtn.fillColor = p1.fillColor
         
         rightBtn.position = CGPoint(x: view.frame.width - btnWidth, y: view.frame.height / 4)
-        rightBtn.fillColor = SKColor.blueColor()
+        rightBtn.fillColor = p1.fillColor
         
         
         gameArea.physicsBody = SKPhysicsBody(edgeLoopFromRect: CGRect(x: 2 * btnWidth + 10, y: 5, width: view.frame.width - (4*btnWidth+20), height: view.frame.height - 10))
@@ -111,10 +113,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameArea.physicsBody?.dynamic = false
         
         
+        
+        leftBtnImage = SKSpriteNode(imageNamed: "leftBtn")
+        leftBtnImage.position = CGPoint(x: btnWidth, y: view.frame.height / 4 )
+        leftBtnImage.setScale(1.2)
+        rightBtnImage = SKSpriteNode(imageNamed: "rightBtn")
+        rightBtnImage.position = CGPoint(x: view.frame.width - btnWidth, y: view.frame.height / 4)
+        rightBtnImage.setScale(1.2)
+        
+        
         addChild(p1)
         addChild(gameArea)
         addChild(leftBtn)
+        addChild(leftBtnImage)
         addChild(rightBtn)
+        addChild(rightBtnImage)
         
        
         addChild(lineContainer)
@@ -212,7 +225,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             CGPathMoveToPoint(path, nil, lastPoint.x, lastPoint.y)
             lineNode.path = nil
             lineNode.lineWidth = lineThickness
-            lineNode.strokeColor = SKColor.greenColor()
+            lineNode.strokeColor = SKColor.blueColor()
             var holeRandom = arc4random() % 100
             
             if holeRandom == 5{
