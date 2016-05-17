@@ -17,7 +17,8 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
     
     //von fremden geräten
 //    let urlPath: String = "http://192.168.178.75:80/service.php"
-    let urlPath: String = "http://192.168.178.21:80/service.php"
+    //let urlPath: String = "http://192.168.178.21:80/service.php"
+    let urlPath: String = "http://134.60.166.126:80/service.php"
     
     @IBOutlet weak var nameTxtField: UITextField!
     @IBOutlet weak var pwTxtField: UITextField!
@@ -59,7 +60,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
         pwTxt = pwTxtField.text!
         
         if  firstTry == true {
-            
+          //  OnlineData().loadUserListLogin(self)
             let url: NSURL = NSURL(string: urlPath)!
             var session: NSURLSession!
             let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()

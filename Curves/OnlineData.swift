@@ -9,11 +9,13 @@
 import Foundation
 
 class OnlineData: NSObject, NSURLSessionDelegate {
-    let urlString: String = "http://192.168.178.21:80/"
+//    let urlString: String = "http://192.168.178.21:80/"
+    let urlString: String = "http://134.60.166.126:80/"
     
     var data : NSMutableData = NSMutableData()
     var findPlayersVC = FindPlayersViewController()
     var newAccountVC = NewAccountViewController()
+    var loginVC = LoginViewController()
     
     func register(email: String, name: String, password: String){
         var url: NSURL = NSURL(string: urlString + "register.php")!
@@ -47,6 +49,22 @@ class OnlineData: NSObject, NSURLSessionDelegate {
     func loadUserList(viewController: NewAccountViewController){
         newAccountVC = viewController
         newAccountVC.userList = [AccountModel]()
+        
+        let url: NSURL = NSURL(string: urlString + "service.php")!
+        var session: NSURLSession!
+        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        
+        
+        session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+        
+        let task = session.dataTaskWithURL(url)
+        
+        task.resume()
+    }
+    
+    func loadUserListLogin(viewController: LoginViewController){
+        loginVC = viewController
+        loginVC.downloadedList = [AccountModel]()
         
         let url: NSURL = NSURL(string: urlString + "service.php")!
         var session: NSURLSession!
@@ -118,7 +136,7 @@ class OnlineData: NSObject, NSURLSessionDelegate {
         if error != nil {
             print("Failed to download data")
         }else {
-            print("Data downloaded")
+//            print("Data downloaded")
             self.parseJSON()
         }
         
@@ -166,6 +184,7 @@ class OnlineData: NSObject, NSURLSessionDelegate {
                         users.name = name
                         users.password = password
                         newAccountVC.userList.append(users)
+                        //loginVC.downloadedList.append(users)
                     }
                 }                
             }

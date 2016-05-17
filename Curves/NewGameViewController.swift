@@ -28,7 +28,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     func loadGames(){
         data = NSMutableData()
         
-        let urlPath: String = "http://192.168.178.21:80/loadGames.php"
+        let urlPath: String = "http://134.60.166.126:80/loadGames.php"
         UIApplication.sharedApplication().statusBarHidden = false
         self.view.backgroundColor = UIColor.blackColor()
         
@@ -43,7 +43,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         let task = session.dataTaskWithURL(url)
         
         task.resume()
-//        NSTimer.scheduledTimerWithTimeInterval(3, target: self, selector: #selector(NewGameViewController.reload), userInfo: nil, repeats: true)
+       // NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(NewGameViewController.reload), userInfo: nil, repeats: true)
     }
     
     
@@ -126,7 +126,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     }
     @IBAction func leaveGame(sender: AnyObject) {
         if game.players.characters.split(",").count == 1 {
-            let urlCreateGame: String = "http://192.168.178.21:80/closeGame.php"
+            let urlCreateGame: String = "http://134.60.166.126:80/closeGame.php"
             let url: NSURL = NSURL(string: urlCreateGame)!
             let request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
             let bodyData = "id=" + String(gameId)
@@ -147,7 +147,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
                     players += playernames[i]
                 }
             }
-            let urlCreateGame: String = "http://192.168.178.21:80/leaveGame.php"
+            let urlCreateGame: String = "http://134.60.166.126:80/leaveGame.php"
             let url: NSURL = NSURL(string: urlCreateGame)!
             let request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
             var bodyData = "id=" + String(gameId)

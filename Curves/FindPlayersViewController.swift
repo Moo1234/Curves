@@ -25,6 +25,8 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
         self.view.backgroundColor = UIColor.blackColor()
         
         OnlineData().loadGames(self)
+        
+       // NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(FindPlayersViewController.reloadData(_:)), userInfo: nil, repeats: true)
         //loadGames()
         
         // Do any additional setup after loading the view.
