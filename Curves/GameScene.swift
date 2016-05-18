@@ -69,6 +69,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gapLength = 0.17
     var test = CGFloat(1)
     var itemList = [SKSpriteNode]()
+    var switchDirBool = false
     
     var firstTime = true
     
@@ -190,14 +191,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let location = touch.locationInNode(self)
             if leftBtn.containsPoint(location){
                 
-                changeDirectionL()
-                myTimer1 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionL), userInfo: nil, repeats: true)
+                if !switchDirBool{
+                    changeDirectionL()
+                    myTimer1 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionL), userInfo: nil, repeats: true)
+                }else{
+                    changeDirectionR()
+                    
+                    myTimer2 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionR), userInfo: nil, repeats: true)
+                }
+                
                 
             }
             else if rightBtn.containsPoint(location){
-                changeDirectionR()
                 
-                myTimer2 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionR), userInfo: nil, repeats: true)
+                if !switchDirBool{
+                    changeDirectionR()
+                    
+                    myTimer2 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionR), userInfo: nil, repeats: true)
+                }else{
+                    changeDirectionL()
+                    myTimer1 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionL), userInfo: nil, repeats: true)
+                }
+                
             }
         }
         
@@ -294,7 +309,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         //wenn es mehr Items gibt, zahl erhöhen
-        var nameRandom = 1 + arc4random() % 3
+        var nameRandom = 1 + arc4random() % 4
         
         switch nameRandom{
         
@@ -304,6 +319,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             imageName = "fatItem"
         case 3:
             imageName = "bombItem"
+        case 4:
+            imageName = "switchDir"
             
         //wenn mehr Items
         //case 4:...
@@ -349,6 +366,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         increaseThickness()
                     case "bombItem":
                         createBombs()
+                    case "switchDir":
+                        switchDir()
                     default:
                         break
                     }
@@ -455,6 +474,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         }
     
+    }
+    
+    func switchDir(){
+        switchDirBool = true
+        _ = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.normalDir), userInfo: nil, repeats: false)
+        
+    }
+    
+    func normalDir(){
+        switchDirBool = false
     }
 
     //***********************************************************************************
