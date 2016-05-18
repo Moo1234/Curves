@@ -310,7 +310,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //wenn es mehr Items gibt, zahl erhöhen
         var nameRandom = 1 + arc4random() % 4
-        
+//        var nameRandom = 3
         switch nameRandom{
         
         case 1:
@@ -463,7 +463,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bomb = SKSpriteNode(imageNamed: "bomb")
             bomb.setScale(0.5)
             
-            bomb.physicsBody = SKPhysicsBody(circleOfRadius: bomb.size.height / 2)
+            bomb.physicsBody = SKPhysicsBody(circleOfRadius: bomb.size.width / 1.9)
             bomb.physicsBody!.categoryBitMask = PhysicsCat.bombCat
             bomb.physicsBody!.contactTestBitMask =  PhysicsCat.p1Cat
             bomb.physicsBody?.affectedByGravity = false
