@@ -278,12 +278,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gapTimer = true
     }
     
-    
-    
-    
+ 
     override func update(currentTime: CFTimeInterval) {
 
-        var rand = arc4random() % 500
+        var rand = arc4random() % 100
         if rand == 10{
 
             makeRandomItems()
@@ -310,7 +308,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //wenn es mehr Items gibt, zahl erhöhen
         var nameRandom = 1 + arc4random() % 4
-//        var nameRandom = 3
+        //        var nameRandom = 3
         switch nameRandom{
         
         case 1:
@@ -376,12 +374,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 
             }
-        }else if (contact.bodyA.categoryBitMask == PhysicsCat.itemCat) || contact.bodyB.categoryBitMask == PhysicsCat.itemCat{
+        }else if (contact.bodyA.categoryBitMask == PhysicsCat.bombCat) || contact.bodyB.categoryBitMask == PhysicsCat.bombCat{
         
             for var i = 0; i < bombList.count; i = i+1{
                 if contact.bodyB.node!.position == bombList[i].position{
                     bombList[i].removeFromParent()
-                    print("dead")
+                    print("deadiii")
                     dead = true
                 }
             }
