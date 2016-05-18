@@ -14,6 +14,7 @@ struct PhysicsCat{
     static let gameAreaCat : UInt32 = 0x1 << 2
     static let p1TailCat : UInt32 = 0x1 << 3
     static let itemCat : UInt32 = 0x1 << 4
+    static let bombCat : UInt32 = 0x1 << 5
     
 }
 
@@ -30,12 +31,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var lineNode = SKShapeNode()
     var lastPoint = CGPointZero
     var wayPoints: [CGPoint] = []
-    var p1 = SKShapeNode(circleOfRadius: 3.0)
-    var p1Size: CGFloat = 3.0
+    var p1 = SKShapeNode(circleOfRadius: 2.0)
+    var p1Size: CGFloat = 2.0
     var xCurve: CGFloat = 1.0
     var yCurve: CGFloat = 1.0
     var path = CGPathCreateMutable()
-    
+    var p1NewSize = SKShapeNode()
     
     
     //Layout
@@ -60,12 +61,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     // Vars for Items
+    var bomb = SKSpriteNode()
+    var bombList = [SKSpriteNode]()
     var item = SKSpriteNode()
     var lineThickness: CGFloat = 5.0
     var gapTimer = true
     var gapLength = 0.17
     var test = CGFloat(1)
     var itemList = [SKSpriteNode]()
+    
+    var firstTime = true
     
     
     //***********************************************************************************
@@ -81,6 +86,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         backgroundColor = SKColor.blackColor()
         
         physicsWorld.contactDelegate = self
+        
+        
         
         leftBtn = SKShapeNode(rectOfSize: CGSize(width: 2 * btnWidth, height: view.frame.height / 2))
         rightBtn = SKShapeNode(rectOfSize: CGSize(width: 2 * btnWidth, height: view.frame.height / 2))
@@ -221,8 +228,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //Erstellt + zeichnet linie, macht Lücken
     func drawLine() {
+//        if firstTime{
+//            lastPoint = makeRandomPos()
+//        }
+//        firstTime = false
+        
         if (CGPathIsEmpty(path)) {
-            // Create a new line that starts where the previous line ended
             CGPathMoveToPoint(path, nil, lastPoint.x, lastPoint.y)
             lineNode.path = nil
             lineNode.lineWidth = lineThickness
@@ -273,15 +284,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //Erstellt zufällige Items, mit zufälligen Positionen
     func makeRandomItems(){
         
-        var pos = CGPoint()
+        var pos = makeRandomPos()
         var imageName = String()
-        let minX = (2*btnWidth+20)
-        let maxX = view!.frame.width
-        let minY: CGFloat = 20.0
-        let maxY = view!.frame.height
         
-        pos.x = minX +  CGFloat(arc4random()) % (maxX - (2*minX))
-        pos.y = minY + CGFloat(arc4random()) % (maxY - 2*minY)
         
         //item = ItemObject(imageName: "testItem", itemAction: "test",itemPosition: pos, itemName: "test")
 //        item!.position = pos
@@ -289,17 +294,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         //wenn es mehr Items gibt, zahl erhöhen
-        var nameRandom = 1 + arc4random() % 2
+        var nameRandom = 1 + arc4random() % 3
         
         switch nameRandom{
         
         case 1:
-            imageName = "testItem"
+            imageName = "speedItem"
         case 2:
             imageName = "fatItem"
+        case 3:
+            imageName = "bombItem"
             
         //wenn mehr Items
-        //case 3:...
+        //case 4:...
         default:
             break
         }
@@ -336,20 +343,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     
                     switch contact.bodyB.node!.name!{
                     
-                    case "testItem":
-                        test = 2
-                        gapLength = 0.09
-                        xCurve = xCurve * 2
-                        yCurve = yCurve * 2
-                        _ = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.lowerSpeed), userInfo: nil, repeats: false)
+                    case "speedItem":
+                        increaseSpeed()
                     case "fatItem":
-                        lineThickness = lineThickness + 4.0
-                        gapLength = gapLength + 0.05
-                        _ = NSTimer.scheduledTimerWithTimeInterval(8.0, target: self, selector: #selector(GameScene.lowerThickness), userInfo: nil, repeats: false)
-                        p1Size = p1Size + 2
-                        p1.lineWidth = p1Size
-                        
-                        
+                        increaseThickness()
+                    case "bombItem":
+                        createBombs()
                     default:
                         break
                     }
@@ -358,6 +357,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 
             }
+        }else if (contact.bodyA.categoryBitMask == PhysicsCat.itemCat) || contact.bodyB.categoryBitMask == PhysicsCat.itemCat{
+        
+            for var i = 0; i < bombList.count; i = i+1{
+                if contact.bodyB.node!.position == bombList[i].position{
+                    bombList[i].removeFromParent()
+                    print("dead")
+                    dead = true
+                }
+            }
+        
+        
         }else{
             print("dead")
             dead = true
@@ -370,11 +380,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("Yo")
     }
     
+    
+    func makeRandomPos() -> CGPoint{
+        var pos = CGPoint()
+        let minX = (2*btnWidth+20)
+        let maxX = view!.frame.width
+        let minY: CGFloat = 20.0
+        let maxY = view!.frame.height
+        
+        pos.x = minX +  CGFloat(arc4random()) % (maxX - (2*minX))
+        pos.y = minY + CGFloat(arc4random()) % (maxY - 2*minY)
+        
+        
+        return pos
+    }
+    
     //***********************************************************************************
     //***********************************************************************************
     //                                  Item-Functions Start
     //***********************************************************************************
     //***********************************************************************************
+    
+    
+    func increaseSpeed(){
+        test = 2
+        gapLength = 0.09
+        xCurve = xCurve * 2
+        yCurve = yCurve * 2
+        _ = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.lowerSpeed), userInfo: nil, repeats: false)
+    }
     
     func lowerSpeed(){
         test = 1
@@ -383,13 +417,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //        yCurve = yCurve / 2
     }
     
+    
+    func increaseThickness(){
+        lineThickness = lineThickness + 4.0
+        gapLength = gapLength + 0.05
+        _ = NSTimer.scheduledTimerWithTimeInterval(8.0, target: self, selector: #selector(GameScene.lowerThickness), userInfo: nil, repeats: false)
+        p1Size = p1Size + 3.5
+        p1.lineWidth = p1Size
+//        p1NewSize = SKShapeNode(circleOfRadius: p1Size)
+        
+        
+    }
+    
     func lowerThickness(){
         lineThickness = lineThickness - 4.0
         gapLength = gapLength-0.05
-        p1Size = p1Size - 2
-        //p1.physicsBody = SKPhysicsBody(circleOfRadius: p1Size)
+        p1Size = p1Size - 3.5
         p1.lineWidth = p1Size
+    }
+    
+    func createBombs(){
         
+        for var i = 0; i<5; i=i+1{
+            var pos = makeRandomPos()
+            
+            bomb = SKSpriteNode(imageNamed: "bomb")
+            bomb.setScale(0.5)
+            
+            bomb.physicsBody = SKPhysicsBody(circleOfRadius: bomb.size.height / 2)
+            bomb.physicsBody!.categoryBitMask = PhysicsCat.bombCat
+            bomb.physicsBody!.contactTestBitMask =  PhysicsCat.p1Cat
+            bomb.physicsBody?.affectedByGravity = false
+            bomb.physicsBody?.linearDamping = 0
+            bomb.position = pos
+            bombList.append(bomb)
+            addChild(bomb)
+            
+        }
+    
     }
 
     //***********************************************************************************
