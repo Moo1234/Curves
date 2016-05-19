@@ -8,6 +8,7 @@
 import SpriteKit
 
 
+
 //Pysics Categories
 struct PhysicsCat{
     static let p1Cat : UInt32 = 0x1 << 1
@@ -18,7 +19,7 @@ struct PhysicsCat{
     
 }
 
-class GameScene: SKScene, SKPhysicsContactDelegate {
+class GameScene: SKScene, SKPhysicsContactDelegate{
     
     //***********************************************************************************
     //***********************************************************************************
@@ -73,6 +74,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var firstTime = true
     
+    var positionList = [CGPoint]()
     
     //***********************************************************************************
     //***********************************************************************************
@@ -148,6 +150,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    
+    
+    
+    func pixelFromTexture(texture: SKTexture, position: CGPoint) -> SKColor {
+        let view = SKView(frame: CGRectMake(0, 0, 1, 1))
+        let scene = SKScene(size: CGSize(width: 1, height: 1))
+        let sprite  = SKSpriteNode(texture: texture)
+        sprite.anchorPoint = CGPointZero
+        sprite.position = CGPoint(x: -floor(position.x), y: -floor(position.y))
+        scene.anchorPoint = CGPointZero
+        scene.addChild(sprite)
+        view.presentScene(scene)
+        var pixel: [UInt8] = [0, 0, 0, 0]
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.PremultipliedLast.rawValue)
+        let context = CGBitmapContextCreate(&pixel, 1, 1, 8, 4,CGColorSpaceCreateDeviceRGB(), bitmapInfo.rawValue)
+        UIGraphicsPushContext(context!);
+        view.drawViewHierarchyInRect(view.bounds, afterScreenUpdates: true)
+        UIGraphicsPopContext()
+        return SKColor(red: CGFloat(pixel[0]) / 255.0, green: CGFloat(pixel[1]) / 255.0, blue: CGFloat(pixel[2]) / 255.0, alpha: CGFloat(pixel[3]) / 255.0)
+    }
     
     
     //***********************************************************************************
@@ -267,12 +289,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var x = lastPoint.x + xCurve
         var y = lastPoint.y + yCurve
         CGPathAddLineToPoint(path, nil, x, y)
-        let point = SKShapeNode(circleOfRadius: 2.0)
         lineNode.path = path
         p1.position = CGPoint(x: x, y: y)
+        
+//        if gapTimer == false{
+//            if(positionList.contains(CGPoint(x: floor(p1.position.x), y: floor(p1.position.y)))){
+//                print("ugjh")
+//                dead = true
+//            }
+//        }
+//        
+//        
+//        if gapTimer == true{
+//            positionList.append(CGPoint(x: floor(lastPoint.x), y: floor(lastPoint.y)))
+//        }
+//        
+        
+        
+        
+//        if pixelFromTexture(texture, position: p1.position) == p1.strokeColor{
+//            print("hallo")
+//            dead = true
+//        }
+//        
         lastPoint = CGPointMake(x, y)
         wayPoints.append(CGPoint(x:x,y:y))
     }
+    
     
     func makeHole(){
         gapTimer = true
@@ -281,7 +324,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
  
     override func update(currentTime: CFTimeInterval) {
 
-        var rand = arc4random() % 100
+        var rand = arc4random() % 500
         if rand == 10{
 
             makeRandomItems()
@@ -292,6 +335,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             addLinesToTexture()
         }
   
+        
+        
     }
 
     //Erstellt zufällige Items, mit zufälligen Positionen
