@@ -17,8 +17,8 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
     
     //von fremden geräten
 //    let urlPath: String = "http://192.168.178.75:80/service.php"
-   // let urlPath: String = OnlineData().urlString + "service.php"
-    let urlPath: String = "http://134.60.173.143:80/service.php"
+    let urlPath: String = "http://192.168.178.21:80/service.php"
+    //let urlPath: String = "http://134.60.173.143:80/service.php"
     
     @IBOutlet weak var nameTxtField: UITextField!
     @IBOutlet weak var pwTxtField: UITextField!
@@ -121,7 +121,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
             if let id = Int((jsonElement["uID"] as? String)!),
                 let email = jsonElement["email"] as? String,
                 let name = jsonElement["name"] as? String,
-                let password = jsonElement["password"] as? String
+                let password = Int((jsonElement["password"] as? String)!)
                 
             {
                 let users = AccountModel()
@@ -147,8 +147,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
     }
     
     func checkData(){
-        
-        if downloadedList.contains({ $0.name == nameTxtField.text && $0.password == pwTxt}) || downloadedList.contains({$0.email == nameTxt && $0.password == pwTxt}) {
+        if downloadedList.contains({ $0.name == nameTxtField.text && $0.password == pwTxt.hash}) || downloadedList.contains({$0.email == nameTxt && $0.password == pwTxt.hash}) {
             dispatch_async(dispatch_get_main_queue(), {
                 self.wrongInputLbl.hidden = true
                 self.performSegueWithIdentifier("loginSuccessfull", sender: self)

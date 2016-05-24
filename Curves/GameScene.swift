@@ -312,6 +312,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
 //            dead = true
 //        }
 //        
+        
         lastPoint = CGPointMake(x, y)
         wayPoints.append(CGPoint(x:x,y:y))
     }

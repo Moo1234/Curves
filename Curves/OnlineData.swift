@@ -9,8 +9,8 @@
 import Foundation
 
 class OnlineData: NSObject, NSURLSessionDelegate {
-    //    let urlString: String = "http://192.168.178.21:80/"
-    let urlString: String = "http://134.60.173.143:80/"
+    let urlString: String = "http://192.168.178.21:80/"
+    //let urlString: String = "http://134.60.173.143:80/"
     
     var data : NSMutableData = NSMutableData()
     var findPlayersVC = FindPlayersViewController()
@@ -18,13 +18,14 @@ class OnlineData: NSObject, NSURLSessionDelegate {
     var loginVC = LoginViewController()
     var newGameVC = NewGameViewController()
     
-    func register(id: Int, email: String, name: String, password: String){
+    func register(viewController: NewAccountViewController, id: Int, email: String, name: String, password: Int){
+        newAccountVC = viewController
         var url: NSURL = NSURL(string: urlString + "register.php")!
         var request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
         var bodyData = "uID=" + String(id)
         bodyData += "&email=" + email
         bodyData += "&name=" + name
-        bodyData += "&password=" + password
+        bodyData += "&password=" + String(password)
         request.HTTPMethod = "POST"
         
         request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding);
@@ -51,6 +52,7 @@ class OnlineData: NSObject, NSURLSessionDelegate {
     func loadUserList(viewController: NewAccountViewController){
         newAccountVC = viewController
         newAccountVC.userList = [AccountModel]()
+        data = NSMutableData()
         
         let url: NSURL = NSURL(string: urlString + "service.php")!
         var session: NSURLSession!
@@ -67,6 +69,7 @@ class OnlineData: NSObject, NSURLSessionDelegate {
     func loadUserListLogin(viewController: LoginViewController){
         loginVC = viewController
         loginVC.downloadedList = [AccountModel]()
+        data = NSMutableData()
         
         let url: NSURL = NSURL(string: urlString + "service.php")!
         var session: NSURLSession!
@@ -186,11 +189,11 @@ class OnlineData: NSObject, NSURLSessionDelegate {
             }
             
             var jsonElement: NSDictionary = NSDictionary()
+            var downloadedList = [AccountModel]()
             for(var i = 0; i < jsonResult.count; i++)
             {
                 
                 jsonElement = jsonResult[i] as! NSDictionary
-                print(jsonElement)
                 if String(jsonElement.allKeys) == "[gID, name, players]" {
                     if let id = Int((jsonElement["gID"] as? String)!),
                         let name = jsonElement["name"] as? String,
@@ -203,24 +206,25 @@ class OnlineData: NSObject, NSURLSessionDelegate {
                             self.findPlayersVC.tableView.reloadData()
                         })
                     }
-                }else if String(jsonElement.allKeys) == "[uID, email, name, password]" {
-                    if let id = jsonElement["uID"] as? Int,
+                }else if String(jsonElement.allKeys) == "[email, password, uID, name]" {
+                    if let id = Int((jsonElement["uID"] as? String)!),
                         let email = jsonElement["email"] as? String,
                         let name = jsonElement["name"] as? String,
-                        let password = jsonElement["password"] as? String
+                        let password = Int((jsonElement["password"] as? String)!)
                     {
                         let users = AccountModel()
                         
-                        //                        print(email,name,password)
+//                                                print(email,name,password)
                         users.id = id
                         users.email = email
                         users.name = name
                         users.password = password
-                        newAccountVC.userList.append(users)
+                        downloadedList.append(users)
                         //loginVC.downloadedList.append(users)
                     }
                 }
             }
+            newAccountVC.userList = downloadedList
         }
         
     }

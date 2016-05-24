@@ -27,6 +27,7 @@ class NewAccountViewController: UIViewController, UITextFieldDelegate {
         self.nameTxtField.delegate = self
         self.pwTxtField.delegate = self
         
+        
         // Do any additional setup after loading the view.
     }
     
@@ -52,8 +53,7 @@ class NewAccountViewController: UIViewController, UITextFieldDelegate {
             alert.addAction(UIAlertAction(title: "Zurück", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
         }else{
-            
-            OnlineData().register(5, email: emailTxtField.text!, name: nameTxtField.text!, password: pwTxtField.text!)
+            OnlineData().register(self, id: findFreeId(), email: emailTxtField.text!, name: nameTxtField.text!, password: pwTxtField.text!.hash)
             let alert = UIAlertController(title: "Registrierung erfolgreich", message: "Sie können sich nun einloggen.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: {(alert: UIAlertAction!) in
                 self.dismissViewControllerAnimated(true, completion: nil)

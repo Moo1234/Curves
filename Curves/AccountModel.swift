@@ -14,16 +14,16 @@ class AccountModel: NSObject{
     var id: Int!
     var email: String!
     var name: String!
-    var password: String!
+    var password: Int!
     
     override init() {
         self.id = 0
         self.email = ""
         self.name = ""
-        self.password = ""
+        self.password = 0
     }
     
-    init(id: Int, email: String, name: String, password: String) {
+    init(id: Int, email: String, name: String, password: Int) {
         self.id = id
         self.email = email
         self.name = name
