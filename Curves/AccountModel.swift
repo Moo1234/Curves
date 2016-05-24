@@ -11,16 +11,20 @@ import Foundation
 
 class AccountModel: NSObject{
     
+    var id: Int!
     var email: String!
     var name: String!
     var password: String!
     
     override init() {
-        
+        self.id = 0
+        self.email = ""
+        self.name = ""
+        self.password = ""
     }
     
-    init(email: String, name: String, password: String) {
-        
+    init(id: Int, email: String, name: String, password: String) {
+        self.id = id
         self.email = email
         self.name = name
         self.password = password
@@ -29,7 +33,7 @@ class AccountModel: NSObject{
     }
     
     override var description: String{
-        return "email: \(email), name: \(name), password: \(password)"
+        return "id: \(id), email: \(email), name: \(name), password: \(password)"
     }
     
     

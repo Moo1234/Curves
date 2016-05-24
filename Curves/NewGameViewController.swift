@@ -28,7 +28,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     func loadGames(){
         data = NSMutableData()
         
-        let urlPath: String = "http://134.60.166.126:80/loadGames.php"
+        let urlPath: String = OnlineData().urlString + "loadGames.php"
         UIApplication.sharedApplication().statusBarHidden = false
         self.view.backgroundColor = UIColor.blackColor()
         
@@ -103,7 +103,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
                 jsonElement = jsonResult[i] as! NSDictionary
                 
                 //the following insures none of the JsonElement values are nil through optional binding
-                if let id = Int((jsonElement["id"] as? String)!),
+                if let id = Int((jsonElement["gID"] as? String)!),
                     let name = jsonElement["name"] as? String,
                     let players = jsonElement["players"] as? String
                     

@@ -10,7 +10,7 @@ import Foundation
 
 class OnlineData: NSObject, NSURLSessionDelegate {
     //    let urlString: String = "http://192.168.178.21:80/"
-    let urlString: String = "http://134.60.166.126:80/"
+    let urlString: String = "http://134.60.173.143:80/"
     
     var data : NSMutableData = NSMutableData()
     var findPlayersVC = FindPlayersViewController()
@@ -18,10 +18,11 @@ class OnlineData: NSObject, NSURLSessionDelegate {
     var loginVC = LoginViewController()
     var newGameVC = NewGameViewController()
     
-    func register(email: String, name: String, password: String){
+    func register(id: Int, email: String, name: String, password: String){
         var url: NSURL = NSURL(string: urlString + "register.php")!
         var request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
-        var bodyData = "email=" + email
+        var bodyData = "uID=" + String(id)
+        bodyData += "&email=" + email
         bodyData += "&name=" + name
         bodyData += "&password=" + password
         request.HTTPMethod = "POST"
@@ -189,8 +190,9 @@ class OnlineData: NSObject, NSURLSessionDelegate {
             {
                 
                 jsonElement = jsonResult[i] as! NSDictionary
-                if String(jsonElement.allKeys) == "[id, name, players]" {
-                    if let id = Int((jsonElement["id"] as? String)!),
+                print(jsonElement)
+                if String(jsonElement.allKeys) == "[gID, name, players]" {
+                    if let id = Int((jsonElement["gID"] as? String)!),
                         let name = jsonElement["name"] as? String,
                         let players = jsonElement["players"] as? String
                         
@@ -201,14 +203,16 @@ class OnlineData: NSObject, NSURLSessionDelegate {
                             self.findPlayersVC.tableView.reloadData()
                         })
                     }
-                }else if String(jsonElement.allKeys) == "[email, name, password]" {
-                    if let email = jsonElement["email"] as? String,
+                }else if String(jsonElement.allKeys) == "[uID, email, name, password]" {
+                    if let id = jsonElement["uID"] as? Int,
+                        let email = jsonElement["email"] as? String,
                         let name = jsonElement["name"] as? String,
                         let password = jsonElement["password"] as? String
                     {
                         let users = AccountModel()
                         
                         //                        print(email,name,password)
+                        users.id = id
                         users.email = email
                         users.name = name
                         users.password = password

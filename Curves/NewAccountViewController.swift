@@ -53,7 +53,7 @@ class NewAccountViewController: UIViewController, UITextFieldDelegate {
             self.presentViewController(alert, animated: true, completion: nil)
         }else{
             
-            OnlineData().register(emailTxtField.text!, name: nameTxtField.text!, password: pwTxtField.text!)
+            OnlineData().register(5, email: emailTxtField.text!, name: nameTxtField.text!, password: pwTxtField.text!)
             let alert = UIAlertController(title: "Registrierung erfolgreich", message: "Sie können sich nun einloggen.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: {(alert: UIAlertAction!) in
                 self.dismissViewControllerAnimated(true, completion: nil)
@@ -64,6 +64,19 @@ class NewAccountViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func goBack(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func findFreeId() -> Int{
+        var id = 0
+        for (var i=0; i < userList.count+1; i+=1) {
+            if userList.contains({ $0.id == i }){
+                continue
+            }else{
+                id = i
+                break
+            }
+        }
+        return id
     }
     
     /*
