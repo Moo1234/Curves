@@ -12,6 +12,9 @@
 		3C3A46311CDFF17E00D0FAF4 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3A46301CDFF17E00D0FAF4 /* Game.swift */; };
 		3C3A46361CE1119300D0FAF4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3C3A46341CE1119300D0FAF4 /* Main.storyboard */; };
 		3CBDA2E51CDE0079009D916A /* NewGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBDA2E41CDE0079009D916A /* NewGameViewController.swift */; };
+		3CCCF5B51CF78134006DE9B3 /* MeasurementHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCCF5B41CF78134006DE9B3 /* MeasurementHelper.swift */; };
+		3CCCF5B71CF78184006DE9B3 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCCF5B61CF78184006DE9B3 /* AppState.swift */; };
+		3CCCF5B91CF781A1006DE9B3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCCF5B81CF781A1006DE9B3 /* Constants.swift */; };
 		3CF757761CD24795006FD5AB /* LineObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CF757751CD24795006FD5AB /* LineObject.swift */; };
 		5814777C1CF7048F00F46A6A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5814777B1CF7048F00F46A6A /* GoogleService-Info.plist */; };
 		5831FE121CDC9566003C6297 /* AccountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5831FE111CDC9566003C6297 /* AccountModel.swift */; };
@@ -51,6 +54,9 @@
 		3C3A46301CDFF17E00D0FAF4 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		3C3A46351CE1119300D0FAF4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3CBDA2E41CDE0079009D916A /* NewGameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewGameViewController.swift; sourceTree = "<group>"; };
+		3CCCF5B41CF78134006DE9B3 /* MeasurementHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasurementHelper.swift; sourceTree = "<group>"; };
+		3CCCF5B61CF78184006DE9B3 /* AppState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		3CCCF5B81CF781A1006DE9B3 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3CF757751CD24795006FD5AB /* LineObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineObject.swift; sourceTree = "<group>"; };
 		41448BC824D66341B3F97F08 /* Pods-Curves.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Curves.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Curves/Pods-Curves.debug.xcconfig"; sourceTree = "<group>"; };
 		5814777B1CF7048F00F46A6A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -163,6 +169,9 @@
 				58C1760D1CC526B700EDD256 /* Assets.xcassets */,
 				58C1760F1CC526B700EDD256 /* LaunchScreen.storyboard */,
 				58C176121CC526B700EDD256 /* Info.plist */,
+				3CCCF5B41CF78134006DE9B3 /* MeasurementHelper.swift */,
+				3CCCF5B61CF78184006DE9B3 /* AppState.swift */,
+				3CCCF5B81CF781A1006DE9B3 /* Constants.swift */,
 			);
 			path = Curves;
 			sourceTree = "<group>";
@@ -375,9 +384,12 @@
 				58C176071CC526B700EDD256 /* GameScene.swift in Sources */,
 				58DE897A1CE4BC9200B051B8 /* ItemObject.swift in Sources */,
 				3CBDA2E51CDE0079009D916A /* NewGameViewController.swift in Sources */,
+				3CCCF5B91CF781A1006DE9B3 /* Constants.swift in Sources */,
 				5831FE141CDCB032003C6297 /* FindPlayersViewController.swift in Sources */,
+				3CCCF5B51CF78134006DE9B3 /* MeasurementHelper.swift in Sources */,
 				3C02F9051CE660B6009CBE80 /* OnlineData.swift in Sources */,
 				5831FE121CDC9566003C6297 /* AccountModel.swift in Sources */,
+				3CCCF5B71CF78184006DE9B3 /* AppState.swift in Sources */,
 				58C176091CC526B700EDD256 /* GameViewController.swift in Sources */,
 				3CF757761CD24795006FD5AB /* LineObject.swift in Sources */,
 				58C176031CC526B700EDD256 /* AppDelegate.swift in Sources */,

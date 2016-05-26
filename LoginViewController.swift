@@ -60,13 +60,13 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
         let nameTxt = nameTxtField.text
         let pwTxt = pwTxtField.text
         
-//        FIRAuth.auth()?.signInWithEmail(nameTxt!, password: pwTxt!) { (user, error) in
-//            if let error = error {
-//                print(error.localizedDescription)
-//                return
-//            }
-//            self.signedIn(user!)
-//        }
+        FIRAuth.auth()?.signInWithEmail(nameTxt!, password: pwTxt!) { (user, error) in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+            self.signedIn(user!)
+        }
         
 //        if  firstTry == true {
 //          //  OnlineData().loadUserListLogin(self)
@@ -89,100 +89,100 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
         
     }
     
-//    func signedIn(user: FIRUser?) {
-//        MeasurementHelper.sendLoginEvent()
+    func signedIn(user: FIRUser?) {
+        MeasurementHelper.sendLoginEvent()
+        
+        AppState.sharedInstance.displayName = user?.displayName ?? user?.email
+        AppState.sharedInstance.photoUrl = user?.photoURL
+        AppState.sharedInstance.signedIn = true
+        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
+        self.performSegueWithIdentifier("loginSuccessfull", sender: self)
+    }
+    
+    
+    
+//    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
+//        self.data.appendData(data);
 //        
-//        AppState.sharedInstance.displayName = user?.displayName ?? user?.email
-//        AppState.sharedInstance.photoUrl = user?.photoURL
-//        AppState.sharedInstance.signedIn = true
-//        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
-//        performSegueWithIdentifier(Constants.Segues.SignInToFp, sender: nil)
+//    }
+//    
+//    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
+//        if error != nil {
+//            print("Failed to download data")
+//            self.wrongInputLbl.hidden = false
+//            self.wrongInputLbl.text = "Keine Verbindung zum Server"
+//        }else {
+//            print("Data downloaded")
+//            self.parseJSON()
+//        }
+//        
+//    }
+//    
+//    func parseJSON() {
+//        
+//        var jsonResult: NSMutableArray = NSMutableArray()
+//        
+//        
+//        do{
+//            jsonResult = try NSJSONSerialization.JSONObjectWithData(self.data, options:NSJSONReadingOptions.AllowFragments) as! NSMutableArray
+//            
+//        } catch let error as NSError {
+//            print(error)
+//            
+//        }
+//        
+//        var jsonElement: NSDictionary = NSDictionary()
+//        var userList = [AccountModel]()
+//        for(var i = 0; i < jsonResult.count; i++)
+//        {
+//            
+//            jsonElement = jsonResult[i] as! NSDictionary
+//            
+//            //the following insures none of the JsonElement values are nil through optional binding
+//            if let id = Int((jsonElement["uID"] as? String)!),
+//                let email = jsonElement["email"] as? String,
+//                let name = jsonElement["name"] as? String,
+//                let password = Int((jsonElement["password"] as? String)!)
+//                
+//            {
+//                let users = AccountModel()
+//                
+//               // print(email,name,password)
+//                users.id = id
+//                users.email = email
+//                users.name = name
+//                users.password = password
+//                userList.append(users)
+//                
+//            }
+//            
+//            
+//            
+//            
+//            
+//        }
+//        downloadedList = userList
+//        print(userList)
+//        checkData()
+//        
 //    }
     
-    
-    
-    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
-        self.data.appendData(data);
-        
-    }
-    
-    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
-        if error != nil {
-            print("Failed to download data")
-            self.wrongInputLbl.hidden = false
-            self.wrongInputLbl.text = "Keine Verbindung zum Server"
-        }else {
-            print("Data downloaded")
-            self.parseJSON()
-        }
-        
-    }
-    
-    func parseJSON() {
-        
-        var jsonResult: NSMutableArray = NSMutableArray()
-        
-        
-        do{
-            jsonResult = try NSJSONSerialization.JSONObjectWithData(self.data, options:NSJSONReadingOptions.AllowFragments) as! NSMutableArray
-            
-        } catch let error as NSError {
-            print(error)
-            
-        }
-        
-        var jsonElement: NSDictionary = NSDictionary()
-        var userList = [AccountModel]()
-        for(var i = 0; i < jsonResult.count; i++)
-        {
-            
-            jsonElement = jsonResult[i] as! NSDictionary
-            
-            //the following insures none of the JsonElement values are nil through optional binding
-            if let id = Int((jsonElement["uID"] as? String)!),
-                let email = jsonElement["email"] as? String,
-                let name = jsonElement["name"] as? String,
-                let password = Int((jsonElement["password"] as? String)!)
-                
-            {
-                let users = AccountModel()
-                
-               // print(email,name,password)
-                users.id = id
-                users.email = email
-                users.name = name
-                users.password = password
-                userList.append(users)
-                
-            }
-            
-            
-            
-            
-            
-        }
-        downloadedList = userList
-        print(userList)
-        checkData()
-        
-    }
-    
-    func checkData(){
-        if downloadedList.contains({ $0.name == nameTxtField.text && $0.password == pwTxt.hash}) || downloadedList.contains({$0.email == nameTxt && $0.password == pwTxt.hash}) {
-            dispatch_async(dispatch_get_main_queue(), {
-                self.wrongInputLbl.hidden = true
-                self.performSegueWithIdentifier("loginSuccessfull", sender: self)
-            })
-        }else{
-            print("NO")
-            firstTry = false
-            dispatch_async(dispatch_get_main_queue(), {
-                self.wrongInputLbl.hidden = false
-                self.wrongInputLbl.text = "Falsche Eingabe, bitte erneut versuchen!"
-            })
-            
-        }
-    }
+//    func checkData(){
+//        if downloadedList.contains({ $0.name == nameTxtField.text && $0.password == pwTxt.hash}) || downloadedList.contains({$0.email == nameTxt && $0.password == pwTxt.hash}) {
+//            dispatch_async(dispatch_get_main_queue(), {
+//                self.wrongInputLbl.hidden = true
+//                self.performSegueWithIdentifier("loginSuccessfull", sender: self)
+//            })
+//        }else{
+//            print("NO")
+//            firstTry = false
+//            dispatch_async(dispatch_get_main_queue(), {
+//                self.wrongInputLbl.hidden = false
+//                self.wrongInputLbl.text = "Falsche Eingabe, bitte erneut versuchen!"
+//            })
+//            
+//        }
+//    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

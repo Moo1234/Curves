@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class FindPlayersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate {
     
@@ -105,7 +106,16 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
     }
 
     @IBAction func logout(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        let firebaseAuth = FIRAuth.auth()
+        do {
+            try firebaseAuth?.signOut()
+            AppState.sharedInstance.signedIn = false
+//            performSegueWithIdentifier(Constants.Segues.FpToSignIn, sender: nil)
+            self.dismissViewControllerAnimated(true, completion: nil)
+        } catch let signOutError as NSError {
+            print ("Error signing out: \(signOutError)")
+        }
+        
     }
     /*
      // MARK: - Navigation
