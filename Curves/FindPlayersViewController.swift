@@ -15,8 +15,8 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
     
     var data : NSMutableData = NSMutableData()
     var gameList = [Game]()
+    var gameID = 0
     var ownUserName = ""
-    var newGameObject = Game()
     
     
     override func viewDidLoad() {
@@ -25,7 +25,22 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
         UIApplication.sharedApplication().statusBarHidden = false
         self.view.backgroundColor = UIColor.blackColor()
         
-        OnlineData().loadGames(self)
+//        OnlineData().loadGames(self)
+        
+        FIRDatabase.database().reference().child("Games").observeEventType(.Value) { (snap: FIRDataSnapshot) in
+            // Get Game values
+            self.gameList = [Game]()
+            let postArr = snap.value as! NSArray
+            for var i = 0; i < postArr.count; i=i+1 {
+                if !(postArr[i] is NSNull){
+                    let game = Game()
+                    game.id = postArr[i].valueForKey("id") as! Int
+                    game.name = postArr[i].valueForKey("name") as! String
+                    self.gameList.append(game)
+                }
+            }
+            self.tableView.reloadData()
+        }
         
        // NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(FindPlayersViewController.reloadData(_:)), userInfo: nil, repeats: true)
         //loadGames()
@@ -53,9 +68,10 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let cellName = tableView.cellForRowAtIndexPath(indexPath)?.textLabel!.text
-        newGameObject = gameList[gameList.indexOf({ $0.name == cellName})!]
-        OnlineData().joinGame(self, newGameObject: newGameObject, ownUserName: ownUserName)
+//        let cellName = tableView.cellForRowAtIndexPath(indexPath)?.textLabel!.text
+//        newGameObject = gameList[gameList.indexOf({ $0.name == cellName})!]
+//        OnlineData().joinGame(self, newGameObject: newGameObject, ownUserName: ownUserName)
+        gameID = gameList[indexPath.row].id
         self.performSegueWithIdentifier("newGame", sender:self)
     }
     
@@ -76,9 +92,9 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
             inputTextField = textField
         }
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: {(alert: UIAlertAction!) in
-            self.newGameObject = Game(id: id, name: (inputTextField?.text)!, players: self.ownUserName)
-            OnlineData().createGame(self, newGameObject: self.newGameObject)
-            self.performSegueWithIdentifier("newGame", sender:self)
+//            self.newGameObject = Game(id: id, name: (inputTextField?.text)!, players: self.ownUserName)
+//            OnlineData().createGame(self, newGameObject: self.newGameObject)
+//            self.performSegueWithIdentifier("newGame", sender:self)
         }))
         alert.addAction(UIAlertAction(title: "Zurück", style: UIAlertActionStyle.Cancel, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
@@ -97,7 +113,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
         if segue.identifier == "newGame" {
             let newGame = segue.destinationViewController as! NewGameViewController
             newGame.ownUserName = ownUserName
-            newGame.gameId = newGameObject.id
+            newGame.gameId = gameID
             
         }
     }
