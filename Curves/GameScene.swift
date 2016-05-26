@@ -28,8 +28,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     //***********************************************************************************
     //***********************************************************************************
     
-    let refP2X = FIRDatabase.database().reference().child("p2/PositionX")
-    let refP2Y = FIRDatabase.database().reference().child("p2/PositionY")
+    let refP2 = FIRDatabase.database().reference().child("p2")
+    
     
     let ref = FIRDatabase.database().reference()
     
@@ -167,21 +167,59 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         lastPoint = CGPointMake(view.frame.size.width/2.0, view.frame.size.height/2.0)
         
         
-        refP2X.observeEventType(.Value) { (snap: FIRDataSnapshot) in
+        refP2.observeEventType(.Value) { (snap: FIRDataSnapshot) in
             // Get user value
-            self.p2.position.x = snap.value as! CGFloat
+            self.p2.position.x = snap.value?.objectForKey("PositionX") as! CGFloat
+            self.p2.position.y = snap.value?.objectForKey("PositionY") as! CGFloat
             
-        }
-        refP2Y.observeEventType(.Value) { (snap: FIRDataSnapshot) in
-            // Get user value
-            self.p2.position.y = snap.value as! CGFloat
+            self.drawLine2(self.p2.position)
+            self.addLinesToTexture2()
             
         }
         
+        
     }
     
+    var lineNode2 = SKShapeNode()
+    var lastPoint2 = CGPointZero
+    var path2 = CGPathCreateMutable()
+    var wayPoints2: [CGPoint] = []
     
+    func drawLine2(pPosition: CGPoint){
+       
+        
+        
+        if (CGPathIsEmpty(path2)) {
+            CGPathMoveToPoint(path2, nil, pPosition.x, pPosition.y)
+            lineNode2.path = nil
+            lineNode2.lineWidth = lineThickness
+            lineNode2.strokeColor = SKColor.redColor()
+            lineContainer.addChild(lineNode2)
+            
+        }
+        
+        var x = pPosition.x + xCurve
+        var y = pPosition.y + yCurve
+        
+        CGPathAddLineToPoint(path2, nil, x, y)
+        lineNode2.path = path2
+        p2.position = CGPoint(x: x, y: y)
+        
+//        pPosition = CGPointMake(x, y)
+        wayPoints2.append(CGPoint(x:x,y:y))
+
+        
+        
+    }
     
+    func addLinesToTexture2 () {
+        // Convert the contents of the line container to an SKTexture
+        texture = self.view!.textureFromNode(lineContainer)!
+        lineCanvas!.texture = texture
+        lineNode2.removeFromParent()
+        path2 = CGPathCreateMutable()
+        
+    }
     
     func pixelFromTexture(texture: SKTexture, position: CGPoint) -> SKColor {
         let view = SKView(frame: CGRectMake(0, 0, 1, 1))
@@ -295,11 +333,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     //Erstellt + zeichnet linie, macht Lücken
     func drawLine() {
-//        if firstTime{
-//            lastPoint = makeRandomPos()
-//        }
-//        firstTime = false
-        
         if (CGPathIsEmpty(path)) {
             CGPathMoveToPoint(path, nil, lastPoint.x, lastPoint.y)
             lineNode.path = nil
@@ -322,10 +355,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         lineNode.path = path
         p1.position = CGPoint(x: x, y: y)
         pushLine()
-        
-        
 
-        
         lastPoint = CGPointMake(x, y)
         wayPoints.append(CGPoint(x:x,y:y))
     }
@@ -413,6 +443,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         lineCanvas!.texture = texture
         lineNode.removeFromParent()
         path = CGPathCreateMutable()
+        
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
