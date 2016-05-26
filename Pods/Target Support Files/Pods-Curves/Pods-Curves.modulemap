@@ -1,0 +1,6 @@
+framework module Pods_Curves {
+  umbrella header "Pods-Curves-umbrella.h"
+
+  export *
+  module * { export * }
+}
