@@ -6,6 +6,7 @@
 ////  Copyright (c) 2016 Moritz Martin. All rights reserved.
 ////
 import SpriteKit
+import Firebase
 
 
 
@@ -27,17 +28,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     //***********************************************************************************
     //***********************************************************************************
     
+    let refP2X = FIRDatabase.database().reference().child("p2/PositionX")
+    let refP2Y = FIRDatabase.database().reference().child("p2/PositionY")
+    
+    let ref = FIRDatabase.database().reference()
+    
+    
+    
     
     //Curve + Properties
     var lineNode = SKShapeNode()
     var lastPoint = CGPointZero
     var wayPoints: [CGPoint] = []
     var p1 = SKShapeNode(circleOfRadius: 2.0)
+    var p2 = SKShapeNode(circleOfRadius: 2.0)
     var p1Size: CGFloat = 2.0
     var xCurve: CGFloat = 1.0
     var yCurve: CGFloat = 1.0
     var path = CGPathCreateMutable()
     var p1NewSize = SKShapeNode()
+    var playerID: Int = Int()
     
     
     //Layout
@@ -89,6 +99,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         backgroundColor = SKColor.blackColor()
         
         physicsWorld.contactDelegate = self
+        playerID = 1
+        
         
         
         
@@ -104,11 +116,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
         p1.fillColor = SKColor.cyanColor()
         p1.strokeColor = SKColor.cyanColor()
+        p2.fillColor = SKColor.redColor()
+        p2.strokeColor = SKColor.redColor()
         p1.physicsBody = SKPhysicsBody(circleOfRadius: p1Size)
         p1.physicsBody!.categoryBitMask = PhysicsCat.p1Cat
         p1.physicsBody!.contactTestBitMask = PhysicsCat.gameAreaCat | PhysicsCat.p1Cat | PhysicsCat.p1TailCat
         p1.physicsBody?.affectedByGravity = false
         p1.physicsBody?.linearDamping = 0
+        
+        self.ref.child("p"+String(playerID)).setValue(["PositionX": p1.position.x,"PositionY": p1.position.y,"lineWidth":p1Size])
+        
         
         leftBtn.position = CGPoint(x: btnWidth, y: view.frame.height / 4 )
         leftBtn.fillColor = p1.fillColor
@@ -139,6 +156,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         addChild(leftBtnImage)
         addChild(rightBtn)
         addChild(rightBtnImage)
+        addChild(p2)
         
        
         addChild(lineContainer)
@@ -147,6 +165,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         lineCanvas!.position = CGPointZero
         lineContainer.addChild(lineCanvas!)
         lastPoint = CGPointMake(view.frame.size.width/2.0, view.frame.size.height/2.0)
+        
+        
+        refP2X.observeEventType(.Value) { (snap: FIRDataSnapshot) in
+            // Get user value
+            self.p2.position.x = snap.value as! CGFloat
+            
+        }
+        refP2Y.observeEventType(.Value) { (snap: FIRDataSnapshot) in
+            // Get user value
+            self.p2.position.y = snap.value as! CGFloat
+            
+        }
         
     }
     
@@ -291,32 +321,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         CGPathAddLineToPoint(path, nil, x, y)
         lineNode.path = path
         p1.position = CGPoint(x: x, y: y)
-        
-//        if gapTimer == false{
-//            if(positionList.contains(CGPoint(x: floor(p1.position.x), y: floor(p1.position.y)))){
-//                print("ugjh")
-//                dead = true
-//            }
-//        }
-//        
-//        
-//        if gapTimer == true{
-//            positionList.append(CGPoint(x: floor(lastPoint.x), y: floor(lastPoint.y)))
-//        }
-//        
+        pushLine()
         
         
-        
-//        if pixelFromTexture(texture, position: p1.position) == p1.strokeColor{
-//            print("hallo")
-//            dead = true
-//        }
-//        
+
         
         lastPoint = CGPointMake(x, y)
         wayPoints.append(CGPoint(x:x,y:y))
     }
     
+    
+    func pushLine(){
+    
+        self.ref.child("p"+String(playerID)+"/PositionX").setValue(p1.position.x)
+        self.ref.child("p"+String(playerID)+"/PositionY").setValue(p1.position.y)
+    
+    }
     
     func makeHole(){
         gapTimer = true
