@@ -65,6 +65,9 @@ class NewAccountViewController: UIViewController, UITextFieldDelegate {
         FIRAuth.auth()?.createUserWithEmail(emailTxtField.text!, password: pwTxtField.text!) { (user, error) in
             if let error = error {
                 print(error.localizedDescription)
+                let alert = UIAlertController(title: "fehlerhafte Daten", message: "Bitte überprüfen Sie ihre Eingaben", preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "Zurück", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
                 return
             }
             self.dismissViewControllerAnimated(true, completion: nil)
