@@ -3,4 +3,5 @@ use_frameworks!
 
 target 'Curves' do 
     pod 'Firebase/Database'
+    pod 'Firebase/Auth'
 end

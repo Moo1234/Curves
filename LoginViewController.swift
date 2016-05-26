@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldDelegate {
     
@@ -56,29 +57,49 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
     
     
     @IBAction func loginButton(sender: AnyObject) {
-        nameTxt = nameTxtField.text!
-        pwTxt = pwTxtField.text!
+        let nameTxt = nameTxtField.text
+        let pwTxt = pwTxtField.text
         
-        if  firstTry == true {
-          //  OnlineData().loadUserListLogin(self)
-            let url: NSURL = NSURL(string: urlPath)!
-            var session: NSURLSession!
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-            
-            
-            
-            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
-            
-            let task = session.dataTaskWithURL(url)
-            
-            task.resume()
-        }else{
-            checkData()
-        }
+//        FIRAuth.auth()?.signInWithEmail(nameTxt!, password: pwTxt!) { (user, error) in
+//            if let error = error {
+//                print(error.localizedDescription)
+//                return
+//            }
+//            self.signedIn(user!)
+//        }
+        
+//        if  firstTry == true {
+//          //  OnlineData().loadUserListLogin(self)
+//            let url: NSURL = NSURL(string: urlPath)!
+//            var session: NSURLSession!
+//            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+//            
+//            
+//            
+//            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+//            
+//            let task = session.dataTaskWithURL(url)
+//            
+//            task.resume()
+//        }else{
+//            checkData()
+//        }
         
 //        checkData()
         
     }
+    
+//    func signedIn(user: FIRUser?) {
+//        MeasurementHelper.sendLoginEvent()
+//        
+//        AppState.sharedInstance.displayName = user?.displayName ?? user?.email
+//        AppState.sharedInstance.photoUrl = user?.photoURL
+//        AppState.sharedInstance.signedIn = true
+//        NSNotificationCenter.defaultCenter().postNotificationName(Constants.NotificationKeys.SignedIn, object: nil, userInfo: nil)
+//        performSegueWithIdentifier(Constants.Segues.SignInToFp, sender: nil)
+//    }
+    
+    
     
     func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
         self.data.appendData(data);
