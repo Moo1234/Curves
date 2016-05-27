@@ -16,6 +16,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
     var data : NSMutableData = NSMutableData()
     var gameList = [Game]()
     var gameID = 0
+    var ownID = 3
     var ownUserName = ""
     
     
@@ -30,6 +31,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
         FIRDatabase.database().reference().child("Games").observeEventType(.Value) { (snap: FIRDataSnapshot) in
             // Get Game values
             self.gameList = [Game]()
+            
             let postArr = snap.value as! NSArray
             for var i = 0; i < postArr.count; i=i+1 {
                 if !(postArr[i] is NSNull){
@@ -39,6 +41,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
                     self.gameList.append(game)
                 }
             }
+
             self.tableView.reloadData()
         }
         
@@ -71,20 +74,15 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
 //        let cellName = tableView.cellForRowAtIndexPath(indexPath)?.textLabel!.text
 //        newGameObject = gameList[gameList.indexOf({ $0.name == cellName})!]
 //        OnlineData().joinGame(self, newGameObject: newGameObject, ownUserName: ownUserName)
+        
+        FIRDatabase.database().reference().child("PlayersInGames").childByAutoId().setValue(["gID": gameList[indexPath.row].id, "pID": ownID])
+        
+        
         gameID = gameList[indexPath.row].id
         self.performSegueWithIdentifier("newGame", sender:self)
     }
     
     @IBAction func createGame(sender: AnyObject) {
-        var id = 0
-        for (var i=0; i < gameList.count+1; i+=1) {
-            if gameList.contains({ $0.id == i }){
-                continue
-            }else{
-                id = i
-                break
-            }
-        }
         let alert = UIAlertController(title: "Spiel erstellen", message: "Bitte geben Sie einen Namen ein.", preferredStyle: UIAlertControllerStyle.Alert)
         var inputTextField: UITextField?
         inputTextField?.delegate = self
@@ -95,6 +93,10 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
 //            self.newGameObject = Game(id: id, name: (inputTextField?.text)!, players: self.ownUserName)
 //            OnlineData().createGame(self, newGameObject: self.newGameObject)
 //            self.performSegueWithIdentifier("newGame", sender:self)
+            self.gameID = self.findFreeId()
+            FIRDatabase.database().reference().child("Games/"+String(self.gameID)).setValue(["id": self.gameID, "name": (inputTextField?.text)!])
+            FIRDatabase.database().reference().child("PlayersInGames").childByAutoId().setValue(["gID": self.gameID, "pID": self.ownID])
+            self.performSegueWithIdentifier("newGame", sender:self)
         }))
         alert.addAction(UIAlertAction(title: "Zurück", style: UIAlertActionStyle.Cancel, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
@@ -132,6 +134,19 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
             print ("Error signing out: \(signOutError)")
         }
         
+    }
+    
+    func findFreeId() -> Int{
+        var id = 0
+        for (var i=0; i < gameList.count+1; i+=1) {
+            if gameList.contains({ $0.id == i }){
+                continue
+            }else{
+                id = i
+                break
+            }
+        }
+        return id
     }
     /*
      // MARK: - Navigation
