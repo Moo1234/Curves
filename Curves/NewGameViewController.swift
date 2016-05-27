@@ -17,6 +17,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     var data : NSMutableData = NSMutableData()
     var game = Game()
     var players = [String]()
+    var playerInGamesIDs = [Int]()
     
     var ownUserName = ""
     var gameId = 0
@@ -45,13 +46,18 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         }
         
         var playerIDs = [Int]()
+        self.playerInGamesIDs = [Int]()
         FIRDatabase.database().reference().child("PlayersInGames").observeEventType(.Value) { (snap: FIRDataSnapshot) in
             // Get Game values
-            let postArr = snap.value as! NSDictionary
+//            print(snap.value)
+            let postArr = snap.value as! NSArray
 //            print(postArr.allValues[0].objectForKey("gID") as! Int == self.gameId)
             for var i = 0; i < postArr.count; i=i+1 {
-                if !(postArr.allValues[i] is NSNull) && postArr.allValues[i].objectForKey("gID") as! Int == self.gameId{
-                    playerIDs.append(postArr.allValues[i].objectForKey("pID") as! Int)
+                if !(postArr[i] is NSNull) && postArr[i].valueForKey("gID") as! Int == self.gameId{
+                    playerIDs.append(postArr[i].valueForKey("pID") as! Int)
+                }
+                if !(postArr[i] is NSNull){
+                    self.playerInGamesIDs.append(postArr[i].valueForKey("id") as! Int)
                 }
             }
             
@@ -170,21 +176,25 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
 //    }
     
     @IBAction func leaveGame(sender: AnyObject) {
-        if players.count == 1{
-            FIRDatabase.database().reference().child("Games").child(String(gameId)).removeValue()
-        }
-//        FIRDatabase.database().reference().child("PlayersInGames").queryEqualToValue(String(gameId), childKey: "gID")
-        
         FIRDatabase.database().reference().child("PlayersInGames").observeEventType(.Value) { (snap: FIRDataSnapshot) in
             // Get Game values
-            let postArr = snap.value as! NSDictionary
+            let postArr = snap.value as! NSArray
             //            print(postArr.allValues[0].objectForKey("gID") as! Int == self.gameId)
+            print(self.playerInGamesIDs)
             for var i = 0; i < postArr.count; i=i+1 {
-                if !(postArr.allValues[i] is NSNull) && postArr.allValues[i].objectForKey("gID") as! Int == self.gameId{
-                    FIRDatabase.database().reference().child("PlayersInGames").child(postArr.allKeys.last as! String).removeValue()
+                if !(postArr[i] is NSNull) && postArr[i].valueForKey("gID") as! Int == self.gameId{
+                    FIRDatabase.database().reference().child("PlayersInGames/"+String(5)).removeValueWithCompletionBlock({ (err, ref) in
+                        
+                        if self.players.count == 1{
+                            FIRDatabase.database().reference().child("Games").child(String(self.gameId)).removeValue()
+                        }
+                    })
                 }
             }
         }
+//        FIRDatabase.database().reference().child("PlayersInGames").queryEqualToValue(String(gameId), childKey: "gID")
+        
+
         
 //        if game.players.characters.split(",").count == 1 {
 //            OnlineData().closeGame(self, gameId: gameId)

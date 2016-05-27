@@ -95,7 +95,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
 //            self.performSegueWithIdentifier("newGame", sender:self)
             self.gameID = self.findFreeId()
             FIRDatabase.database().reference().child("Games/"+String(self.gameID)).setValue(["id": self.gameID, "name": (inputTextField?.text)!])
-            FIRDatabase.database().reference().child("PlayersInGames").childByAutoId().setValue(["gID": self.gameID, "pID": self.ownID])
+            FIRDatabase.database().reference().child("PlayersInGames/"+String(5)).setValue(["id": 5, "gID": self.gameID, "pID": self.ownID])
             self.performSegueWithIdentifier("newGame", sender:self)
         }))
         alert.addAction(UIAlertAction(title: "Zurück", style: UIAlertActionStyle.Cancel, handler: nil))
