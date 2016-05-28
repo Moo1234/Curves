@@ -70,6 +70,16 @@ class NewAccountViewController: UIViewController, UITextFieldDelegate {
                 self.presentViewController(alert, animated: true, completion: nil)
                 return
             }
+            let user = FIRAuth.auth()?.currentUser
+            if let user = user {
+                let changeRequest = user.profileChangeRequest()
+                changeRequest.displayName = self.nameTxtField.text
+                changeRequest.commitChangesWithCompletion { error in
+                    if let error = error {
+                        print("changeUserError")
+                    }
+                }
+            }
             self.dismissViewControllerAnimated(true, completion: nil)
         }
     }

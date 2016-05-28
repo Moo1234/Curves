@@ -199,7 +199,6 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
             let findPlayers = segue.destinationViewController as! FindPlayersViewController
             
             findPlayers.ownUserName = nameTxtField.text!
-            findPlayers.ownID = 3
         }
     }
     

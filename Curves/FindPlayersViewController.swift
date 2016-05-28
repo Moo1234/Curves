@@ -16,7 +16,6 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
     var data : NSMutableData = NSMutableData()
     var gameList = [Game]()
     var gameID = 0
-    var ownID = 3
     var ownUserName = ""
     var playerInGameID = 0
     
@@ -31,7 +30,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
         
         loadGames()
         
-
+      //  getUser()
         
        // NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(FindPlayersViewController.reloadData(_:)), userInfo: nil, repeats: true)
         //loadGames()
@@ -39,21 +38,40 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
         // Do any additional setup after loading the view.
     }
     
+    
+    func getUser(){
+        if let user = FIRAuth.auth()?.currentUser {
+            let name = user.displayName
+            let email = user.email
+            let uid = user.uid;  // The user's ID, unique to the Firebase project.
+            // Do NOT use this value to authenticate with
+            // your backend server, if you have one. Use
+            // getTokenWithCompletion:completion: instead.
+            print("User: " , user , " " , name, " " , email, " " , uid)
+        } else {
+            // No user is signed in.
+            print("not logged in")
+        }
+    }
+    
     func loadGames(){
         FIRDatabase.database().reference().child("Games").observeEventType(.Value) { (snap: FIRDataSnapshot) in
             // Get Game values
             self.gameList = [Game]()
-            
-            let postArr = snap.value as! NSArray
-            for var i = 0; i < postArr.count; i=i+1 {
-                if !(postArr[i] is NSNull){
-                    let game = Game()
-                    game.id = postArr[i].valueForKey("id") as! Int
-                    game.name = postArr[i].valueForKey("name") as! String
-                    self.gameList.append(game)
+            if snap.value is NSNull {
+                print("No Games yet")
+            }else{
+                let postArr = snap.value as! NSArray
+                for var i = 0; i < postArr.count; i=i+1 {
+                    if !(postArr[i] is NSNull){
+                        let game = Game()
+                        game.id = postArr[i].valueForKey("id") as! Int
+                        game.name = postArr[i].valueForKey("name") as! String
+                        self.gameList.append(game)
+                    }
                 }
             }
-            
+        
             self.tableView.reloadData()
         }
     }
@@ -101,7 +119,8 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
                     break
                 }
             }
-            FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameList[indexPath.row].id, "pID": self.ownID, "ready": false])
+            let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
+            FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameList[indexPath.row].id, "pID": pID, "ready": false])
             self.playerInGameID = freeID
             
             
@@ -140,7 +159,8 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
                         break
                     }
                 }
-                FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameID, "pID": self.ownID, "ready": false])
+                let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
+                FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameID, "pID": pID, "ready": false])
                 self.playerInGameID = freeID
                 self.performSegueWithIdentifier("newGame", sender:self)
             }
@@ -161,10 +181,8 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
         // Pass the selected object to the new view controller.
         if segue.identifier == "newGame" {
             let newGame = segue.destinationViewController as! NewGameViewController
-            newGame.ownUserName = ownUserName
             newGame.gameId = gameID
             newGame.playerInGameID = self.playerInGameID
-            newGame.playerID = ownID
             
         }
     }
