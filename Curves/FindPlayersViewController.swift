@@ -85,7 +85,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
         return gameList.count
     }
     
-    var boo = true
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as? UITableViewCell
 //        print("Table: " , gameList[indexPath.row].name as String)
