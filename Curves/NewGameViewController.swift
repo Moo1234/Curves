@@ -21,6 +21,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     
     var ownUserName = ""
     var gameId = 0
+    var playerInGameID = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,9 +46,9 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
             self.gameNameLabel.text = self.game.name
         }
         
-        var playerIDs = [Int]()
-        self.playerInGamesIDs = [Int]()
         FIRDatabase.database().reference().child("PlayersInGames").observeEventType(.Value) { (snap: FIRDataSnapshot) in
+            var playerIDs = [Int]()
+            self.playerInGamesIDs = [Int]()
             // Get Game values
 //            print(snap.value)
             let postArr = snap.value as! NSArray
@@ -55,8 +56,6 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
             for var i = 0; i < postArr.count; i=i+1 {
                 if !(postArr[i] is NSNull) && postArr[i].valueForKey("gID") as! Int == self.gameId{
                     playerIDs.append(postArr[i].valueForKey("pID") as! Int)
-                }
-                if !(postArr[i] is NSNull){
                     self.playerInGamesIDs.append(postArr[i].valueForKey("id") as! Int)
                 }
             }
@@ -176,16 +175,13 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
 //    }
     
     @IBAction func leaveGame(sender: AnyObject) {
-        FIRDatabase.database().reference().child("PlayersInGames").observeEventType(.Value) { (snap: FIRDataSnapshot) in
-            // Get Game values
+        FIRDatabase.database().reference().child("PlayersInGames").observeSingleEventOfType(.Value) { (snap: FIRDataSnapshot) in
             let postArr = snap.value as! NSArray
-            //            print(postArr.allValues[0].objectForKey("gID") as! Int == self.gameId)
-            print(self.playerInGamesIDs)
             for var i = 0; i < postArr.count; i=i+1 {
                 if !(postArr[i] is NSNull) && postArr[i].valueForKey("gID") as! Int == self.gameId{
-                    FIRDatabase.database().reference().child("PlayersInGames/"+String(5)).removeValueWithCompletionBlock({ (err, ref) in
+                    FIRDatabase.database().reference().child("PlayersInGames/"+String(self.playerInGameID)).removeValueWithCompletionBlock({ (err, ref) in
                         
-                        if self.players.count == 1{
+                        if self.players.count <= 1{
                             FIRDatabase.database().reference().child("Games").child(String(self.gameId)).removeValue()
                         }
                     })

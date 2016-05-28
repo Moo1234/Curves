@@ -18,6 +18,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
     var gameID = 0
     var ownID = 3
     var ownUserName = ""
+    var playerInGameID = 0
     
     
     override func viewDidLoad() {
@@ -28,6 +29,17 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
         
 //        OnlineData().loadGames(self)
         
+        loadGames()
+        
+
+        
+       // NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(FindPlayersViewController.reloadData(_:)), userInfo: nil, repeats: true)
+        //loadGames()
+        
+        // Do any additional setup after loading the view.
+    }
+    
+    func loadGames(){
         FIRDatabase.database().reference().child("Games").observeEventType(.Value) { (snap: FIRDataSnapshot) in
             // Get Game values
             self.gameList = [Game]()
@@ -41,14 +53,9 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
                     self.gameList.append(game)
                 }
             }
-
+            
             self.tableView.reloadData()
         }
-        
-       // NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(FindPlayersViewController.reloadData(_:)), userInfo: nil, repeats: true)
-        //loadGames()
-        
-        // Do any additional setup after loading the view.
     }
     
     override func didReceiveMemoryWarning() {
@@ -60,6 +67,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
         return gameList.count
     }
     
+    var boo = true
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as? UITableViewCell
 //        print("Table: " , gameList[indexPath.row].name as String)
@@ -74,12 +82,33 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
 //        let cellName = tableView.cellForRowAtIndexPath(indexPath)?.textLabel!.text
 //        newGameObject = gameList[gameList.indexOf({ $0.name == cellName})!]
 //        OnlineData().joinGame(self, newGameObject: newGameObject, ownUserName: ownUserName)
+        tableView.userInteractionEnabled = false
         
-        FIRDatabase.database().reference().child("PlayersInGames").childByAutoId().setValue(["gID": gameList[indexPath.row].id, "pID": ownID])
+        // Join Game
+        var freeID = 0
+        var playerInGamesIDs = [Int]()
+        FIRDatabase.database().reference().child("PlayersInGames").observeSingleEventOfType(.Value) { (snap: FIRDataSnapshot) in
+            // Get free ID
+            let postArr = snap.value as! NSArray
+            for var i = 0; i < postArr.count; i=i+1 {
+                if !(postArr[i] is NSNull){
+                    playerInGamesIDs.append(postArr[i].valueForKey("id") as! Int)
+                }
+            }
+            for var i=0; i < playerInGamesIDs.count+1; i=i+1 {
+                if !playerInGamesIDs.contains(i) {
+                    freeID = i
+                    break
+                }
+            }
+            FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameList[indexPath.row].id, "pID": self.ownID])
+            self.playerInGameID = freeID
+            
+            
+            self.gameID = self.gameList[indexPath.row].id
+            self.performSegueWithIdentifier("newGame", sender:self)
+        }
         
-        
-        gameID = gameList[indexPath.row].id
-        self.performSegueWithIdentifier("newGame", sender:self)
     }
     
     @IBAction func createGame(sender: AnyObject) {
@@ -93,10 +122,28 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
 //            self.newGameObject = Game(id: id, name: (inputTextField?.text)!, players: self.ownUserName)
 //            OnlineData().createGame(self, newGameObject: self.newGameObject)
 //            self.performSegueWithIdentifier("newGame", sender:self)
-            self.gameID = self.findFreeId()
+            self.gameID = self.findFreeGameId()
             FIRDatabase.database().reference().child("Games/"+String(self.gameID)).setValue(["id": self.gameID, "name": (inputTextField?.text)!])
-            FIRDatabase.database().reference().child("PlayersInGames/"+String(5)).setValue(["id": 5, "gID": self.gameID, "pID": self.ownID])
-            self.performSegueWithIdentifier("newGame", sender:self)
+            var freeID = 0
+            var playerInGamesIDs = [Int]()
+            FIRDatabase.database().reference().child("PlayersInGames").observeSingleEventOfType(.Value) { (snap: FIRDataSnapshot) in
+                // Get free ID
+                let postArr = snap.value as! NSArray
+                for var i = 0; i < postArr.count; i=i+1 {
+                    if !(postArr[i] is NSNull){
+                        playerInGamesIDs.append(postArr[i].valueForKey("id") as! Int)
+                    }
+                }
+                for var i=0; i < playerInGamesIDs.count+1; i=i+1 {
+                    if !playerInGamesIDs.contains(i) {
+                        freeID = i
+                        break
+                    }
+                }
+                FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameID, "pID": self.ownID])
+                self.playerInGameID = freeID
+                self.performSegueWithIdentifier("newGame", sender:self)
+            }
         }))
         alert.addAction(UIAlertAction(title: "Zurück", style: UIAlertActionStyle.Cancel, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
@@ -116,6 +163,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
             let newGame = segue.destinationViewController as! NewGameViewController
             newGame.ownUserName = ownUserName
             newGame.gameId = gameID
+            newGame.playerInGameID = self.playerInGameID
             
         }
     }
@@ -136,7 +184,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
         
     }
     
-    func findFreeId() -> Int{
+    func findFreeGameId() -> Int{
         var id = 0
         for (var i=0; i < gameList.count+1; i+=1) {
             if gameList.contains({ $0.id == i }){
@@ -148,6 +196,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
         }
         return id
     }
+    
     /*
      // MARK: - Navigation
      
