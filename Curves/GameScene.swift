@@ -45,6 +45,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     var p1Size: CGFloat = 2.0
     var xCurve: CGFloat = 1.0
     var yCurve: CGFloat = 1.0
+    var curveRadius = 5.0
     var path = CGPathCreateMutable()
     var p1NewSize = SKShapeNode()
     var playerID: Int = Int()
@@ -78,13 +79,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     var lineThickness: CGFloat = 5.0
     var gapTimer = true
     var gapLength = 0.17
-    var test = CGFloat(1)
+    var curveSpeed = CGFloat(1)
     var itemList = [SKSpriteNode]()
     var switchDirBool = false
     
     var firstTime = true
     
     var positionList = [CGPoint]()
+    
+    var gameID = 0
+    var leader = true
     
     //***********************************************************************************
     //***********************************************************************************
@@ -175,6 +179,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             self.drawLine2(self.p2.position)
             self.addLinesToTexture2()
             
+        }
+        if !leader{
+            FIRDatabase.database().reference().child("RunningGame/"+String(gameID)).child("Items").observeEventType(.Value) { (snap: FIRDataSnapshot) in
+                // Get Items
+                let postArr = snap.value as! NSDictionary
+                let pos = CGPoint(x: postArr.valueForKey("posX") as! CGFloat, y: postArr.objectForKey("posY") as! CGFloat)
+                let nameRandom = postArr.objectForKey("category") as! Int
+                self.makeItems(pos, nameRandom: UInt32(nameRandom))
+            }
         }
         
         
@@ -269,8 +282,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         let offset = CGPoint(x: targetPoint.x - currentPosition.x, y: targetPoint.y - currentPosition.y)
         let length = Double(sqrtf(Float(offset.x * offset.x) + Float(offset.y * offset.y)))
         let direction = CGPoint(x:CGFloat(offset.x) / CGFloat(length), y: CGFloat(offset.y) / CGFloat(length))
-        xCurve = direction.x * test
-        yCurve = direction.y * test
+        xCurve = direction.x * curveSpeed
+        yCurve = direction.y * curveSpeed
         
         
     }
@@ -318,14 +331,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     func changeDirectionL(){
         //        print(timer.userInfo)
         let alt = pointToRadian(wayPoints[0])
-        wayPoints[0] = radianToPoint(alt+5)
+        wayPoints[0] = radianToPoint(alt+curveRadius)
         changeDirection(wayPoints[0])
     }
     
     //Rechtskurve
     func changeDirectionR(){
         let alt = pointToRadian(wayPoints[0])
-        wayPoints[0] = radianToPoint(alt-5)
+        wayPoints[0] = radianToPoint(alt-curveRadius)
         changeDirection(wayPoints[0])
         
     }
@@ -368,19 +381,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     }
     
+    func pushItem(category: UInt32, posX: CGFloat, posY: CGFloat){
+        self.ref.child("RunningGame/"+String(gameID)).child("Items").setValue(["category": Int(category), "posX": posX, "posY": posY])
+    }
+    
     func makeHole(){
         gapTimer = true
     }
     
  
     override func update(currentTime: CFTimeInterval) {
-
-        var rand = arc4random() % 500
-        if rand == 10{
-
-            makeRandomItems()
+        if leader {
+            let rand = arc4random() % 500
+            if rand == 10{
+                //wenn es mehr Items gibt, zahl erhöhen
+                let nameRandom = 1 + arc4random() % 4
+                
+                let pos = makeRandomPos()
+                pushItem(nameRandom, posX: pos.x, posY: pos.y)
+                makeItems(pos, nameRandom: nameRandom)
+            }
         }
-        
         if !dead{
             drawLine()
             addLinesToTexture()
@@ -391,20 +412,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     }
 
     //Erstellt zufällige Items, mit zufälligen Positionen
-    func makeRandomItems(){
+    func makeItems(pos: CGPoint, nameRandom: UInt32){
         
-        var pos = makeRandomPos()
+//        var pos =
         var imageName = String()
         
         
-        //item = ItemObject(imageName: "testItem", itemAction: "test",itemPosition: pos, itemName: "test")
+        //item = ItemObject(imageName: "testItem", itemAction: "curveSpeed",itemPosition: pos, itemName: "curveSpeed")
 //        item!.position = pos
-//        item.name = "test" + String(ii)
+//        item.name = "curveSpeed" + String(ii)
         
         
         //wenn es mehr Items gibt, zahl erhöhen
-        var nameRandom = 1 + arc4random() % 4
+//        var nameRandom = 1 + arc4random() % 4
+        
         //        var nameRandom = 3
+        
         switch nameRandom{
         
         case 1:
@@ -517,16 +540,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     
     func increaseSpeed(){
-        test = 2
+        curveSpeed = 2
         gapLength = 0.09
         xCurve = xCurve * 2
         yCurve = yCurve * 2
+        curveRadius = curveRadius * (3 / 2)
         _ = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.lowerSpeed), userInfo: nil, repeats: false)
     }
     
     func lowerSpeed(){
-        test = 1
+        curveSpeed = 1
         gapLength = 0.17
+        curveRadius = curveRadius * (2 / 3)
 //        xCurve = xCurve / 2
 //        yCurve = yCurve / 2
     }
