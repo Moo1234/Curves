@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="RMW-l0-DlT">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="I4G-EI-Wd2">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -387,9 +387,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="736" height="414"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bUX-lt-HIh">
-                                <rect key="frame" x="676" y="20" width="34" height="30"/>
-                                <state key="normal" title="Start"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bUX-lt-HIh">
+                                <rect key="frame" x="673" y="20" width="41" height="30"/>
+                                <state key="normal" title="Bereit"/>
+                                <connections>
+                                    <action selector="readyForGame:" destination="Cwf-ut-WVk" eventType="touchUpInside" id="C4J-8h-WqN"/>
+                                </connections>
                             </button>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Game" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Byz-hu-XDP">
                                 <rect key="frame" x="265" y="20" width="132" height="30"/>
@@ -405,7 +408,7 @@
                                 <rect key="frame" x="20" y="58" width="696" height="336"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="8Og-Hc-Xqf">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="8Og-Hc-Xqf">
                                         <rect key="frame" x="0.0" y="28" width="696" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8Og-Hc-Xqf" id="seM-5f-le9">
@@ -453,7 +456,9 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                     <connections>
                         <outlet property="gameNameLabel" destination="Byz-hu-XDP" id="27g-2S-x3v"/>
+                        <outlet property="readyForGame" destination="bUX-lt-HIh" id="egt-qQ-PDd"/>
                         <outlet property="tableView" destination="JHw-Rd-H7z" id="9VN-Zl-C4d"/>
+                        <segue destination="BV1-FR-VrT" kind="show" identifier="startGame" id="M4d-rb-3fH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="l59-IZ-CwJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -461,4 +466,7 @@
             <point key="canvasLocation" x="2" y="1526"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="Abh-to-122"/>
+    </inferredMetricsTieBreakers>
 </document>

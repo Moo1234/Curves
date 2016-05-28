@@ -82,7 +82,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
 //        let cellName = tableView.cellForRowAtIndexPath(indexPath)?.textLabel!.text
 //        newGameObject = gameList[gameList.indexOf({ $0.name == cellName})!]
 //        OnlineData().joinGame(self, newGameObject: newGameObject, ownUserName: ownUserName)
-        tableView.userInteractionEnabled = false
+//        tableView.userInteractionEnabled = false
         
         // Join Game
         var freeID = 0
@@ -101,7 +101,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
                     break
                 }
             }
-            FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameList[indexPath.row].id, "pID": self.ownID])
+            FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameList[indexPath.row].id, "pID": self.ownID, "ready": false])
             self.playerInGameID = freeID
             
             
@@ -140,7 +140,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
                         break
                     }
                 }
-                FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameID, "pID": self.ownID])
+                FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameID, "pID": self.ownID, "ready": false])
                 self.playerInGameID = freeID
                 self.performSegueWithIdentifier("newGame", sender:self)
             }
@@ -164,6 +164,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
             newGame.ownUserName = ownUserName
             newGame.gameId = gameID
             newGame.playerInGameID = self.playerInGameID
+            newGame.playerID = ownID
             
         }
     }

@@ -11,21 +11,32 @@ import Firebase
 
 class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableViewDataSource{
     
+    @IBOutlet weak var readyForGame: UIButton!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var gameNameLabel: UITextField!
+    
+    
     
     var data : NSMutableData = NSMutableData()
     var game = Game()
     var players = [String]()
     var playerInGamesIDs = [Int]()
+    var readyPlayers = [Bool]()
     
     var ownUserName = ""
+    var playerID = 0
     var gameId = 0
     var playerInGameID = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         loadGame()
+        
+        let tblView =  UIView(frame: CGRectZero)
+        tableView.tableFooterView = tblView
+        tableView.tableFooterView!.hidden = true
+        tableView.backgroundColor = UIColor.clearColor()
+        tableView.separatorColor = UIColor.clearColor()
         
         UIApplication.sharedApplication().statusBarHidden = false
         self.view.backgroundColor = UIColor.blackColor()
@@ -49,6 +60,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         FIRDatabase.database().reference().child("PlayersInGames").observeEventType(.Value) { (snap: FIRDataSnapshot) in
             var playerIDs = [Int]()
             self.playerInGamesIDs = [Int]()
+            self.readyPlayers = [Bool]()
             // Get Game values
 //            print(snap.value)
             let postArr = snap.value as! NSArray
@@ -57,6 +69,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
                 if !(postArr[i] is NSNull) && postArr[i].valueForKey("gID") as! Int == self.gameId{
                     playerIDs.append(postArr[i].valueForKey("pID") as! Int)
                     self.playerInGamesIDs.append(postArr[i].valueForKey("id") as! Int)
+                    self.readyPlayers.append(postArr[i].valueForKey("ready") as! Bool)
                 }
             }
             
@@ -70,7 +83,9 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
                         self.players.append(postArr[i].valueForKey("name") as! String)
                     }
                 }
-                
+                if !self.readyPlayers.contains(false){
+                    self.performSegueWithIdentifier("startGame", sender:self)
+                }
                 self.tableView.reloadData()
             }
         }
@@ -112,7 +127,15 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         //            self.gameNameLabel.text = self.game.name
         //        }
 //        let player = game.players.characters.split(",").map(String.init)[indexPath.row]
+        cell?.textLabel?.textColor = UIColor.blackColor()
+        cell?.textLabel?.backgroundColor = UIColor.clearColor()
+        cell?.backgroundColor = UIColor.clearColor()
         cell!.textLabel!.text = players[indexPath.row]
+        if readyPlayers[indexPath.row]{
+            cell?.textLabel?.backgroundColor = UIColor.greenColor()
+        }else{
+            cell?.textLabel?.backgroundColor = UIColor.whiteColor()
+        }
         return cell!
     }
     
@@ -209,6 +232,21 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
 //        }
         self.dismissViewControllerAnimated(true, completion: nil)
     }
+    
+    
+    @IBAction func readyForGame(sender: AnyObject) {
+        if readyForGame.currentTitle == "Bereit" {
+            readyForGame.setTitle("Stop", forState: UIControlState.Normal)
+            FIRDatabase.database().reference().child("PlayersInGames/"+String(playerInGameID)).setValue(["id": playerInGameID, "gID": gameId, "pID": playerID, "ready": true])
+            
+        }else{
+            readyForGame.setTitle("Bereit", forState: UIControlState.Normal)
+            FIRDatabase.database().reference().child("PlayersInGames/"+String(playerInGameID)).setValue(["id": playerInGameID, "gID": gameId, "pID": playerID, "ready": false])
+        }
+        
+    }
+    
+    
 //    
 //    func reload(){
 //        loadGames()
@@ -222,6 +260,14 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     
     @IBAction func reloadData(sender: AnyObject) {
 //        reload()
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+        if segue.identifier == "startGame" {
+            print("StartGame")
+        }
     }
     
 }
