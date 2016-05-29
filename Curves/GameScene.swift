@@ -91,6 +91,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     // Players
     var playerIDs = [String]()
+    var colors = [String]()
     
     //***********************************************************************************
     //***********************************************************************************
@@ -192,8 +193,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                 }
             }
             for var i = 0; i < postArr.count; i=i+1 {
-                if postArr[i].valueForKey("runningGameID") as! String == self.gameID && postArr[i].valueForKey("pID") as! String != pID {
-                    self.playerIDs.append(postArr[i].valueForKey("pID") as! String)
+                if postArr[i].valueForKey("runningGameID") as! String == self.gameID{
+                    if postArr[i].valueForKey("pID") as! String != pID {
+                        self.playerIDs.append(postArr[i].valueForKey("pID") as! String)
+                    }else{
+                        self.p1.fillColor = self.hexStringToUIColor(postArr[i].valueForKey("color") as! String)
+                        self.p1.strokeColor = self.hexStringToUIColor(postArr[i].valueForKey("color") as! String)
+                    }
+                    self.colors.append(postArr[i].valueForKey("color") as! String)
                 }
             }
             
@@ -397,7 +404,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             CGPathMoveToPoint(path, nil, lastPoint.x, lastPoint.y)
             lineNode.path = nil
             lineNode.lineWidth = lineThickness
-            lineNode.strokeColor = SKColor.cyanColor()
+            lineNode.strokeColor = p1.strokeColor
             var holeRandom = arc4random() % 100
             
             if holeRandom == 5{
@@ -581,6 +588,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
         
         return pos
+    }
+    
+    
+    func hexStringToUIColor (hex:String) -> UIColor {
+        var cString:String = hex.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet() as NSCharacterSet).uppercaseString
+        
+        if (cString.hasPrefix("#")) {
+            cString = cString.substringFromIndex(cString.startIndex.advancedBy(1))
+        }
+        
+        if ((cString.characters.count) != 6) {
+            return UIColor.grayColor()
+        }
+        
+        var rgbValue:UInt32 = 0
+        NSScanner(string: cString).scanHexInt(&rgbValue)
+        
+        return UIColor(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+            alpha: CGFloat(1.0)
+        )
     }
     
     //***********************************************************************************

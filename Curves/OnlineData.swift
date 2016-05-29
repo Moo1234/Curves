@@ -100,20 +100,20 @@ class OnlineData: NSObject, NSURLSessionDelegate {
         task.resume()
     }
     
-    func joinGame(viewController: FindPlayersViewController, newGameObject: Game, ownUserName: String){
-        findPlayersVC = viewController
-        let urlCreateGame: String = urlString + "joinGame.php"
-        let url: NSURL = NSURL(string: urlCreateGame)!
-        let request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
-        var bodyData = "id=" + String(newGameObject.id)
-        bodyData += "&players=" + newGameObject.players + "," + ownUserName
-        request.HTTPMethod = "POST"
-        
-        request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding);
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
-            self.findPlayersVC.tableView.reloadData()
-        })
-    }
+//    func joinGame(viewController: FindPlayersViewController, newGameObject: Game, ownUserName: String){
+//        findPlayersVC = viewController
+//        let urlCreateGame: String = urlString + "joinGame.php"
+//        let url: NSURL = NSURL(string: urlCreateGame)!
+//        let request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
+//        var bodyData = "id=" + String(newGameObject.id)
+//        bodyData += "&players=" + newGameObject.players + "," + ownUserName
+//        request.HTTPMethod = "POST"
+//        
+//        request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding);
+//        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+//            self.findPlayersVC.tableView.reloadData()
+//        })
+//    }
     func closeGame(viewController: NewGameViewController, gameId: Int){
         newGameVC = viewController
         let urlCreateGame: String = urlString + "closeGame.php"
@@ -143,89 +143,89 @@ class OnlineData: NSObject, NSURLSessionDelegate {
         })
     }
     
-    func createGame(viewController: FindPlayersViewController, newGameObject: Game){
-        findPlayersVC = viewController
-        let urlCreateGame: String = urlString + "createGame.php"
-        let url: NSURL = NSURL(string: urlCreateGame)!
-        let request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
-        var bodyData = "id=" + String(newGameObject.id)
-        bodyData += "&gamename=" + newGameObject.name
-        bodyData += "&players=" + newGameObject.players
-        request.HTTPMethod = "POST"
-        
-        request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding);
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
-            self.findPlayersVC.tableView.reloadData()
-        })
-    }
+//    func createGame(viewController: FindPlayersViewController, newGameObject: Game){
+//        findPlayersVC = viewController
+//        let urlCreateGame: String = urlString + "createGame.php"
+//        let url: NSURL = NSURL(string: urlCreateGame)!
+//        let request:NSMutableURLRequest = NSMutableURLRequest(URL:url)
+//        var bodyData = "id=" + String(newGameObject.id)
+//        bodyData += "&gamename=" + newGameObject.name
+//        bodyData += "&players=" + newGameObject.players
+//        request.HTTPMethod = "POST"
+//        
+//        request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding);
+//        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+//            self.findPlayersVC.tableView.reloadData()
+//        })
+//    }
     
     
-    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
-        self.data.appendData(data);
-        
-    }
-    
-    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
-        if error != nil {
-            print("Failed to download data")
-        }else {
-            //            print("Data downloaded")
-            self.parseJSON()
-        }
-        
-    }
-    
-    func parseJSON() {
-        
-        var jsonResult: NSMutableArray = NSMutableArray()
-        
-        if self.data.length != 2{
-            do{
-                jsonResult = try NSJSONSerialization.JSONObjectWithData(self.data, options:NSJSONReadingOptions.AllowFragments) as! NSMutableArray
-                
-            } catch let error as NSError {
-                print(error)
-                
-            }
-            
-            var jsonElement: NSDictionary = NSDictionary()
-            var downloadedList = [AccountModel]()
-            for(var i = 0; i < jsonResult.count; i++)
-            {
-                
-                jsonElement = jsonResult[i] as! NSDictionary
-                if String(jsonElement.allKeys) == "[gID, name, players]" {
-                    if let id = Int((jsonElement["gID"] as? String)!),
-                        let name = jsonElement["name"] as? String,
-                        let players = jsonElement["players"] as? String
-                        
-                    {
-                        let game = Game(id: id, name: name, players: players)
-                        findPlayersVC.gameList.append(game)
-                        dispatch_async(dispatch_get_main_queue(), {
-                            self.findPlayersVC.tableView.reloadData()
-                        })
-                    }
-                }else if String(jsonElement.allKeys) == "[email, password, uID, name]" {
-                    if let id = Int((jsonElement["uID"] as? String)!),
-                        let email = jsonElement["email"] as? String,
-                        let name = jsonElement["name"] as? String,
-                        let password = Int((jsonElement["password"] as? String)!)
-                    {
-                        let users = AccountModel()
-                        
-//                                                print(email,name,password)
-                        users.id = id
-                        users.email = email
-                        users.name = name
-                        users.password = password
-                        downloadedList.append(users)
-                        //loginVC.downloadedList.append(users)
-                    }
-                }
-            }
-            newAccountVC.userList = downloadedList
-        }
-        
-    }
+//    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
+//        self.data.appendData(data);
+//        
+//    }
+//    
+//    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
+//        if error != nil {
+//            print("Failed to download data")
+//        }else {
+//            //            print("Data downloaded")
+//            self.parseJSON()
+//        }
+//        
+//    }
+//    
+//    func parseJSON() {
+//        
+//        var jsonResult: NSMutableArray = NSMutableArray()
+//        
+//        if self.data.length != 2{
+//            do{
+//                jsonResult = try NSJSONSerialization.JSONObjectWithData(self.data, options:NSJSONReadingOptions.AllowFragments) as! NSMutableArray
+//                
+//            } catch let error as NSError {
+//                print(error)
+//                
+//            }
+//            
+//            var jsonElement: NSDictionary = NSDictionary()
+//            var downloadedList = [AccountModel]()
+//            for(var i = 0; i < jsonResult.count; i++)
+//            {
+//                
+//                jsonElement = jsonResult[i] as! NSDictionary
+//                if String(jsonElement.allKeys) == "[gID, name, players]" {
+//                    if let id = Int((jsonElement["gID"] as? String)!),
+//                        let name = jsonElement["name"] as? String,
+//                        let players = jsonElement["players"] as? String
+//                        
+//                    {
+//                        let game = Game(id: id, name: name, players: players)
+//                        findPlayersVC.gameList.append(game)
+//                        dispatch_async(dispatch_get_main_queue(), {
+//                            self.findPlayersVC.tableView.reloadData()
+//                        })
+//                    }
+//                }else if String(jsonElement.allKeys) == "[email, password, uID, name]" {
+//                    if let id = Int((jsonElement["uID"] as? String)!),
+//                        let email = jsonElement["email"] as? String,
+//                        let name = jsonElement["name"] as? String,
+//                        let password = Int((jsonElement["password"] as? String)!)
+//                    {
+//                        let users = AccountModel()
+//                        
+////                                                print(email,name,password)
+//                        users.id = id
+//                        users.email = email
+//                        users.name = name
+//                        users.password = password
+//                        downloadedList.append(users)
+//                        //loginVC.downloadedList.append(users)
+//                    }
+//                }
+//            }
+//            newAccountVC.userList = downloadedList
+//        }
+//        
+//    }
 }

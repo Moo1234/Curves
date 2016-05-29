@@ -17,17 +17,10 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     
     
     
-    var data : NSMutableData = NSMutableData()
     var game = Game()
-    var players = [String]()
-    var playerInGamesIDs = [Int]()
-    var playerIDs = [String]()
-    var readyPlayers = [Bool]()
     
-    var playerID = 0
     var gameId = 0
     var playerInGameID = 0
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,11 +30,11 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         tableView.tableFooterView = tblView
         tableView.tableFooterView!.hidden = true
         tableView.backgroundColor = UIColor.clearColor()
-        tableView.separatorColor = UIColor.clearColor()
         
         UIApplication.sharedApplication().statusBarHidden = false
         self.view.backgroundColor = UIColor.blackColor()
         
+        changeColor()
         
 //        reload()
     }
@@ -61,9 +54,10 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         }
         
         FIRDatabase.database().reference().child("PlayersInGames").observeEventType(.Value) { (snap: FIRDataSnapshot) in
-            self.playerIDs = [String]()
-            self.playerInGamesIDs = [Int]()
-            self.readyPlayers = [Bool]()
+            self.game.playerIDs = [String]()
+            self.game.playerInGamesIDs = [Int]()
+            self.game.readyPlayers = [Bool]()
+            self.game.colors = [String]()
             // Get Game values
 //            print(snap.value)
             let postArr = snap.value as! NSArray
@@ -71,23 +65,26 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
             for var i = 0; i < postArr.count; i=i+1 {
 //                print(postArr[i], " " , self.gameId)
                 if !(postArr[i] is NSNull) && postArr[i].valueForKey("gID") as! Int == self.gameId{
-                    self.playerIDs.append(postArr[i].valueForKey("pID") as! String)
-                    self.playerInGamesIDs.append(postArr[i].valueForKey("id") as! Int)
-                    self.readyPlayers.append(postArr[i].valueForKey("ready") as! Bool)
+                    self.game.playerIDs.append(postArr[i].valueForKey("pID") as! String)
+                    self.game.playerInGamesIDs.append(postArr[i].valueForKey("id") as! Int)
+                    self.game.readyPlayers.append(postArr[i].valueForKey("ready") as! Bool)
+                    self.game.colors.append((postArr[i].valueForKey("color") as! String))
+                    
                 }
             }
             
             //print(self.playerIDs)
             FIRDatabase.database().reference().child("Players").observeEventType(.Value) { (snap: FIRDataSnapshot) in
                 // Get Game values
-                self.players = [String]()
+                self.game.players = [String]()
                 let postArr = snap.value as! NSArray
                 for var i = 0; i < postArr.count; i=i+1 {
-                    if !(postArr[i] is NSNull) && self.playerIDs.contains(postArr[i].valueForKey("pID") as! String){
-                        self.players.append(postArr[i].valueForKey("name") as! String)
+                    if !(postArr[i] is NSNull) && self.game.playerIDs.contains(postArr[i].valueForKey("pID") as! String){
+                        self.game.players.append(postArr[i].valueForKey("name") as! String)
+                        self.game.scores.append(postArr[i].valueForKey("score") as! Int)
                     }
                 }
-                if !self.readyPlayers.contains(false) && self.playerIDs.count > 0{
+                if !self.game.readyPlayers.contains(false) && self.game.playerIDs.count > 0{
 //                    let playerID: String = (FIRAuth.auth()?.currentUser?.uid)!
 //                    let idInGame = String(self.playerIDs.indexOf(playerID)!)
                 //FIRDatabase.database().reference().child("RunningGame/"+self.playerIDs.first!).child(idInGame).setValue(["positionX": 200, "positionY": 200, "lineWidth": 2])
@@ -125,29 +122,79 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //print(players)
-        return players.count
+        return game.players.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as? UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! NewGameTableViewCell
         //        print("Table: " , gameList[indexPath.row].name as String)
         //        if(self.game.name != "" || self.game.name != self.gameNameLabel.text){
         //            self.gameNameLabel.text = self.game.name
         //        }
 //        let player = game.players.characters.split(",").map(String.init)[indexPath.row]
-        cell?.textLabel?.textColor = UIColor.blackColor()
-        cell?.textLabel?.backgroundColor = UIColor.clearColor()
-        cell?.backgroundColor = UIColor.clearColor()
-        cell!.textLabel!.text = players[indexPath.row]
-//        print(indexPath.row, " " , readyPlayers.count)
-        if readyPlayers[indexPath.row]{
-            cell?.textLabel?.backgroundColor = UIColor.greenColor()
+//        cell.nameTextField.textColor = UIColor.blackColor()
+//        cell.nameTextField.backgroundColor = UIColor.clearColor()
+//        cell.scoreTextField.textColor = UIColor.blackColor()
+//        cell.scoreTextField.backgroundColor = UIColor.clearColor()
+//        
+//        cell.backgroundColor = UIColor.clearColor()
+        cell.nameTextField.text = game.players[indexPath.row]
+        cell.scoreTextField.text = String(game.scores[indexPath.row])
+        cell.colorButton.backgroundColor = hexStringToUIColor(game.colors[indexPath.row])
+        let playerID: String = (FIRAuth.auth()?.currentUser?.uid)!
+        if game.playerIDs[indexPath.row] == playerID {
+            cell.colorButton.enabled = true
         }else{
-            cell?.textLabel?.backgroundColor = UIColor.whiteColor()
+            cell.colorButton.enabled =  false
         }
-        return cell!
+//        print(indexPath.row, " " , readyPlayers.count)
+        if game.readyPlayers[indexPath.row]{
+            cell.backgroundColor = UIColor.greenColor()
+        }else{
+            cell.backgroundColor = UIColor.blackColor()
+        }
+        return cell
     }
     
+    
+    // change Color of your player
+    @IBAction func changeColor(sender: AnyObject) {
+        changeColor()
+    }
+    func changeColor(){
+        var randomColors = ["#ffff00","#ff0000", "#0000ff", "#00ff00", "#bf8040", "#9900ff", "#ff33ff", "#ff8000", "#1ac6ff", "#94b8b8"]
+        for var i=0; i < game.colors.count; i=i+1 {
+            randomColors = randomColors.filter {!$0.containsString(game.colors[i])}
+            //            randomColors.filter(game.colors[i])
+        }
+        let colorInt = arc4random_uniform(UInt32(randomColors.count))
+        FIRDatabase.database().reference().child("PlayersInGames").child(String(playerInGameID)).child("color").setValue(randomColors[Int(colorInt)])
+    }
+    
+    
+    
+    // change hex color to UIColor
+    func hexStringToUIColor (hex:String) -> UIColor {
+        var cString:String = hex.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet() as NSCharacterSet).uppercaseString
+        
+        if (cString.hasPrefix("#")) {
+            cString = cString.substringFromIndex(cString.startIndex.advancedBy(1))
+        }
+        
+        if ((cString.characters.count) != 6) {
+            return UIColor.grayColor()
+        }
+        
+        var rgbValue:UInt32 = 0
+        NSScanner(string: cString).scanHexInt(&rgbValue)
+        
+        return UIColor(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+            alpha: CGFloat(1.0)
+        )
+    }
     
 //    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
 //        self.data.appendData(data);
@@ -212,7 +259,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
             for var i = 0; i < postArr.count; i=i+1 {
                 if !(postArr[i] is NSNull) && postArr[i].valueForKey("gID") as! Int == self.gameId{
                     FIRDatabase.database().reference().child("PlayersInGames/"+String(self.playerInGameID)).removeValueWithCompletionBlock({ (err, ref) in
-                        if self.playerIDs.count <= 1{
+                        if self.game.playerIDs.count < 1{
                             FIRDatabase.database().reference().child("Games").child(String(self.gameId)).removeValue()
                         }
                     })
@@ -245,7 +292,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     @IBAction func readyForGame(sender: AnyObject) {
         if readyForGame.currentTitle == "Bereit" {
             readyForGame.setTitle("Stop", forState: UIControlState.Normal)
-            FIRDatabase.database().reference().child("PlayersInGames/"+String(playerInGameID)+"/runningGameID").setValue(self.playerIDs.first)
+            FIRDatabase.database().reference().child("PlayersInGames/"+String(playerInGameID)+"/runningGameID").setValue(self.game.playerIDs.first)
             FIRDatabase.database().reference().child("PlayersInGames/"+String(playerInGameID)+"/ready").setValue(true)
             
         }else{
@@ -254,21 +301,5 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         }
         
     }
-    
-    
-//    
-//    func reload(){
-//        loadGames()
-//        dispatch_async(dispatch_get_main_queue(), {
-//            self.tableView.reloadData()
-//            if(self.game.name != "" || self.game.name != self.gameNameLabel.text){
-//                self.gameNameLabel.text = self.game.name
-//            }
-//        })
-//    }
-    
-    @IBAction func reloadData(sender: AnyObject) {
-//        reload()
-    }
-    
+
 }
