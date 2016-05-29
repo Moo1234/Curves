@@ -120,7 +120,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
                 }
             }
             let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
-            FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameList[indexPath.row].id, "pID": pID, "ready": false])
+            FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameList[indexPath.row].id, "pID": pID, "ready": false, "runningGameID": ""])
             self.playerInGameID = freeID
             
             
@@ -147,20 +147,22 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
             var playerInGamesIDs = [Int]()
             FIRDatabase.database().reference().child("PlayersInGames").observeSingleEventOfType(.Value) { (snap: FIRDataSnapshot) in
                 // Get free ID
-                let postArr = snap.value as! NSArray
-                for var i = 0; i < postArr.count; i=i+1 {
-                    if !(postArr[i] is NSNull){
-                        playerInGamesIDs.append(postArr[i].valueForKey("id") as! Int)
+                if !(snap.value is NSNull){
+                    let postArr = snap.value as! NSArray
+                    for var i = 0; i < postArr.count; i=i+1 {
+                        if !(postArr[i] is NSNull){
+                            playerInGamesIDs.append(postArr[i].valueForKey("id") as! Int)
+                        }
                     }
-                }
-                for var i=0; i < playerInGamesIDs.count+1; i=i+1 {
-                    if !playerInGamesIDs.contains(i) {
-                        freeID = i
-                        break
+                    for var i=0; i < playerInGamesIDs.count+1; i=i+1 {
+                        if !playerInGamesIDs.contains(i) {
+                            freeID = i
+                            break
+                        }
                     }
                 }
                 let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
-                FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameID, "pID": pID, "ready": false])
+                FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameID, "pID": pID, "ready": false, "runningGameID": pID])
                 self.playerInGameID = freeID
                 self.performSegueWithIdentifier("newGame", sender:self)
             }
@@ -181,6 +183,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
         // Pass the selected object to the new view controller.
         if segue.identifier == "newGame" {
             let newGame = segue.destinationViewController as! NewGameViewController
+//            print(gameID)
             newGame.gameId = gameID
             newGame.playerInGameID = self.playerInGameID
             

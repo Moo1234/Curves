@@ -60,6 +60,7 @@ class LoginViewController: UIViewController,  NSURLSessionDelegate, UITextFieldD
         let nameTxt = nameTxtField.text
         let pwTxt = pwTxtField.text
         
+        
         FIRAuth.auth()?.signInWithEmail(nameTxt!, password: pwTxt!) { (user, error) in
             if let error = error {
                 print(error.localizedDescription)

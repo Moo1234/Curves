@@ -87,8 +87,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     var positionList = [CGPoint]()
     
-    var gameID = 0
-    var leader = true
+    var gameID = ""
+    
+    // Players
+    var playerIDs = [String]()
     
     //***********************************************************************************
     //***********************************************************************************
@@ -128,7 +130,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         p1.physicsBody?.affectedByGravity = false
         p1.physicsBody?.linearDamping = 0
         
-        self.ref.child("p"+String(playerID)).setValue(["PositionX": p1.position.x,"PositionY": p1.position.y,"lineWidth":p1Size])
         
         
         leftBtn.position = CGPoint(x: btnWidth, y: view.frame.height / 4 )
@@ -170,26 +171,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         lineContainer.addChild(lineCanvas!)
         lastPoint = CGPointMake(view.frame.size.width/2.0, view.frame.size.height/2.0)
         
-        
-        refP2.observeEventType(.Value) { (snap: FIRDataSnapshot) in
-            // Get user value
-            self.p2.position.x = snap.value?.objectForKey("PositionX") as! CGFloat
-            self.p2.position.y = snap.value?.objectForKey("PositionY") as! CGFloat
-            
-            self.drawLine2(self.p2.position)
-            self.addLinesToTexture2()
-            
-        }
-        if !leader{
-            FIRDatabase.database().reference().child("RunningGame/"+String(gameID)).child("Items").observeEventType(.Value) { (snap: FIRDataSnapshot) in
-                // Get Items
-                let postArr = snap.value as! NSDictionary
-                let pos = CGPoint(x: postArr.valueForKey("posX") as! CGFloat, y: postArr.objectForKey("posY") as! CGFloat)
-                let nameRandom = postArr.objectForKey("category") as! Int
-                self.makeItems(pos, nameRandom: UInt32(nameRandom))
-            }
-        }
-        
+        loadPlayers()
         
     }
     
@@ -197,6 +179,71 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     var lastPoint2 = CGPointZero
     var path2 = CGPathCreateMutable()
     var wayPoints2: [CGPoint] = []
+    
+    func loadPlayers(){
+        let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
+        FIRDatabase.database().reference().child("PlayersInGames").observeSingleEventOfType(.Value, withBlock: { (snap: FIRDataSnapshot) in
+            // Get gameID
+
+            let postArr = snap.value as! NSArray
+            for var i = 0; i < postArr.count; i=i+1 {
+                if postArr[i].valueForKey("pID") as! String == pID {
+                    self.gameID = postArr[i].valueForKey("runningGameID") as! String
+                }
+            }
+            for var i = 0; i < postArr.count; i=i+1 {
+                if postArr[i].valueForKey("runningGameID") as! String == self.gameID && postArr[i].valueForKey("pID") as! String != pID {
+                    self.playerIDs.append(postArr[i].valueForKey("pID") as! String)
+                }
+            }
+            
+            // set own Player settings
+            if self.gameID == pID {
+                self.ref.child("RunningGame/"+self.gameID).child("Items").setValue(["category": 0, "posX": 0, "posY": 0])
+                if self.gameID != "" {
+                    FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).setValue(["pID": pID, "PositionX": self.p1.position.x,"PositionY": self.p1.position.y,"lineWidth":self.p1Size])
+                }
+            }
+            
+            if self.gameID != pID {
+                FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Items").observeEventType(.Value) { (snap: FIRDataSnapshot) in
+                    // Get Items
+                    let postArr2 = snap.value as! NSDictionary
+                    let pos = CGPoint(x: postArr2.valueForKey("posX") as! CGFloat, y: postArr2.objectForKey("posY") as! CGFloat)
+                    let nameRandom = postArr2.objectForKey("category") as! Int
+                    self.makeItems(pos, nameRandom: UInt32(nameRandom))
+                }
+            }
+            
+            
+            
+            
+            
+            // load other players
+            FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Players").observeEventType(.Value) { (snap: FIRDataSnapshot) in
+                // Get user value
+                let postArr3 = snap.value as! NSDictionary
+                for var i = 0; i < postArr3.allValues.count; i=i+1 {
+                    if (postArr3.allValues[i].objectForKey("pID") as! String) != pID {
+                        self.p2.position.x = postArr3.allValues[i].objectForKey("PositionX") as! CGFloat
+                        self.p2.position.y = postArr3.allValues[i].objectForKey("PositionY") as! CGFloat
+//                        self.p2.position.y = postArr3.allValues[i].objectForKey("lineWidth") as! CGFloat
+                        
+                        self.drawLine2(self.p2.position)
+                        self.addLinesToTexture2()
+                    }
+                }
+                
+                
+//                self.p2.position.x = snap.value?.objectForKey("PositionX") as! CGFloat
+//                self.p2.position.y = snap.value?.objectForKey("PositionY") as! CGFloat
+    
+//                self.drawLine2(self.p2.position)
+//                self.addLinesToTexture2()
+                
+            }
+        })
+    }
     
     func drawLine2(pPosition: CGPoint){
        
@@ -375,14 +422,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     
     func pushLine(){
-    
-        self.ref.child("p"+String(playerID)+"/PositionX").setValue(p1.position.x)
-        self.ref.child("p"+String(playerID)+"/PositionY").setValue(p1.position.y)
+        let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
+        if self.gameID != "" {
+            FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).setValue(["pID": pID, "PositionX": self.p1.position.x,"PositionY": self.p1.position.y,"lineWidth":self.p1Size])
+        }
+//        self.ref.child("p"+String(playerID)+"/PositionX").setValue(p1.position.x)
+//        self.ref.child("p"+String(playerID)+"/PositionY").setValue(p1.position.y)
     
     }
     
     func pushItem(category: UInt32, posX: CGFloat, posY: CGFloat){
-        self.ref.child("RunningGame/"+String(gameID)).child("Items").setValue(["category": Int(category), "posX": posX, "posY": posY])
+        self.ref.child("RunningGame/"+gameID).child("Items").setValue(["category": Int(category), "posX": posX, "posY": posY])
     }
     
     func makeHole(){
@@ -391,7 +441,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
  
     override func update(currentTime: CFTimeInterval) {
-        if leader {
+        let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
+        if gameID == pID {
             let rand = arc4random() % 500
             if rand == 10{
                 //wenn es mehr Items gibt, zahl erhöhen
