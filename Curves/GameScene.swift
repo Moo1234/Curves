@@ -97,6 +97,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     // Players
     var playerIDs = [String]()
     var colors = [String]()
+    var curves = [LineObject]()
     
     //***********************************************************************************
     //***********************************************************************************
@@ -128,8 +129,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
         p1.fillColor = SKColor.cyanColor()
         p1.strokeColor = SKColor.cyanColor()
-        p2.fillColor = SKColor.redColor()
-        p2.strokeColor = SKColor.redColor()
         p1.physicsBody = SKPhysicsBody(circleOfRadius: p1Size)
         p1.physicsBody!.categoryBitMask = PhysicsCat.p1Cat
         p1.physicsBody!.contactTestBitMask = PhysicsCat.gameAreaCat | PhysicsCat.p1Cat | PhysicsCat.p1TailCat
@@ -167,7 +166,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         addChild(leftBtnImage)
         addChild(rightBtn)
         addChild(rightBtnImage)
-        addChild(p2)
         
        
         addChild(lineContainer)
@@ -225,69 +223,97 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             }
             
             
-            
-            
-            
-            // load other players
-            FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Players").observeEventType(.Value) { (snap: FIRDataSnapshot) in
-                // Get user value
-                let postArr3 = snap.value as! NSDictionary
-                for var i = 0; i < postArr3.allValues.count; i=i+1 {
-                    if (postArr3.allValues[i].objectForKey("pID") as! String) != pID {
-                        self.p2.position.x = postArr3.allValues[i].objectForKey("PositionX") as! CGFloat
-                        self.p2.position.y = postArr3.allValues[i].objectForKey("PositionY") as! CGFloat
-//                        self.p2.position.y = postArr3.allValues[i].objectForKey("lineWidth") as! CGFloat
-                        
-                        self.drawLine2(self.p2.position)
-                        self.addLinesToTexture2()
-                    }
-                }
-                
-                
-//                self.p2.position.x = snap.value?.objectForKey("PositionX") as! CGFloat
-//                self.p2.position.y = snap.value?.objectForKey("PositionY") as! CGFloat
-    
-//                self.drawLine2(self.p2.position)
-//                self.addLinesToTexture2()
+//            print(self.playerIDs)
+            for var i = 0; i < self.playerIDs.count; i=i+1{
+                var line = LineObject(point: SKShapeNode(circleOfRadius: 2.0),position: CGPoint(), path: CGPathCreateMutable(), lineNode: SKShapeNode(), wayPoints: [])
+                self.curves.append(line)
+                self.addChild(line.point)
                 
             }
+            var i = -1
+            while i + 1 < self.playerIDs.count{
+                i = i + 1
+                FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Players").child(self.playerIDs[i]).observeEventType(.Value) { (snap: FIRDataSnapshot) in
+                    // Get user value
+                    if !(snap.value is NSNull) {
+                        let postArr3 = snap.value as! NSDictionary
+                        let point = CGPoint(x: postArr3.objectForKey("PositionX") as! CGFloat, y: postArr3.objectForKey("PositionY") as! CGFloat)
+                        self.curves[i].position = point
+                        self.curves[i].point.fillColor = SKColor.redColor()
+                        self.curves[i].point.strokeColor = SKColor.redColor()
+                        self.drawLine2(i)
+                    }
+                }
+            }
+            
+            // load other players
+//            FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Players").observeEventType(.Value) { (snap: FIRDataSnapshot) in
+//                // Get user value
+//                let postArr3 = snap.value as! NSDictionary
+//                print(postArr3.allValues.count)
+//                var pIDused:Int = 0
+//                for var i = 0; i < postArr3.allValues.count; i=i+1 {
+//                    if (postArr3.allValues[i].objectForKey("pID") as! String) != pID {
+////                        self.p2.position.x = postArr3.allValues[i].objectForKey("PositionX") as! CGFloat
+////                        self.p2.position.y = postArr3.allValues[i].objectForKey("PositionY") as! CGFloat
+//                        let point = CGPoint(x: postArr3.allValues[i].objectForKey("PositionX") as! CGFloat, y: postArr3.allValues[i].objectForKey("PositionY") as! CGFloat)
+//                        self.curves[i-pIDused].position = point
+////                        self.p2.position.y = postArr3.allValues[i].objectForKey("lineWidth") as! CGFloat
+//                        
+//                        self.curves[i-pIDused].point.fillColor = SKColor.redColor()
+//                        self.curves[i-pIDused].point.strokeColor = SKColor.redColor()
+////                        self.addChild(self.curves[i].point)
+//                        self.drawLine2(i-pIDused)
+//                    }else{
+//                        pIDused = pIDused + 1
+//                    }
+//                }
+//                
+//                
+////                self.p2.position.x = snap.value?.objectForKey("PositionX") as! CGFloat
+////                self.p2.position.y = snap.value?.objectForKey("PositionY") as! CGFloat
+//    
+////                self.drawLine2(self.p2.position)
+////                self.addLinesToTexture2()
+//                
+//            }
         })
     }
     
-    func drawLine2(pPosition: CGPoint){
+    func drawLine2(i: Int){
        
         
         
-        if (CGPathIsEmpty(path2)) {
-            CGPathMoveToPoint(path2, nil, pPosition.x, pPosition.y)
-            lineNode2.path = nil
-            lineNode2.lineWidth = lineThickness
-            lineNode2.strokeColor = SKColor.redColor()
-            lineContainer.addChild(lineNode2)
+        if (CGPathIsEmpty(curves[i].path)) {
+            CGPathMoveToPoint(curves[i].path, nil, curves[i].position.x, curves[i].position.y)
+            curves[i].lineNode.path = nil
+            curves[i].lineNode.lineWidth = lineThickness
+            curves[i].lineNode.strokeColor = SKColor.redColor()
+            lineContainer.addChild(curves[i].lineNode)
             
         }
         
-        var x = pPosition.x + xCurve
-        var y = pPosition.y + yCurve
+        var x = curves[i].position.x + xCurve
+        var y = curves[i].position.y + yCurve
         
-        CGPathAddLineToPoint(path2, nil, x, y)
-        lineNode2.path = path2
-        p2.position = CGPoint(x: x, y: y)
+        CGPathAddLineToPoint(curves[i].path, nil, x, y)
+        curves[i].lineNode.path = curves[i].path
+        curves[i].position = CGPoint(x: x, y: y)
         
 //        pPosition = CGPointMake(x, y)
-        wayPoints2.append(CGPoint(x:x,y:y))
+        curves[i].wayPoints.append(CGPoint(x:x,y:y))
 
         
+        self.addLinesToTexture2(i)
         
     }
     
-    func addLinesToTexture2 () {
+    func addLinesToTexture2 (i: Int) {
         // Convert the contents of the line container to an SKTexture
         texture = self.view!.textureFromNode(lineContainer)!
         lineCanvas!.texture = texture
-        lineNode2.removeFromParent()
-        path2 = CGPathCreateMutable()
-        
+        curves[i].lineNode.removeFromParent()
+        curves[i].path = CGPathCreateMutable()
     }
     
     func pixelFromTexture(texture: SKTexture, position: CGPoint) -> SKColor {

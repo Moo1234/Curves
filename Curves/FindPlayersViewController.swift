@@ -189,9 +189,6 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
             
         }
     }
-    @IBAction func reloadData(sender: AnyObject) {
-        OnlineData().loadGames(self)
-    }
 
     @IBAction func logout(sender: AnyObject) {
         let firebaseAuth = FIRAuth.auth()

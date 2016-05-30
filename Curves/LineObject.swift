@@ -10,20 +10,19 @@ import Foundation
 import SpriteKit
 
 class LineObject{
-    var name: String = ""
-    var lineWidth: CGFloat = 2.0
-    var speed: Int = 80
-    let line: SKShapeNode
     
-    let myLine: SKShapeNode
-    var color: SKColor = SKColor.blueColor()
+    var position: CGPoint = CGPoint()
+    var path = CGPathCreateMutable()
+    var lineNode = SKShapeNode()
+    var wayPoints: [CGPoint] = []
+    var point = SKShapeNode()
     
-    init(name:String, lineWidth: CGFloat, speed: Int, dotThickness: CGFloat, color: SKColor){
-        self.name = name
-        self.lineWidth = lineWidth
-        self.speed = speed
-        self.line = SKShapeNode(circleOfRadius: dotThickness)
-        self.myLine = SKShapeNode(path: CGPathCreateMutable())
+    init(point: SKShapeNode,position: CGPoint, path: CGMutablePath, lineNode: SKShapeNode, wayPoints: [CGPoint]){
+        self.point = point
+        self.position = position
+        self.path = path
+        self.lineNode = lineNode
+        self.wayPoints = wayPoints
     }
     
     

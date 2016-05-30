@@ -9,8 +9,8 @@
 import UIKit
 
 class NewGameTableViewCell: UITableViewCell {
-    @IBOutlet weak var scoreTextField: UITextField!
-    @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var colorButton: UIButton!
+    @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet weak var nameLabel: UILabel!
     
 }

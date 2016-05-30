@@ -138,8 +138,8 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
 //        cell.scoreTextField.backgroundColor = UIColor.clearColor()
 //        
 //        cell.backgroundColor = UIColor.clearColor()
-        cell.nameTextField.text = game.players[indexPath.row]
-        cell.scoreTextField.text = String(game.scores[indexPath.row])
+        cell.nameLabel.text = game.players[indexPath.row]
+        cell.scoreLabel.text = String(game.scores[indexPath.row])
         cell.colorButton.backgroundColor = hexStringToUIColor(game.colors[indexPath.row])
         let playerID: String = (FIRAuth.auth()?.currentUser?.uid)!
         if game.playerIDs[indexPath.row] == playerID {
