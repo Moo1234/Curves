@@ -88,7 +88,10 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
 //                    let playerID: String = (FIRAuth.auth()?.currentUser?.uid)!
 //                    let idInGame = String(self.playerIDs.indexOf(playerID)!)
                 //FIRDatabase.database().reference().child("RunningGame/"+self.playerIDs.first!).child(idInGame).setValue(["positionX": 200, "positionY": 200, "lineWidth": 2])
-                    
+                    let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
+                    if self.game.playerIDs[0] == pID {
+                        FIRDatabase.database().reference().child("Games").child(String(self.gameId)).removeValue()
+                    }
                     self.performSegueWithIdentifier("startGame", sender:self)
                 }
                 self.tableView.reloadData()

@@ -96,7 +96,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     // Players
     var playerIDs = [String]()
-    var colors = [String]()
+    var colors = [UIColor]()
     var curves = [LineObject]()
     
     //***********************************************************************************
@@ -127,8 +127,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         gameArea.strokeColor = SKColor.whiteColor()
         
         
-        p1.fillColor = SKColor.cyanColor()
-        p1.strokeColor = SKColor.cyanColor()
+//        p1.fillColor = SKColor.cyanColor()
+//        p1.strokeColor = SKColor.cyanColor()
         p1.physicsBody = SKPhysicsBody(circleOfRadius: p1Size)
         p1.physicsBody!.categoryBitMask = PhysicsCat.p1Cat
         p1.physicsBody!.contactTestBitMask = PhysicsCat.gameAreaCat | PhysicsCat.p1Cat | PhysicsCat.p1TailCat
@@ -138,10 +138,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
         
         leftBtn.position = CGPoint(x: btnWidth, y: view.frame.height / 4 )
-        leftBtn.fillColor = p1.fillColor
         
         rightBtn.position = CGPoint(x: view.frame.width - btnWidth, y: view.frame.height / 4)
-        rightBtn.fillColor = p1.fillColor
         
         
         gameArea.physicsBody = SKPhysicsBody(edgeLoopFromRect: CGRect(x: 2 * btnWidth + 10, y: 5, width: view.frame.width - (4*btnWidth+20), height: view.frame.height - 10))
@@ -194,13 +192,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             let postArr = snap.value as! NSArray
             for var i = 0; i < postArr.count; i=i+1 {
                 if postArr[i].valueForKey("gID") as! Int == GameData.gID {
+                    let color: UIColor = self.hexStringToUIColor(postArr[i].valueForKey("color") as! String)
                     if postArr[i].valueForKey("pID") as! String != pID {
                         self.playerIDs.append(postArr[i].valueForKey("pID") as! String)
+                        self.colors.append(color)
                     }else{
-                        self.p1.fillColor = self.hexStringToUIColor(postArr[i].valueForKey("color") as! String)
-                        self.p1.strokeColor = self.hexStringToUIColor(postArr[i].valueForKey("color") as! String)
+                        self.p1.fillColor = color
+                        self.p1.strokeColor = color
+                        self.leftBtn.fillColor = color
+                        self.rightBtn.fillColor = color
                     }
-                    self.colors.append(postArr[i].valueForKey("color") as! String)
                 }
             }
             
@@ -239,8 +240,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                         let postArr3 = snap.value as! NSDictionary
                         let point = CGPoint(x: postArr3.objectForKey("PositionX") as! CGFloat, y: postArr3.objectForKey("PositionY") as! CGFloat)
                         self.curves[i].position = point
-                        self.curves[i].point.fillColor = SKColor.redColor()
-                        self.curves[i].point.strokeColor = SKColor.redColor()
+                        self.curves[i].point.fillColor = self.colors[i]
+                        self.curves[i].point.strokeColor = self.colors[i]
                         self.drawLine2(i)
                     }
                 }
@@ -288,7 +289,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             CGPathMoveToPoint(curves[i].path, nil, curves[i].position.x, curves[i].position.y)
             curves[i].lineNode.path = nil
             curves[i].lineNode.lineWidth = lineThickness
-            curves[i].lineNode.strokeColor = SKColor.redColor()
+            curves[i].lineNode.strokeColor = colors[i]
             lineContainer.addChild(curves[i].lineNode)
             
         }
