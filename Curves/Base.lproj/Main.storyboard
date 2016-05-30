@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="RMW-l0-DlT">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="I4G-EI-Wd2">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -402,54 +402,58 @@
                                     <action selector="leaveGame:" destination="Cwf-ut-WVk" eventType="touchUpInside" id="V6S-uo-Tze"/>
                                 </connections>
                             </button>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="JHw-Rd-H7z">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="65" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="JHw-Rd-H7z">
                                 <rect key="frame" x="20" y="58" width="696" height="336"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="sectionIndexBackgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="8Og-Hc-Xqf" customClass="NewGameTableViewCell" customModule="Curves" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="696" height="44"/>
+                                        <rect key="frame" x="0.0" y="28" width="696" height="65"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8Og-Hc-Xqf" id="seM-5f-le9">
-                                            <rect key="frame" x="0.0" y="0.0" width="696" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="696" height="65"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="SLN-wg-Nai">
-                                                    <rect key="frame" x="8" y="7" width="97" height="30"/>
+                                                    <rect key="frame" x="8" y="18" width="97" height="30"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="97" id="Ppc-Ia-KzM"/>
-                                                    </constraints>
-                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                                    <textInputTraits key="textInputTraits"/>
-                                                </textField>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Score" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="T7S-Md-p89">
-                                                    <rect key="frame" x="300" y="8" width="97" height="30"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="97" id="fmM-wq-zNs"/>
+                                                        <constraint firstAttribute="width" constant="97" id="OvM-W0-iZJ"/>
                                                     </constraints>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QXq-ZW-j5h">
-                                                    <rect key="frame" x="658" y="7" width="30" height="30"/>
+                                                    <rect key="frame" x="638" y="7" width="50" height="50"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="50" id="7ch-E6-VGp"/>
+                                                    </constraints>
                                                     <connections>
                                                         <action selector="changeColor:" destination="Cwf-ut-WVk" eventType="touchUpInside" id="xA4-WA-e2m"/>
                                                     </connections>
                                                 </button>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Score" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="T7S-Md-p89">
+                                                    <rect key="frame" x="300" y="18" width="97" height="30"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="97" id="1ZI-vm-0YX"/>
+                                                    </constraints>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                </textField>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
-                                                <constraint firstItem="SLN-wg-Nai" firstAttribute="leading" secondItem="seM-5f-le9" secondAttribute="leadingMargin" id="5nZ-V7-rW9"/>
-                                                <constraint firstItem="QXq-ZW-j5h" firstAttribute="trailing" secondItem="seM-5f-le9" secondAttribute="trailingMargin" id="E61-xl-r9n"/>
-                                                <constraint firstItem="SLN-wg-Nai" firstAttribute="top" secondItem="QXq-ZW-j5h" secondAttribute="top" id="RQc-lI-sNk"/>
-                                                <constraint firstItem="SLN-wg-Nai" firstAttribute="centerY" secondItem="seM-5f-le9" secondAttribute="centerY" id="XzT-dD-7Xh"/>
-                                                <constraint firstItem="T7S-Md-p89" firstAttribute="top" secondItem="seM-5f-le9" secondAttribute="topMargin" id="ZfC-Nm-XFp"/>
-                                                <constraint firstItem="T7S-Md-p89" firstAttribute="centerX" secondItem="seM-5f-le9" secondAttribute="centerX" id="o89-Zu-Qzf"/>
+                                                <constraint firstItem="QXq-ZW-j5h" firstAttribute="centerY" secondItem="seM-5f-le9" secondAttribute="centerY" id="5A7-DA-zBp"/>
+                                                <constraint firstItem="SLN-wg-Nai" firstAttribute="leading" secondItem="seM-5f-le9" secondAttribute="leadingMargin" id="Ibb-Yt-TCy"/>
+                                                <constraint firstItem="T7S-Md-p89" firstAttribute="centerX" secondItem="seM-5f-le9" secondAttribute="centerX" id="Ldk-4v-3SE"/>
+                                                <constraint firstItem="QXq-ZW-j5h" firstAttribute="trailing" secondItem="seM-5f-le9" secondAttribute="trailingMargin" id="UrV-sX-mbe"/>
+                                                <constraint firstItem="QXq-ZW-j5h" firstAttribute="bottom" secondItem="seM-5f-le9" secondAttribute="bottomMargin" id="c3J-qY-W2t"/>
+                                                <constraint firstItem="SLN-wg-Nai" firstAttribute="baseline" secondItem="T7S-Md-p89" secondAttribute="baseline" id="xe5-3N-od5"/>
+                                                <constraint firstItem="SLN-wg-Nai" firstAttribute="centerY" secondItem="seM-5f-le9" secondAttribute="centerY" id="yaD-Dy-UFc"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -505,6 +509,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="M4d-rb-3fH"/>
+        <segue reference="Abh-to-122"/>
     </inferredMetricsTieBreakers>
 </document>
