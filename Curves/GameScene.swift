@@ -20,6 +20,11 @@ struct PhysicsCat{
     
 }
 
+struct GameData{
+    static var id = ""
+    static var gID = 0
+}
+
 class GameScene: SKScene, SKPhysicsContactDelegate{
     
     //***********************************************************************************
@@ -172,6 +177,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         lineContainer.addChild(lineCanvas!)
         lastPoint = CGPointMake(view.frame.size.width/2.0, view.frame.size.height/2.0)
         
+        self.gameID = GameData.id
+        
         loadPlayers()
         
     }
@@ -188,12 +195,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
 
             let postArr = snap.value as! NSArray
             for var i = 0; i < postArr.count; i=i+1 {
-                if postArr[i].valueForKey("pID") as! String == pID {
-                    self.gameID = postArr[i].valueForKey("runningGameID") as! String
-                }
-            }
-            for var i = 0; i < postArr.count; i=i+1 {
-                if postArr[i].valueForKey("runningGameID") as! String == self.gameID{
+                if postArr[i].valueForKey("gID") as! Int == GameData.gID {
                     if postArr[i].valueForKey("pID") as! String != pID {
                         self.playerIDs.append(postArr[i].valueForKey("pID") as! String)
                     }else{

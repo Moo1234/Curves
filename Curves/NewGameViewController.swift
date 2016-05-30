@@ -292,7 +292,6 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     @IBAction func readyForGame(sender: AnyObject) {
         if readyForGame.currentTitle == "Bereit" {
             readyForGame.setTitle("Stop", forState: UIControlState.Normal)
-            FIRDatabase.database().reference().child("PlayersInGames/"+String(playerInGameID)+"/runningGameID").setValue(self.game.playerIDs.first)
             FIRDatabase.database().reference().child("PlayersInGames/"+String(playerInGameID)+"/ready").setValue(true)
             
         }else{
@@ -300,6 +299,15 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
             FIRDatabase.database().reference().child("PlayersInGames/"+String(playerInGameID)+"/ready").setValue(false)
         }
         
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+        if segue.identifier == "startGame" {
+            GameData.id = self.game.playerIDs[0]
+            GameData.gID = self.gameId
+        }
     }
 
 }

@@ -120,7 +120,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
                 }
             }
             let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
-            FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameList[indexPath.row].id, "pID": pID, "ready": false, "runningGameID": "", "color": ""])
+            FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameList[indexPath.row].id, "pID": pID, "ready": false, "color": ""])
             self.playerInGameID = freeID
             
             
@@ -162,7 +162,7 @@ class FindPlayersViewController: UIViewController, UITableViewDataSource, UITabl
                     }
                 }
                 let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
-                FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameID, "pID": pID, "ready": false, "runningGameID": pID, "color": "#d3d3d3"])
+                FIRDatabase.database().reference().child("PlayersInGames/"+String(freeID)).setValue(["id": freeID, "gID": self.gameID, "pID": pID, "ready": false, "color": "#d3d3d3"])
                 self.playerInGameID = freeID
                 self.performSegueWithIdentifier("newGame", sender:self)
             }
