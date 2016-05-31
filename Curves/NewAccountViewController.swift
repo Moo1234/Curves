@@ -95,7 +95,7 @@ class NewAccountViewController: UIViewController, UITextFieldDelegate {
                                     break
                                 }
                             }
-                            FIRDatabase.database().reference().child("Players/"+String(freeID)).setValue(["id": freeID , "pID": user.uid, "name": self.nameTxtField.text! as String])
+                            FIRDatabase.database().reference().child("Players/"+String(freeID)).setValue(["id": freeID , "pID": user.uid, "name": self.nameTxtField.text! as String, "score": 500])
                         }
                     }
                 }
