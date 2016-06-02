@@ -77,6 +77,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
             FIRDatabase.database().reference().child("Players").observeEventType(.Value) { (snap: FIRDataSnapshot) in
                 // Get Game values
                 self.game.players = [String]()
+                self.game.scores = [Int]()
                 let postArr = snap.value as! NSArray
                 for var i = 0; i < postArr.count; i=i+1 {
                     if !(postArr[i] is NSNull) && self.game.playerIDs.contains(postArr[i].valueForKey("pID") as! String){

@@ -83,16 +83,18 @@ class NewAccountViewController: UIViewController, UITextFieldDelegate {
                         var playerIDs = [Int]()
                         FIRDatabase.database().reference().child("Players").observeSingleEventOfType(.Value) { (snap: FIRDataSnapshot) in
                             // Get free ID
-                            let postArr = snap.value as! NSArray
-                            for var i = 0; i < postArr.count; i=i+1 {
-                                if !(postArr[i] is NSNull){
-                                    playerIDs.append(postArr[i].valueForKey("id") as! Int)
+                            if !(snap.value is NSNull)  {
+                                let postArr = snap.value as! NSArray
+                                for var i = 0; i < postArr.count; i=i+1 {
+                                    if !(postArr[i] is NSNull){
+                                        playerIDs.append(postArr[i].valueForKey("id") as! Int)
+                                    }
                                 }
-                            }
-                            for var i=0; i < playerIDs.count+1; i=i+1 {
-                                if !playerIDs.contains(i) {
-                                    freeID = i
-                                    break
+                                for var i=0; i < playerIDs.count+1; i=i+1 {
+                                    if !playerIDs.contains(i) {
+                                        freeID = i
+                                        break
+                                    }
                                 }
                             }
                             FIRDatabase.database().reference().child("Players/"+String(freeID)).setValue(["id": freeID , "pID": user.uid, "name": self.nameTxtField.text! as String, "score": 500])
