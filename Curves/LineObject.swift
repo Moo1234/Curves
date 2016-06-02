@@ -16,13 +16,15 @@ class LineObject{
     var lineNode = SKShapeNode()
     var wayPoints: [CGPoint] = []
     var point = SKShapeNode()
+    var dead = false
     
-    init(point: SKShapeNode,position: CGPoint, path: CGMutablePath, lineNode: SKShapeNode, wayPoints: [CGPoint]){
+    init(point: SKShapeNode,position: CGPoint, path: CGMutablePath, lineNode: SKShapeNode, wayPoints: [CGPoint], dead: Bool){
         self.point = point
         self.position = position
         self.path = path
         self.lineNode = lineNode
         self.wayPoints = wayPoints
+        self.dead = dead
     }
     
     

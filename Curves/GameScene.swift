@@ -22,7 +22,8 @@ struct PhysicsCat{
 
 struct GameData{
     static var id = ""
-    static var gID = 0
+    //static var gID = 0
+    static var game = Game()
 }
 
 class GameScene: SKScene, SKPhysicsContactDelegate{
@@ -46,14 +47,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     var lastPoint = CGPointZero
     var wayPoints: [CGPoint] = []
     var p1 = SKShapeNode(circleOfRadius: 2.0)
-    var p2 = SKShapeNode(circleOfRadius: 2.0)
+    //    var p2 = SKShapeNode(circleOfRadius: 2.0)
     var p1Size: CGFloat = 2.0
     var xCurve: CGFloat = 1.0
     var yCurve: CGFloat = 1.0
     var curveRadius = 5.0
     var path = CGPathCreateMutable()
     var p1NewSize = SKShapeNode()
-    var playerID: Int = Int()
+    //    var playerID: Int = Int()
     
     
     //Layout
@@ -67,8 +68,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     var lineCanvas:SKSpriteNode?
     var leftBtnImage = SKSpriteNode()
     var rightBtnImage = SKSpriteNode()
-
-   
+    
+    
     
     //Timer
     var myTimer1 : NSTimer = NSTimer()
@@ -93,6 +94,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     var positionList = [CGPoint]()
     
     var gameID = ""
+    var ownCurveIndex = -1
     
     // Players
     var playerIDs = [String]()
@@ -112,7 +114,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         backgroundColor = SKColor.blackColor()
         
         physicsWorld.contactDelegate = self
-        playerID = 1
+        //        playerID = 1
         
         
         
@@ -127,8 +129,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         gameArea.strokeColor = SKColor.whiteColor()
         
         
-//        p1.fillColor = SKColor.cyanColor()
-//        p1.strokeColor = SKColor.cyanColor()
+        //        p1.fillColor = SKColor.cyanColor()
+        //        p1.strokeColor = SKColor.cyanColor()
         p1.physicsBody = SKPhysicsBody(circleOfRadius: p1Size)
         p1.physicsBody!.categoryBitMask = PhysicsCat.p1Cat
         p1.physicsBody!.contactTestBitMask = PhysicsCat.gameAreaCat | PhysicsCat.p1Cat | PhysicsCat.p1TailCat
@@ -165,124 +167,151 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         addChild(rightBtn)
         addChild(rightBtnImage)
         
-       
+        
         addChild(lineContainer)
         lineCanvas = SKSpriteNode(color:SKColor.clearColor(),size:view.frame.size)
         lineCanvas!.anchorPoint = CGPointZero
         lineCanvas!.position = CGPointZero
         lineContainer.addChild(lineCanvas!)
-        lastPoint = CGPointMake(view.frame.size.width/2.0, view.frame.size.height/2.0)
+        
+        randomStartingPosition()
         
         self.gameID = GameData.id
         
         loadPlayers()
         
+        
     }
     
-    var lineNode2 = SKShapeNode()
-    var lastPoint2 = CGPointZero
-    var path2 = CGPathCreateMutable()
-    var wayPoints2: [CGPoint] = []
+    //    var lineNode2 = SKShapeNode()
+    //    var lastPoint2 = CGPointZero
+    //    var path2 = CGPathCreateMutable()
+    //    var wayPoints2: [CGPoint] = []
     
     func loadPlayers(){
         let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
-        FIRDatabase.database().reference().child("PlayersInGames").observeSingleEventOfType(.Value, withBlock: { (snap: FIRDataSnapshot) in
-            // Get gameID
-
-            let postArr = snap.value as! NSArray
-            for var i = 0; i < postArr.count; i=i+1 {
-                if postArr[i].valueForKey("gID") as! Int == GameData.gID {
-                    let color: UIColor = self.hexStringToUIColor(postArr[i].valueForKey("color") as! String)
-                    if postArr[i].valueForKey("pID") as! String != pID {
-                        self.playerIDs.append(postArr[i].valueForKey("pID") as! String)
-                        self.colors.append(color)
-                    }else{
-                        self.p1.fillColor = color
-                        self.p1.strokeColor = color
-                        self.leftBtn.fillColor = color
-                        self.rightBtn.fillColor = color
-                    }
+        //        FIRDatabase.database().reference().child("PlayersInGames").observeSingleEventOfType(.Value, withBlock: { (snap: FIRDataSnapshot) in
+        //            // Get gameID
+        //
+        //            let postArr = snap.value as! NSArray
+        //            for var i = 0; i < postArr.count; i=i+1 {
+        //                if postArr[i].valueForKey("gID") as! Int == GameData.gID {
+        //                    let color: UIColor = self.hexStringToUIColor(postArr[i].valueForKey("color") as! String)
+        //                    if postArr[i].valueForKey("pID") as! String != pID {
+        //                        self.playerIDs.append(postArr[i].valueForKey("pID") as! String)
+        //                        self.colors.append(color)
+        //                    }else{
+        //                        self.p1.fillColor = color
+        //                        self.p1.strokeColor = color
+        //                        self.leftBtn.fillColor = color
+        //                        self.rightBtn.fillColor = color
+        //                    }
+        //                }
+        //            }
+        self.playerIDs = GameData.game.playerIDs.filter {!$0.containsString(pID)}
+        for var i = 0; i < GameData.game.colors.count; i=i+1 {
+            let color: UIColor = self.hexStringToUIColor(GameData.game.colors[i])
+            if GameData.game.playerIDs[i] != pID {
+                self.colors.append(color)
+            }else{
+                self.p1.fillColor = color
+                self.p1.strokeColor = color
+                self.leftBtn.fillColor = color
+                self.rightBtn.fillColor = color
+            }
+        }
+        
+        // set own Player settings
+        self.ref.child("RunningGame/"+self.gameID).child("Items").setValue(["category": 0, "posX": 0, "posY": 0])
+        if self.gameID == pID {
+            FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).setValue(["pID": pID, "PositionX": self.p1.position.x,"PositionY": self.p1.position.y,"lineWidth":self.p1Size])
+        }
+        
+        if self.gameID != pID {
+            FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Items").observeEventType(.Value) { (snap: FIRDataSnapshot) in
+                // Get Items
+                let postArr2 = snap.value as! NSDictionary
+                let pos = CGPoint(x: postArr2.valueForKey("posX") as! CGFloat, y: postArr2.objectForKey("posY") as! CGFloat)
+                let nameRandom = postArr2.objectForKey("category") as! Int
+                self.makeItems(pos, nameRandom: UInt32(nameRandom))
+            }
+        }
+        
+        
+        //            print(self.playerIDs)
+        for var i = 0; i < self.playerIDs.count; i=i+1{
+            var line = LineObject(point: SKShapeNode(circleOfRadius: 2.0),position: CGPoint(), path: CGPathCreateMutable(), lineNode: SKShapeNode(), wayPoints: [], dead: false)
+            self.curves.append(line)
+            self.addChild(line.point)
+            
+        }
+        var i = -1
+        while i + 1 < self.playerIDs.count{
+            i = i + 1
+            FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Players").child(self.playerIDs[i]).observeEventType(.Value) { (snap: FIRDataSnapshot) in
+                // Get user value
+                if !(snap.value is NSNull) {
+                    let postArr3 = snap.value as! NSDictionary
+                    let point = CGPoint(x: postArr3.objectForKey("PositionX") as! CGFloat, y: postArr3.objectForKey("PositionY") as! CGFloat)
+                    self.curves[i].position = point
+                    self.curves[i].point.fillColor = self.colors[i]
+                    self.curves[i].point.strokeColor = self.colors[i]
+                    self.drawLine2(i)
                 }
             }
-            
-            // set own Player settings
-            if self.gameID == pID {
-                self.ref.child("RunningGame/"+self.gameID).child("Items").setValue(["category": 0, "posX": 0, "posY": 0])
-                if self.gameID != "" {
-                    FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).setValue(["pID": pID, "PositionX": self.p1.position.x,"PositionY": self.p1.position.y,"lineWidth":self.p1Size])
-                }
-            }
-            
-            if self.gameID != pID {
-                FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Items").observeEventType(.Value) { (snap: FIRDataSnapshot) in
-                    // Get Items
-                    let postArr2 = snap.value as! NSDictionary
-                    let pos = CGPoint(x: postArr2.valueForKey("posX") as! CGFloat, y: postArr2.objectForKey("posY") as! CGFloat)
-                    let nameRandom = postArr2.objectForKey("category") as! Int
-                    self.makeItems(pos, nameRandom: UInt32(nameRandom))
-                }
-            }
-            
-            
-//            print(self.playerIDs)
-            for var i = 0; i < self.playerIDs.count; i=i+1{
-                var line = LineObject(point: SKShapeNode(circleOfRadius: 2.0),position: CGPoint(), path: CGPathCreateMutable(), lineNode: SKShapeNode(), wayPoints: [])
-                self.curves.append(line)
-                self.addChild(line.point)
-                
-            }
-            var i = -1
-            while i + 1 < self.playerIDs.count{
-                i = i + 1
-                FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Players").child(self.playerIDs[i]).observeEventType(.Value) { (snap: FIRDataSnapshot) in
-                    // Get user value
-                    if !(snap.value is NSNull) {
-                        let postArr3 = snap.value as! NSDictionary
-                        let point = CGPoint(x: postArr3.objectForKey("PositionX") as! CGFloat, y: postArr3.objectForKey("PositionY") as! CGFloat)
-                        self.curves[i].position = point
-                        self.curves[i].point.fillColor = self.colors[i]
-                        self.curves[i].point.strokeColor = self.colors[i]
-                        self.drawLine2(i)
-                    }
-                }
-            }
-            
-            // load other players
-//            FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Players").observeEventType(.Value) { (snap: FIRDataSnapshot) in
-//                // Get user value
-//                let postArr3 = snap.value as! NSDictionary
-//                print(postArr3.allValues.count)
-//                var pIDused:Int = 0
-//                for var i = 0; i < postArr3.allValues.count; i=i+1 {
-//                    if (postArr3.allValues[i].objectForKey("pID") as! String) != pID {
-////                        self.p2.position.x = postArr3.allValues[i].objectForKey("PositionX") as! CGFloat
-////                        self.p2.position.y = postArr3.allValues[i].objectForKey("PositionY") as! CGFloat
-//                        let point = CGPoint(x: postArr3.allValues[i].objectForKey("PositionX") as! CGFloat, y: postArr3.allValues[i].objectForKey("PositionY") as! CGFloat)
-//                        self.curves[i-pIDused].position = point
-////                        self.p2.position.y = postArr3.allValues[i].objectForKey("lineWidth") as! CGFloat
-//                        
-//                        self.curves[i-pIDused].point.fillColor = SKColor.redColor()
-//                        self.curves[i-pIDused].point.strokeColor = SKColor.redColor()
-////                        self.addChild(self.curves[i].point)
-//                        self.drawLine2(i-pIDused)
-//                    }else{
-//                        pIDused = pIDused + 1
-//                    }
-//                }
-//                
-//                
-////                self.p2.position.x = snap.value?.objectForKey("PositionX") as! CGFloat
-////                self.p2.position.y = snap.value?.objectForKey("PositionY") as! CGFloat
-//    
-////                self.drawLine2(self.p2.position)
-////                self.addLinesToTexture2()
-//                
-//            }
-        })
+        }
+        
+        // load other players
+        //            FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Players").observeEventType(.Value) { (snap: FIRDataSnapshot) in
+        //                // Get user value
+        //                let postArr3 = snap.value as! NSDictionary
+        //                print(postArr3.allValues.count)
+        //                var pIDused:Int = 0
+        //                for var i = 0; i < postArr3.allValues.count; i=i+1 {
+        //                    if (postArr3.allValues[i].objectForKey("pID") as! String) != pID {
+        ////                        self.p2.position.x = postArr3.allValues[i].objectForKey("PositionX") as! CGFloat
+        ////                        self.p2.position.y = postArr3.allValues[i].objectForKey("PositionY") as! CGFloat
+        //                        let point = CGPoint(x: postArr3.allValues[i].objectForKey("PositionX") as! CGFloat, y: postArr3.allValues[i].objectForKey("PositionY") as! CGFloat)
+        //                        self.curves[i-pIDused].position = point
+        ////                        self.p2.position.y = postArr3.allValues[i].objectForKey("lineWidth") as! CGFloat
+        //
+        //                        self.curves[i-pIDused].point.fillColor = SKColor.redColor()
+        //                        self.curves[i-pIDused].point.strokeColor = SKColor.redColor()
+        ////                        self.addChild(self.curves[i].point)
+        //                        self.drawLine2(i-pIDused)
+        //                    }else{
+        //                        pIDused = pIDused + 1
+        //                    }
+        //                }
+        //
+        //
+        ////                self.p2.position.x = snap.value?.objectForKey("PositionX") as! CGFloat
+        ////                self.p2.position.y = snap.value?.objectForKey("PositionY") as! CGFloat
+        //
+        ////                self.drawLine2(self.p2.position)
+        ////                self.addLinesToTexture2()
+        //
+        //            }
+        //        })
+    }
+    
+    func randomStartingPosition(){
+        let posX = CGFloat(arc4random_uniform(UInt32(view!.frame.width - (4*btnWidth+20) - 100))) + 2 * btnWidth + 10 + 50
+        let posY = CGFloat(arc4random_uniform(UInt32(view!.frame.height - (4*btnWidth+20) - 100))) + 5 + 50
+        let startingPosition = CGPoint(x: posX, y: posY)
+        //        print(startingPosition)
+        
+        lastPoint = CGPointMake(posX, posY)
+        wayPoints.append(startingPosition)
+        
+        let startingDirection = Double(arc4random_uniform(360))
+        curveRadius = startingDirection
+        changeDirectionL()
+        curveRadius = 5.0
     }
     
     func drawLine2(i: Int){
-       
+        
         
         
         if (CGPathIsEmpty(curves[i].path)) {
@@ -301,9 +330,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         curves[i].lineNode.path = curves[i].path
         curves[i].position = CGPoint(x: x, y: y)
         
-//        pPosition = CGPointMake(x, y)
+        //        pPosition = CGPointMake(x, y)
         curves[i].wayPoints.append(CGPoint(x:x,y:y))
-
+        
         
         self.addLinesToTexture2(i)
         
@@ -451,7 +480,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         lineNode.path = path
         p1.position = CGPoint(x: x, y: y)
         pushLine()
-
+        
         lastPoint = CGPointMake(x, y)
         wayPoints.append(CGPoint(x:x,y:y))
     }
@@ -462,9 +491,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         if self.gameID != "" {
             FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).setValue(["pID": pID, "PositionX": self.p1.position.x,"PositionY": self.p1.position.y,"lineWidth":self.p1Size])
         }
-//        self.ref.child("p"+String(playerID)+"/PositionX").setValue(p1.position.x)
-//        self.ref.child("p"+String(playerID)+"/PositionY").setValue(p1.position.y)
-    
+        //        self.ref.child("p"+String(playerID)+"/PositionX").setValue(p1.position.x)
+        //        self.ref.child("p"+String(playerID)+"/PositionY").setValue(p1.position.y)
+        
     }
     
     func pushItem(category: UInt32, posX: CGFloat, posY: CGFloat){
@@ -475,10 +504,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         gapTimer = true
     }
     
- 
+    
     override func update(currentTime: CFTimeInterval) {
         let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
-        if gameID == pID {
+//        print(curves.contains({ obj -> Bool in obj.dead == false }))
+        if gameID == pID { //&& (!dead || curves.contains({ obj -> Bool in obj.dead == false })) {
+            
             let rand = arc4random() % 500
             if rand == 10{
                 //wenn es mehr Items gibt, zahl erhöhen
@@ -493,30 +524,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             drawLine()
             addLinesToTexture()
         }
-  
+        
         
         
     }
-
+    
     //Erstellt zufällige Items, mit zufälligen Positionen
     func makeItems(pos: CGPoint, nameRandom: UInt32){
         
-//        var pos =
+        //        var pos =
         var imageName = String()
         
         
         //item = ItemObject(imageName: "testItem", itemAction: "curveSpeed",itemPosition: pos, itemName: "curveSpeed")
-//        item!.position = pos
-//        item.name = "curveSpeed" + String(ii)
+        //        item!.position = pos
+        //        item.name = "curveSpeed" + String(ii)
         
         
         //wenn es mehr Items gibt, zahl erhöhen
-//        var nameRandom = 1 + arc4random() % 4
+        //        var nameRandom = 1 + arc4random() % 4
         
         //        var nameRandom = 3
         
         switch nameRandom{
-        
+            
         case 1:
             imageName = "speedItem"
         case 2:
@@ -526,7 +557,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         case 4:
             imageName = "switchDir"
             
-        //wenn mehr Items
+            //wenn mehr Items
         //case 4:...
         default:
             break
@@ -557,14 +588,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
-
+        
         if (contact.bodyA.categoryBitMask == PhysicsCat.itemCat) || contact.bodyB.categoryBitMask == PhysicsCat.itemCat{
             for var i = 0; i < itemList.count; i = i+1{
                 if contact.bodyB.node!.position == itemList[i].position{
                     itemList[i].removeFromParent()
                     
                     switch contact.bodyB.node!.name!{
-                    
+                        
                     case "speedItem":
                         increaseSpeed()
                     case "fatItem":
@@ -582,24 +613,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                 
             }
         }else if (contact.bodyA.categoryBitMask == PhysicsCat.bombCat) || contact.bodyB.categoryBitMask == PhysicsCat.bombCat{
-        
+            
             for var i = 0; i < bombList.count; i = i+1{
                 if contact.bodyB.node!.position == bombList[i].position{
                     bombList[i].removeFromParent()
                     print("deadiii")
+//                    curves[ownCurveIndex].dead = true
                     dead = true
                 }
             }
-        
-        
+            
+            
         }else{
             print("dead")
+//            curves[ownCurveIndex].dead = true
             dead = true
             //      p1.physicsBody?.dynamic = false
         }
-   
-    }
         
+    }
+    
     func didEndContact(contact: SKPhysicsContact) {
         print("Yo")
     }
@@ -662,8 +695,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         curveSpeed = 1
         gapLength = 0.17
         curveRadius = curveRadius * (2 / 3)
-//        xCurve = xCurve / 2
-//        yCurve = yCurve / 2
+        //        xCurve = xCurve / 2
+        //        yCurve = yCurve / 2
     }
     
     
@@ -673,7 +706,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         _ = NSTimer.scheduledTimerWithTimeInterval(8.0, target: self, selector: #selector(GameScene.lowerThickness), userInfo: nil, repeats: false)
         p1Size = p1Size + 3.5
         p1.lineWidth = p1Size
-//        p1NewSize = SKShapeNode(circleOfRadius: p1Size)
+        //        p1NewSize = SKShapeNode(circleOfRadius: p1Size)
         
         
     }
@@ -703,7 +736,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             addChild(bomb)
             
         }
-    
+        
     }
     
     func switchDir(){
@@ -715,7 +748,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     func normalDir(){
         switchDirBool = false
     }
-
+    
     //***********************************************************************************
     //***********************************************************************************
     //                                  Functions End

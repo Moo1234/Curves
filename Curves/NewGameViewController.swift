@@ -36,10 +36,10 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         
         changeColor()
         
-//        reload()
+        //        reload()
     }
     
-
+    
     func loadGame(){
         FIRDatabase.database().reference().child("Games").observeSingleEventOfType(.Value) { (snap: FIRDataSnapshot) in
             // Get Game values
@@ -59,11 +59,11 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
             self.game.readyPlayers = [Bool]()
             self.game.colors = [String]()
             // Get Game values
-//            print(snap.value)
+            //            print(snap.value)
             let postArr = snap.value as! NSArray
-//            print(postArr.allValues[0].objectForKey("gID") as! Int == self.gameId)
+            //            print(postArr.allValues[0].objectForKey("gID") as! Int == self.gameId)
             for var i = 0; i < postArr.count; i=i+1 {
-//                print(postArr[i], " " , self.gameId)
+                //                print(postArr[i], " " , self.gameId)
                 if !(postArr[i] is NSNull) && postArr[i].valueForKey("gID") as! Int == self.gameId{
                     self.game.playerIDs.append(postArr[i].valueForKey("pID") as! String)
                     self.game.playerInGamesIDs.append(postArr[i].valueForKey("id") as! Int)
@@ -85,46 +85,51 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
                     }
                 }
                 if !self.game.readyPlayers.contains(false) && self.game.playerIDs.count > 0{
-//                    let playerID: String = (FIRAuth.auth()?.currentUser?.uid)!
-//                    let idInGame = String(self.playerIDs.indexOf(playerID)!)
-                //FIRDatabase.database().reference().child("RunningGame/"+self.playerIDs.first!).child(idInGame).setValue(["positionX": 200, "positionY": 200, "lineWidth": 2])
+                    //                    let playerID: String = (FIRAuth.auth()?.currentUser?.uid)!
+                    //                    let idInGame = String(self.playerIDs.indexOf(playerID)!)
+                    //FIRDatabase.database().reference().child("RunningGame/"+self.playerIDs.first!).child(idInGame).setValue(["positionX": 200, "positionY": 200, "lineWidth": 2])
                     let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
                     if self.game.playerIDs[0] == pID {
                         FIRDatabase.database().reference().child("Games").child(String(self.gameId)).removeValue()
                     }
                     self.performSegueWithIdentifier("startGame", sender:self)
+                    NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(self.removePlayersInGames), userInfo: nil, repeats: true)
                 }
                 self.tableView.reloadData()
             }
         }
     }
+    func removePlayersInGames(){
+        
+        FIRDatabase.database().reference().child("PlayersInGames").child(String(self.playerInGameID)).removeValue()
+    }
     
-//    func loadGames(){
-//        data = NSMutableData()
-//        
-//        let urlPath: String = OnlineData().urlString + "loadGames.php"
-//        UIApplication.sharedApplication().statusBarHidden = false
-//        self.view.backgroundColor = UIColor.blackColor()
-//        
-//        let url: NSURL = NSURL(string: urlPath)!
-//        var session: NSURLSession!
-//        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-//        configuration.requestCachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
-//        
-//        
-//        session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
-//        
-//        let task = session.dataTaskWithURL(url)
-//        
-//        task.resume()
-//        // NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(NewGameViewController.reload), userInfo: nil, repeats: true)
-//    }
+    //    func loadGames(){
+    //        data = NSMutableData()
+    //
+    //        let urlPath: String = OnlineData().urlString + "loadGames.php"
+    //        UIApplication.sharedApplication().statusBarHidden = false
+    //        self.view.backgroundColor = UIColor.blackColor()
+    //
+    //        let url: NSURL = NSURL(string: urlPath)!
+    //        var session: NSURLSession!
+    //        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+    //        configuration.requestCachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
+    //
+    //
+    //        session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+    //
+    //        let task = session.dataTaskWithURL(url)
+    //
+    //        task.resume()
+    //        // NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(NewGameViewController.reload), userInfo: nil, repeats: true)
+    //    }
     
     
     
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//print(players)
+        //print(players)
         return game.players.count
     }
     
@@ -134,13 +139,13 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         //        if(self.game.name != "" || self.game.name != self.gameNameLabel.text){
         //            self.gameNameLabel.text = self.game.name
         //        }
-//        let player = game.players.characters.split(",").map(String.init)[indexPath.row]
-//        cell.nameTextField.textColor = UIColor.blackColor()
-//        cell.nameTextField.backgroundColor = UIColor.clearColor()
-//        cell.scoreTextField.textColor = UIColor.blackColor()
-//        cell.scoreTextField.backgroundColor = UIColor.clearColor()
-//        
-//        cell.backgroundColor = UIColor.clearColor()
+        //        let player = game.players.characters.split(",").map(String.init)[indexPath.row]
+        //        cell.nameTextField.textColor = UIColor.blackColor()
+        //        cell.nameTextField.backgroundColor = UIColor.clearColor()
+        //        cell.scoreTextField.textColor = UIColor.blackColor()
+        //        cell.scoreTextField.backgroundColor = UIColor.clearColor()
+        //
+        //        cell.backgroundColor = UIColor.clearColor()
         cell.nameLabel.text = game.players[indexPath.row]
         cell.scoreLabel.text = String(game.scores[indexPath.row])
         cell.colorButton.backgroundColor = hexStringToUIColor(game.colors[indexPath.row])
@@ -150,7 +155,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         }else{
             cell.colorButton.enabled =  false
         }
-//        print(indexPath.row, " " , readyPlayers.count)
+        //        print(indexPath.row, " " , readyPlayers.count)
         if game.readyPlayers[indexPath.row]{
             cell.backgroundColor = UIColor.greenColor()
         }else{
@@ -199,62 +204,62 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         )
     }
     
-//    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
-//        self.data.appendData(data);
-//        
-//    }
-//    
-//    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
-//        if error != nil {
-//            print("Failed to download data")
-//        }else {
-//            print("Data downloaded")
-//            self.parseJSON()
-//        }
-//        
-//    }
-//    
-//    func parseJSON() {
-//        
-//        var jsonResult: NSMutableArray = NSMutableArray()
-//        
-//        if self.data.length != 2{
-//            do{
-//                jsonResult = try NSJSONSerialization.JSONObjectWithData(self.data, options:NSJSONReadingOptions.AllowFragments) as! NSMutableArray
-//                
-//            } catch let error as NSError {
-//                print(error)
-//                
-//            }
-//            
-//            var jsonElement: NSDictionary = NSDictionary()
-//            for(var i = 0; i < jsonResult.count; i += 1)
-//            {
-//                
-//                jsonElement = jsonResult[i] as! NSDictionary
-//                
-//                //the following insures none of the JsonElement values are nil through optional binding
-//                if let id = Int((jsonElement["gID"] as? String)!),
-//                    let name = jsonElement["name"] as? String,
-//                    let players = jsonElement["players"] as? String
-//                    
-//                {
-//                    if(gameId == id){
-//                        game = Game(id: id, name: name, players: players)
-//                    }
-//                    dispatch_async(dispatch_get_main_queue(), {
-//                        self.tableView.reloadData()
-//                        if(self.game.name != "" || self.game.name != self.gameNameLabel.text){
-//                            self.gameNameLabel.text = self.game.name
-//                        }
-//                    })
-//                    
-//                }
-//                
-//            }
-//        }
-//        
-//    }
+    //    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
+    //        self.data.appendData(data);
+    //
+    //    }
+    //
+    //    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
+    //        if error != nil {
+    //            print("Failed to download data")
+    //        }else {
+    //            print("Data downloaded")
+    //            self.parseJSON()
+    //        }
+    //
+    //    }
+    //
+    //    func parseJSON() {
+    //
+    //        var jsonResult: NSMutableArray = NSMutableArray()
+    //
+    //        if self.data.length != 2{
+    //            do{
+    //                jsonResult = try NSJSONSerialization.JSONObjectWithData(self.data, options:NSJSONReadingOptions.AllowFragments) as! NSMutableArray
+    //
+    //            } catch let error as NSError {
+    //                print(error)
+    //
+    //            }
+    //
+    //            var jsonElement: NSDictionary = NSDictionary()
+    //            for(var i = 0; i < jsonResult.count; i += 1)
+    //            {
+    //
+    //                jsonElement = jsonResult[i] as! NSDictionary
+    //
+    //                //the following insures none of the JsonElement values are nil through optional binding
+    //                if let id = Int((jsonElement["gID"] as? String)!),
+    //                    let name = jsonElement["name"] as? String,
+    //                    let players = jsonElement["players"] as? String
+    //
+    //                {
+    //                    if(gameId == id){
+    //                        game = Game(id: id, name: name, players: players)
+    //                    }
+    //                    dispatch_async(dispatch_get_main_queue(), {
+    //                        self.tableView.reloadData()
+    //                        if(self.game.name != "" || self.game.name != self.gameNameLabel.text){
+    //                            self.gameNameLabel.text = self.game.name
+    //                        }
+    //                    })
+    //
+    //                }
+    //
+    //            }
+    //        }
+    //
+    //    }
     
     @IBAction func leaveGame(sender: AnyObject) {
         FIRDatabase.database().reference().child("PlayersInGames").observeSingleEventOfType(.Value) { (snap: FIRDataSnapshot) in
@@ -269,25 +274,25 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
                 }
             }
         }
-//        FIRDatabase.database().reference().child("PlayersInGames").queryEqualToValue(String(gameId), childKey: "gID")
+        //        FIRDatabase.database().reference().child("PlayersInGames").queryEqualToValue(String(gameId), childKey: "gID")
         
-
         
-//        if game.players.characters.split(",").count == 1 {
-//            OnlineData().closeGame(self, gameId: gameId)
-//        }else{
-//            let playernames = game.players.characters.split(",").map(String.init)
-//            var players = ""
-//            for(var i = 0; i < playernames.count; i += 1){
-//                if(playernames[i] != ownUserName){
-//                    if(players != ""){
-//                        players += ","
-//                    }
-//                    players += playernames[i]
-//                }
-//            }
-//            OnlineData().leaveGame(self, gameId: gameId, players: players)
-//        }
+        
+        //        if game.players.characters.split(",").count == 1 {
+        //            OnlineData().closeGame(self, gameId: gameId)
+        //        }else{
+        //            let playernames = game.players.characters.split(",").map(String.init)
+        //            var players = ""
+        //            for(var i = 0; i < playernames.count; i += 1){
+        //                if(playernames[i] != ownUserName){
+        //                    if(players != ""){
+        //                        players += ","
+        //                    }
+        //                    players += playernames[i]
+        //                }
+        //            }
+        //            OnlineData().leaveGame(self, gameId: gameId, players: players)
+        //        }
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -309,8 +314,9 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         // Pass the selected object to the new view controller.
         if segue.identifier == "startGame" {
             GameData.id = self.game.playerIDs[0]
-            GameData.gID = self.gameId
+            //            GameData.gID = self.gameId
+            GameData.game = self.game
         }
     }
-
+    
 }
