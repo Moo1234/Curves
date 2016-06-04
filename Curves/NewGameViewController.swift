@@ -54,43 +54,55 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         }
         
         FIRDatabase.database().reference().child("PlayersInGames").observeEventType(.Value) { (snap: FIRDataSnapshot) in
-            self.game.playerIDs = [String]()
-            self.game.playerInGamesIDs = [Int]()
-            self.game.readyPlayers = [Bool]()
-            self.game.colors = [String]()
+//            self.game.playerIDs = [String]()
+//            self.game.playerInGamesIDs = [Int]()
+//            self.game.readyPlayers = [Bool]()
+//            self.game.colors = [String]()
+            self.game.playerObject = [PlayerObject]()
             // Get Game values
             //            print(snap.value)
             let postArr = snap.value as! NSArray
             //            print(postArr.allValues[0].objectForKey("gID") as! Int == self.gameId)
+            var count = 0
             for var i = 0; i < postArr.count; i=i+1 {
                 //                print(postArr[i], " " , self.gameId)
                 if !(postArr[i] is NSNull) && postArr[i].valueForKey("gID") as! Int == self.gameId{
-                    self.game.playerIDs.append(postArr[i].valueForKey("pID") as! String)
-                    self.game.playerInGamesIDs.append(postArr[i].valueForKey("id") as! Int)
-                    self.game.readyPlayers.append(postArr[i].valueForKey("ready") as! Bool)
-                    self.game.colors.append((postArr[i].valueForKey("color") as! String))
+                    self.game.playerObject.append(PlayerObject())
+                    self.game.playerObject[count].playerID = postArr[i].valueForKey("pID") as! String
+                    self.game.playerObject[count].playerInGameID = postArr[i].valueForKey("id") as! Int
+                    self.game.playerObject[count].ready = postArr[i].valueForKey("ready") as! Bool
+                    self.game.playerObject[count].color = postArr[i].valueForKey("color") as! String
+                    count = count + 1
+//                    self.game.playerIDs.append(postArr[i].valueForKey("pID") as! String)
+//                    self.game.playerInGamesIDs.append(postArr[i].valueForKey("id") as! Int)
+//                    self.game.readyPlayers.append(postArr[i].valueForKey("ready") as! Bool)
+//                    self.game.colors.append((postArr[i].valueForKey("color") as! String))
                     
                 }
             }
             
-            //print(self.playerIDs)
             FIRDatabase.database().reference().child("Players").observeEventType(.Value) { (snap: FIRDataSnapshot) in
                 // Get Game values
-                self.game.players = [String]()
-                self.game.scores = [Int]()
+//                self.game.players = [String]()
+//                self.game.scores = [Int]()
                 let postArr = snap.value as! NSArray
+                
+                count = 0
                 for var i = 0; i < postArr.count; i=i+1 {
-                    if !(postArr[i] is NSNull) && self.game.playerIDs.contains(postArr[i].valueForKey("pID") as! String){
-                        self.game.players.append(postArr[i].valueForKey("name") as! String)
-                        self.game.scores.append(postArr[i].valueForKey("score") as! Int)
+                    if !(postArr[i] is NSNull) && (self.game.playerObject.contains { $0.playerID == postArr[i].valueForKey("pID") as! String }) {
+                        self.game.playerObject[count].playerName = postArr[i].valueForKey("name") as! String
+                        self.game.playerObject[count].score = postArr[i].valueForKey("score") as! Int
+                        count = count + 1
+//                        self.game.players.append(postArr[i].valueForKey("name") as! String)
+//                        self.game.scores.append(postArr[i].valueForKey("score") as! Int)
                     }
                 }
-                if !self.game.readyPlayers.contains(false) && self.game.playerIDs.count > 0{
+                if !(self.game.playerObject.contains { $0.ready == false }) && self.game.playerObject.count > 0 {
                     //                    let playerID: String = (FIRAuth.auth()?.currentUser?.uid)!
                     //                    let idInGame = String(self.playerIDs.indexOf(playerID)!)
                     //FIRDatabase.database().reference().child("RunningGame/"+self.playerIDs.first!).child(idInGame).setValue(["positionX": 200, "positionY": 200, "lineWidth": 2])
                     let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
-                    if self.game.playerIDs[0] == pID {
+                    if self.game.playerObject[0].playerID == pID {
                         FIRDatabase.database().reference().child("Games").child(String(self.gameId)).removeValue()
                     }
                     self.performSegueWithIdentifier("startGame", sender:self)
@@ -131,7 +143,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //print(players)
-        return game.players.count
+        return game.playerObject.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -147,17 +159,17 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         //        cell.scoreTextField.backgroundColor = UIColor.clearColor()
         //
         //        cell.backgroundColor = UIColor.clearColor()
-        cell.nameLabel.text = game.players[indexPath.row]
-        cell.scoreLabel.text = String(game.scores[indexPath.row])
-        cell.colorButton.backgroundColor = hexStringToUIColor(game.colors[indexPath.row])
+        cell.nameLabel.text = game.playerObject[indexPath.row].playerName
+        cell.scoreLabel.text = String(game.playerObject[indexPath.row].score)
+        cell.colorButton.backgroundColor = hexStringToUIColor(game.playerObject[indexPath.row].color)
         let playerID: String = (FIRAuth.auth()?.currentUser?.uid)!
-        if game.playerIDs[indexPath.row] == playerID {
+        if game.playerObject[indexPath.row].playerID == playerID {
             cell.colorButton.enabled = true
         }else{
             cell.colorButton.enabled =  false
         }
         //        print(indexPath.row, " " , readyPlayers.count)
-        if game.readyPlayers[indexPath.row]{
+        if game.playerObject[indexPath.row].ready{
             cell.backgroundColor = UIColor.greenColor()
         }else{
             cell.backgroundColor = UIColor.blackColor()
@@ -172,8 +184,8 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     }
     func changeColor(){
         var randomColors = ["#ffff00","#ff0000", "#0000ff", "#00ff00", "#bf8040", "#9900ff", "#ff33ff", "#ff8000", "#1ac6ff", "#94b8b8"]
-        for var i=0; i < game.colors.count; i=i+1 {
-            randomColors = randomColors.filter {!$0.containsString(game.colors[i])}
+        for var i=0; i < game.playerObject.count; i=i+1 {
+            randomColors = randomColors.filter {!$0.containsString(game.playerObject[i].color)}
             //            randomColors.filter(game.colors[i])
         }
         let colorInt = arc4random_uniform(UInt32(randomColors.count))
@@ -268,7 +280,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
             for var i = 0; i < postArr.count; i=i+1 {
                 if !(postArr[i] is NSNull) && postArr[i].valueForKey("gID") as! Int == self.gameId{
                     FIRDatabase.database().reference().child("PlayersInGames/"+String(self.playerInGameID)).removeValueWithCompletionBlock({ (err, ref) in
-                        if self.game.playerIDs.count < 1{
+                        if self.game.playerObject.count < 1{
                             FIRDatabase.database().reference().child("Games").child(String(self.gameId)).removeValue()
                         }
                     })
@@ -314,7 +326,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         if segue.identifier == "startGame" {
-            GameData.id = self.game.playerIDs[0]
+            GameData.id = self.game.playerObject[0].playerID
             //            GameData.gID = self.gameId
             GameData.game = self.game
         }

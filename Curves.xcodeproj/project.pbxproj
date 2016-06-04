@@ -16,6 +16,7 @@
 		3CCCF5B51CF78134006DE9B3 /* MeasurementHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCCF5B41CF78134006DE9B3 /* MeasurementHelper.swift */; };
 		3CCCF5B71CF78184006DE9B3 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCCF5B61CF78184006DE9B3 /* AppState.swift */; };
 		3CCCF5B91CF781A1006DE9B3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCCF5B81CF781A1006DE9B3 /* Constants.swift */; };
+		3CDE0F291D036B2B00C077E2 /* PlayerObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CDE0F281D036B2B00C077E2 /* PlayerObject.swift */; };
 		3CF757761CD24795006FD5AB /* LineObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CF757751CD24795006FD5AB /* LineObject.swift */; };
 		5814777C1CF7048F00F46A6A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5814777B1CF7048F00F46A6A /* GoogleService-Info.plist */; };
 		5831FE121CDC9566003C6297 /* AccountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5831FE111CDC9566003C6297 /* AccountModel.swift */; };
@@ -59,6 +60,7 @@
 		3CCCF5B41CF78134006DE9B3 /* MeasurementHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasurementHelper.swift; sourceTree = "<group>"; };
 		3CCCF5B61CF78184006DE9B3 /* AppState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		3CCCF5B81CF781A1006DE9B3 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		3CDE0F281D036B2B00C077E2 /* PlayerObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerObject.swift; sourceTree = "<group>"; };
 		3CF757751CD24795006FD5AB /* LineObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineObject.swift; sourceTree = "<group>"; };
 		41448BC824D66341B3F97F08 /* Pods-Curves.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Curves.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Curves/Pods-Curves.debug.xcconfig"; sourceTree = "<group>"; };
 		5814777B1CF7048F00F46A6A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 				5831FE111CDC9566003C6297 /* AccountModel.swift */,
 				3C02F9041CE660B6009CBE80 /* OnlineData.swift */,
 				3C3A46301CDFF17E00D0FAF4 /* Game.swift */,
+				3CDE0F281D036B2B00C077E2 /* PlayerObject.swift */,
 				58C176021CC526B700EDD256 /* AppDelegate.swift */,
 				58C176041CC526B700EDD256 /* GameScene.sks */,
 				58C176061CC526B700EDD256 /* GameScene.swift */,
@@ -382,6 +385,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CDE0F291D036B2B00C077E2 /* PlayerObject.swift in Sources */,
 				58630CF51CDB435C005380B0 /* LoginViewController.swift in Sources */,
 				3C3A46311CDFF17E00D0FAF4 /* Game.swift in Sources */,
 				58C176071CC526B700EDD256 /* GameScene.swift in Sources */,

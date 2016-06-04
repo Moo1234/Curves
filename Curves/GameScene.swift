@@ -100,9 +100,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     
     // Players
     var scores = [(String, String, Int)]()
-    var playerIDs = [String]()
-    var colors = [UIColor]()
+//    var playerIDs = [String]()
+//    var colors = [UIColor]()
     var curves = [LineObject]()
+    var players = [PlayerObject]()
     
     // Score
     var scoreView: UIView = UIView()
@@ -195,13 +196,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         scoreTableView.backgroundColor = UIColor.clearColor()
         self.view?.addSubview(scoreView)
         
-        randomStartingPosition()
-        
         self.gameID = GameData.id
         
+        
+        randomStartingPosition()
+        
         loadPlayers()
-        
-        
+        newRound()
+    }
+    
+    
+    func newRound(){
+        let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
+        FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).child("dead").setValue(false)
+//        gameArea = SKShapeNode(rect: CGRect(x: 2 * btnWidth + 10, y: 5, width: view!.frame.width - (4*btnWidth+20), height: view!.frame.height - 10))
+//        gameArea.lineWidth = 5
+//        gameArea.strokeColor = SKColor.whiteColor()
+//        texture = SKTexture()
+//        lineCanvas = SKSpriteNode(color:SKColor.clearColor(),size:view!.frame.size)
+//        lineCanvas!.anchorPoint = CGPointZero
+//        lineCanvas!.position = CGPointZero
+//        randomStartingPosition()
+//        texture = SKTexture()
+//        lineContainer = SKNode()
+//        lineCanvas = SKSpriteNode()
+        randomStartingPosition()
+        dead = false
+        scoreView.hidden = true
     }
     
     //    var lineNode2 = SKShapeNode()
@@ -229,11 +250,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         //                    }
         //                }
         //            }
-        self.playerIDs = GameData.game.playerIDs.filter {!$0.containsString(pID)}
-        for var i = 0; i < GameData.game.colors.count; i=i+1 {
-            let color: UIColor = self.hexStringToUIColor(GameData.game.colors[i])
-            if GameData.game.playerIDs[i] != pID {
-                self.colors.append(color)
+        self.players = GameData.game.playerObject.filter {($0.playerID != pID)}
+        for var i = 0; i < GameData.game.playerObject.count; i=i+1 {
+            let color: UIColor = self.hexStringToUIColor(GameData.game.playerObject[i].color)
+            if GameData.game.playerObject[i].playerID != pID {
+//                self.colors.append(color)
             }else{
                 self.p1.fillColor = color
                 self.p1.strokeColor = color
@@ -263,32 +284,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         
         
         //            print(self.playerIDs)
-        for var i = 0; i < self.playerIDs.count; i=i+1{
+        for var i = 0; i < self.players.count; i=i+1{
             var line = LineObject(point: SKShapeNode(circleOfRadius: 2.0),position: CGPoint(), path: CGPathCreateMutable(), lineNode: SKShapeNode(), wayPoints: [], dead: false)
             self.curves.append(line)
             self.addChild(line.point)
             
         }
         var i = -1
-        while i + 1 < self.playerIDs.count{
+        while i + 1 < self.players.count{
             i = i + 1
-            FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Players").child(self.playerIDs[i]).observeEventType(.Value) { (snap: FIRDataSnapshot) in
+//            print(players[i].playerID)
+            FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Players").child(self.players[i].playerID).observeEventType(.Value) { (snap: FIRDataSnapshot) in
                 // Get user value
                 if !(snap.value is NSNull) {
                     let postArr3 = snap.value as! NSDictionary
                     let point = CGPoint(x: postArr3.objectForKey("PositionX") as! CGFloat, y: postArr3.objectForKey("PositionY") as! CGFloat)
                     self.curves[i].dead = postArr3.objectForKey("dead") as! Bool
                     self.curves[i].position = point
-                    self.curves[i].point.fillColor = self.colors[i]
-                    self.curves[i].point.strokeColor = self.colors[i]
+                    self.curves[i].point.fillColor = self.hexStringToUIColor(self.players[i].color)
+                    self.curves[i].point.strokeColor = self.hexStringToUIColor(self.players[i].color)
                     self.drawLine2(i)
                     
-                    if (self.dead && (!self.curves.contains({ obj -> Bool in obj.dead == false }) || self.curves.count == 0)) {
-                        print("All dead")
-                        self.scoreTableView.reloadData()
-                        self.scoreView.hidden = false
-                        
-                    }
+                    self.checkAllDead()
                 }
             }
         }
@@ -337,6 +354,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         //        })
     }
     
+    
     func randomStartingPosition(){
         let posX = CGFloat(arc4random_uniform(UInt32(view!.frame.width - (4*btnWidth+20) - 100))) + 2 * btnWidth + 10 + 50
         let posY = CGFloat(arc4random_uniform(UInt32(view!.frame.height - (4*btnWidth+20) - 100))) + 5 + 50
@@ -360,7 +378,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
             CGPathMoveToPoint(curves[i].path, nil, curves[i].position.x, curves[i].position.y)
             curves[i].lineNode.path = nil
             curves[i].lineNode.lineWidth = lineThickness
-            curves[i].lineNode.strokeColor = colors[i]
+            curves[i].lineNode.strokeColor = self.hexStringToUIColor(players[i].color)
             lineContainer.addChild(curves[i].lineNode)
             
         }
@@ -663,6 +681,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
 //                    curves[ownCurveIndex].dead = true
                     FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).child("dead").setValue(true)
                     dead = true
+                    let currentScore = scores.filter { triple -> Bool in triple.0 == pID }[0].2
+                    FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Score").child(pID).child("score").setValue(currentScore + (curves.filter { obj -> Bool in obj.dead == true }.count))
+                    checkAllDead()
                 }
             }
             
@@ -672,12 +693,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
             FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).child("dead").setValue(true)
 //            curves[ownCurveIndex].dead = true
             dead = true
+            let currentScore = scores.filter { triple -> Bool in triple.0 == pID }[0].2
+            FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Score").child(pID).child("score").setValue(currentScore + (curves.filter { obj -> Bool in obj.dead == true }.count))
             //      p1.physicsBody?.dynamic = false
+            checkAllDead()
         }
+    }
+    
+    func checkAllDead(){
+        
         if (self.dead && (!self.curves.contains({ obj -> Bool in obj.dead == false }) || self.curves.count == 0)) {
-            print("All dead")
+//            print("All dead")
             self.scoreTableView.reloadData()
             self.scoreView.hidden = false
+            NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.newRound), userInfo: nil, repeats: false)
             
         }
     }
@@ -816,7 +845,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: "cell")
-        print(scores[indexPath.row])
+//        print(scores[indexPath.row])
         cell.textLabel?.text = scores[indexPath.row].1
         cell.detailTextLabel?.text = String(scores[indexPath.row].2)
         return cell
