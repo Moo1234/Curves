@@ -846,6 +846,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: "cell")
 //        print(scores[indexPath.row])
+        let player = players.filter {($0.playerID == scores[indexPath.row].0)}
+        if player.count == 0{
+            cell.textLabel?.textColor = p1.fillColor
+        }else{
+            cell.textLabel?.textColor = hexStringToUIColor(player[0].color)
+        }
         cell.textLabel?.text = scores[indexPath.row].1
         cell.detailTextLabel?.text = String(scores[indexPath.row].2)
         return cell
