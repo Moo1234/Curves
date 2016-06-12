@@ -22,7 +22,6 @@ struct PhysicsCat{
 
 struct GameData{
     static var id = ""
-    //static var gID = 0
     static var game = Game()
 }
 
@@ -35,7 +34,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     //***********************************************************************************
     
     
-    let refP2 = FIRDatabase.database().reference().child("p2")
+//    let refP2 = FIRDatabase.database().reference().child("p2")
     
     
     let ref = FIRDatabase.database().reference()
@@ -90,23 +89,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     var itemList = [SKSpriteNode]()
     var switchDirBool = false
     
-    var firstTime = true
+//    var firstTime = true
     
     var positionList = [CGPoint]()
     
     var gameID = ""
     var ownCurveIndex = -1
-    var ownName = ""
     
     // Players
     var scores = [(String, String, Int)]()
-//    var playerIDs = [String]()
-//    var colors = [UIColor]()
     var curves = [LineObject]()
     var players = [PlayerObject]()
     
     // Score
     var scoreView: UIView = UIView()
+    var maxScoreLabel = UILabel()
     var scoreTableView: UITableView = UITableView()
     
     //***********************************************************************************
@@ -122,10 +119,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         backgroundColor = SKColor.blackColor()
         
         physicsWorld.contactDelegate = self
-        //        playerID = 1
-        
-        
-        
         
         leftBtn = SKShapeNode(rectOfSize: CGSize(width: 2 * btnWidth, height: view.frame.height / 2))
         rightBtn = SKShapeNode(rectOfSize: CGSize(width: 2 * btnWidth, height: view.frame.height / 2))
@@ -167,7 +160,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         rightBtnImage.position = CGPoint(x: view.frame.width - btnWidth, y: view.frame.height / 4)
         rightBtnImage.setScale(1.2)
         
-        
         addChild(p1)
         addChild(gameArea)
         addChild(leftBtn)
@@ -194,64 +186,62 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         scoreTableView.tableFooterView = tblView
         scoreTableView.tableFooterView!.hidden = true
         scoreTableView.backgroundColor = UIColor.clearColor()
+        
+        // maximum rounds
+        maxScoreLabel = UILabel(frame:CGRect(origin: CGPoint(x: view.frame.minX, y: view.frame.minY+10 ), size: CGSize(width: 2 * btnWidth, height: 20)))
+        maxScoreLabel.font = UIFont.boldSystemFontOfSize(25)
+        maxScoreLabel.textAlignment = NSTextAlignment.Center
+        maxScoreLabel.textColor = UIColor.whiteColor()
+        
+        
+        
         self.view?.addSubview(scoreView)
+        self.view?.addSubview(maxScoreLabel)
         
         self.gameID = GameData.id
         
         
         randomStartingPosition()
-        
         loadPlayers()
-//        newRound()
     }
     
-    
+    // Clear GameArea, remove Items and set new player locations if game is not over
     func newRound(){
-        let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
-        FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).child("dead").setValue(false)
-        lineContainer.removeAllChildren()
-        lineCanvas = SKSpriteNode(color:SKColor.clearColor(),size:view!.frame.size)
-        lineCanvas!.anchorPoint = CGPointZero
-        lineCanvas!.position = CGPointZero
-        lineContainer.addChild(lineCanvas!)
-        texture = SKTexture()
-        addLinesToTexture()
-        randomStartingPosition()
-        for var i = 0; i < itemList.count; i = i+1{
-            itemList[i].removeFromParent()
+        var maxScore = 0
+        for var i = 0; i < scores.count; i = i+1 {
+            if scores[i].2 > maxScore {
+                maxScore = scores[i].2
+            }
         }
-        itemList.removeAll()
-        
-        dead = false
-        scoreView.hidden = true
+        if maxScore >= players.count * 10 + 5 {
+            print("Game Over")
+        }else{
+            let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
+            self.ref.child("RunningGame/"+self.gameID+"/Players").child(pID).child("dead").setValue(false)
+            lineContainer.removeAllChildren()
+            lineCanvas = SKSpriteNode(color:SKColor.clearColor(),size:view!.frame.size)
+            lineCanvas!.anchorPoint = CGPointZero
+            lineCanvas!.position = CGPointZero
+            lineContainer.addChild(lineCanvas!)
+            texture = SKTexture()
+            addLinesToTexture()
+            randomStartingPosition()
+            for var i = 0; i < itemList.count; i = i+1{
+                itemList[i].removeFromParent()
+            }
+            itemList.removeAll()
+            
+            dead = false
+            scoreView.hidden = true
+        }
     }
     
-    //    var lineNode2 = SKShapeNode()
-    //    var lastPoint2 = CGPointZero
-    //    var path2 = CGPathCreateMutable()
-    //    var wayPoints2: [CGPoint] = []
-    
+    // load all Game Attributes
     func loadPlayers(){
         let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
-        //        FIRDatabase.database().reference().child("PlayersInGames").observeSingleEventOfType(.Value, withBlock: { (snap: FIRDataSnapshot) in
-        //            // Get gameID
-        //
-        //            let postArr = snap.value as! NSArray
-        //            for var i = 0; i < postArr.count; i=i+1 {
-        //                if postArr[i].valueForKey("gID") as! Int == GameData.gID {
-        //                    let color: UIColor = self.hexStringToUIColor(postArr[i].valueForKey("color") as! String)
-        //                    if postArr[i].valueForKey("pID") as! String != pID {
-        //                        self.playerIDs.append(postArr[i].valueForKey("pID") as! String)
-        //                        self.colors.append(color)
-        //                    }else{
-        //                        self.p1.fillColor = color
-        //                        self.p1.strokeColor = color
-        //                        self.leftBtn.fillColor = color
-        //                        self.rightBtn.fillColor = color
-        //                    }
-        //                }
-        //            }
         self.players = GameData.game.playerObject.filter {($0.playerID != pID)}
+        
+        maxScoreLabel.text = String(players.count * 10 + 5)
         for var i = 0; i < GameData.game.playerObject.count; i=i+1 {
             let color: UIColor = self.hexStringToUIColor(GameData.game.playerObject[i].color)
             if GameData.game.playerObject[i].playerID != pID {
@@ -264,17 +254,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
             }
         }
         
-        // get own Username
+        // create own entries in Firebase
         let pName: String = (FIRAuth.auth()?.currentUser?.displayName)!
         self.ref.child("RunningGame/"+self.gameID).child("Items").setValue(["category": 0, "posX": 0, "posY": 0])
         self.ref.child("RunningGame/"+self.gameID).child("Score").child(pID).setValue(["pID": pID, "name": pName, "score": 0])
         // set own Player settings
 //        if self.gameID == pID {
-        FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).setValue(["pID": pID, "PositionX": self.p1.position.x,"PositionY": self.p1.position.y,"lineWidth":self.p1Size, "dead": false])
+        self.ref.child("RunningGame/"+self.gameID+"/Players").child(pID).setValue(["pID": pID, "PositionX": self.p1.position.x,"PositionY": self.p1.position.y,"lineWidth":self.p1Size, "dead": false])
 //        }
         
+        // load GameItems if not player is not Host
         if self.gameID != pID {
-            FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Items").observeEventType(.Value) { (snap: FIRDataSnapshot) in
+            self.ref.child("RunningGame/"+self.gameID).child("Items").observeEventType(.Value) { (snap: FIRDataSnapshot) in
                 // Get Items
                 let postArr2 = snap.value as! NSDictionary
                 let pos = CGPoint(x: postArr2.valueForKey("posX") as! CGFloat, y: postArr2.objectForKey("posY") as! CGFloat)
@@ -284,7 +275,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         }
         
         
-        //            print(self.playerIDs)
+        // load attributes from opponent players
         for var i = 0; i < self.players.count; i=i+1{
             var line = LineObject(point: SKShapeNode(circleOfRadius: 2.0),position: CGPoint(), path: CGPathCreateMutable(), lineNode: SKShapeNode(), wayPoints: [], dead: false)
             self.curves.append(line)
@@ -295,7 +286,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         while i + 1 < self.players.count{
             i = i + 1
 //            print(players[i].playerID)
-            FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Players").child(self.players[i].playerID).observeEventType(.Value) { (snap: FIRDataSnapshot) in
+            self.ref.child("RunningGame/"+self.gameID).child("Players").child(self.players[i].playerID).observeEventType(.Value) { (snap: FIRDataSnapshot) in
                 // Get user value
                 if !(snap.value is NSNull) {
                     let postArr3 = snap.value as! NSDictionary
@@ -311,7 +302,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
             }
         }
         
-        FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Score").observeEventType(.Value) { (snap: FIRDataSnapshot) in
+        // load score for tableview
+        self.ref.child("RunningGame/"+self.gameID).child("Score").observeEventType(.Value) { (snap: FIRDataSnapshot) in
             self.scores = [(String, String, Int)]()
             let postArr4 = snap.value as! NSDictionary
             for var i = 0; i < postArr4.allValues.count; i=i+1 {
@@ -322,7 +314,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         }
         
         // load other players
-        //            FIRDatabase.database().reference().child("RunningGame/"+self.gameID).child("Players").observeEventType(.Value) { (snap: FIRDataSnapshot) in
+        //            self.ref.child("RunningGame/"+self.gameID).child("Players").observeEventType(.Value) { (snap: FIRDataSnapshot) in
         //                // Get user value
         //                let postArr3 = snap.value as! NSDictionary
         //                print(postArr3.allValues.count)
@@ -356,6 +348,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     }
     
     
+    // create own random position
     func randomStartingPosition(){
         let posX = CGFloat(arc4random_uniform(UInt32(view!.frame.width - (4*btnWidth+20) - 100))) + 2 * btnWidth + 10 + 50
         let posY = CGFloat(arc4random_uniform(UInt32(view!.frame.height - (4*btnWidth+20) - 100))) + 5 + 50
@@ -371,10 +364,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         curveRadius = 5.0
     }
     
+    // draw opponents
     func drawLine2(i: Int){
-        
-        
-        
         if (CGPathIsEmpty(curves[i].path)) {
             CGPathMoveToPoint(curves[i].path, nil, curves[i].position.x, curves[i].position.y)
             curves[i].lineNode.path = nil
@@ -550,7 +541,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     func pushLine(){
         let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
         if self.gameID != "" {
-            FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).updateChildValues(["pID": pID, "PositionX": self.p1.position.x,"PositionY": self.p1.position.y])
+            self.ref.child("RunningGame/"+self.gameID+"/Players").child(pID).updateChildValues(["pID": pID, "PositionX": self.p1.position.x,"PositionY": self.p1.position.y])
         }
         //        self.ref.child("p"+String(playerID)+"/PositionX").setValue(p1.position.x)
         //        self.ref.child("p"+String(playerID)+"/PositionY").setValue(p1.position.y)
@@ -680,10 +671,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
                     bombList[i].removeFromParent()
                     print("deadiii")
 //                    curves[ownCurveIndex].dead = true
-                    FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).child("dead").setValue(true)
+                    self.ref.child("RunningGame/"+self.gameID+"/Players").child(pID).child("dead").setValue(true)
                     dead = true
                     let currentScore = scores.filter { triple -> Bool in triple.0 == pID }[0].2
-                    FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Score").child(pID).child("score").setValue(currentScore + (curves.filter { obj -> Bool in obj.dead == true }.count))
+                    self.ref.child("RunningGame/"+self.gameID+"/Score").child(pID).child("score").setValue(currentScore + (curves.filter { obj -> Bool in obj.dead == true }.count))
                     checkAllDead()
                 }
             }
@@ -691,11 +682,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
             
         }else{
             print("dead")
-            FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).child("dead").setValue(true)
+            self.ref.child("RunningGame/"+self.gameID+"/Players").child(pID).child("dead").setValue(true)
 //            curves[ownCurveIndex].dead = true
             dead = true
             let currentScore = scores.filter { triple -> Bool in triple.0 == pID }[0].2
-            FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Score").child(pID).child("score").setValue(currentScore + (curves.filter { obj -> Bool in obj.dead == true }.count))
+            self.ref.child("RunningGame/"+self.gameID+"/Score").child(pID).child("score").setValue(currentScore + (curves.filter { obj -> Bool in obj.dead == true }.count))
             //      p1.physicsBody?.dynamic = false
             checkAllDead()
         }
