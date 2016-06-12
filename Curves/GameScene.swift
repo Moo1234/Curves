@@ -270,12 +270,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         self.ref.child("RunningGame/"+self.gameID+"/Players").child(pID).setValue(["pID": pID, "PositionX": self.p1.position.x,"PositionY": self.p1.position.y,"lineWidth":self.p1Size, "dead": false])
 //        }
         
-        // load GameItems if not player is not Host
+        // load GameItems if player is not Host
         if self.gameID != pID {
             self.ref.child("RunningGame/"+self.gameID).child("Items").observeEventType(.Value) { (snap: FIRDataSnapshot) in
                 // Get Items
                 let postArr2 = snap.value as! NSDictionary
-                let pos = CGPoint(x: postArr2.valueForKey("posX") as! CGFloat, y: postArr2.objectForKey("posY") as! CGFloat)
+                let pos = CGPoint(x: postArr2.objectForKey("posX") as! CGFloat, y: postArr2.objectForKey("posY") as! CGFloat)
                 let nameRandom = postArr2.objectForKey("category") as! Int
                 self.makeItems(pos, nameRandom: UInt32(nameRandom))
             }
@@ -318,6 +318,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
             }
             self.scores.sortInPlace() { $0.2 > $1.2 }
             self.scoreTableView.reloadData()
+        }
+        
+        self.ref.child("RunningGame/"+self.gameID).child("Bombs").observeEventType(.Value) { (snap: FIRDataSnapshot) in
+            // Get Bombs
+            if !(snap.value is NSNull) {
+                let postArr5 = snap.value as! NSDictionary
+//                print(postArr5.objectForKey("posX") as! CGFloat)
+                let pos = CGPoint(x: postArr5.objectForKey("posX") as! CGFloat, y: postArr5.objectForKey("posY") as! CGFloat)
+                self.bomb = SKSpriteNode(imageNamed: "bomb")
+                self.bomb.setScale(0.5)
+                
+                self.bomb.physicsBody = SKPhysicsBody(circleOfRadius: self.bomb.size.width / 1.9)
+                self.bomb.physicsBody!.categoryBitMask = PhysicsCat.bombCat
+                self.bomb.physicsBody!.contactTestBitMask =  PhysicsCat.p1Cat
+                self.bomb.physicsBody?.affectedByGravity = false
+                self.bomb.physicsBody?.linearDamping = 0
+                self.bomb.position = pos
+                self.bombList.append(self.bomb)
+                self.addChild(self.bomb)
+            }
         }
         
         // load other players
@@ -821,19 +841,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         
         for var i = 0; i<5; i=i+1{
             var pos = makeRandomPos()
+            self.ref.child("RunningGame/"+self.gameID).child("Bombs").setValue(["id": i , "posX": pos.x, "posY": pos.y])
+            self.bomb = SKSpriteNode(imageNamed: "bomb")
+            self.bomb.setScale(0.5)
             
-            bomb = SKSpriteNode(imageNamed: "bomb")
-            bomb.setScale(0.5)
-            
-            bomb.physicsBody = SKPhysicsBody(circleOfRadius: bomb.size.width / 1.9)
-            bomb.physicsBody!.categoryBitMask = PhysicsCat.bombCat
-            bomb.physicsBody!.contactTestBitMask =  PhysicsCat.p1Cat
-            bomb.physicsBody?.affectedByGravity = false
-            bomb.physicsBody?.linearDamping = 0
-            bomb.position = pos
-            bombList.append(bomb)
-            addChild(bomb)
-            
+            self.bomb.physicsBody = SKPhysicsBody(circleOfRadius: self.bomb.size.width / 1.9)
+            self.bomb.physicsBody!.categoryBitMask = PhysicsCat.bombCat
+            self.bomb.physicsBody!.contactTestBitMask =  PhysicsCat.p1Cat
+            self.bomb.physicsBody?.affectedByGravity = false
+            self.bomb.physicsBody?.linearDamping = 0
+            self.bomb.position = pos
+            self.bombList.append(self.bomb)
+            self.addChild(self.bomb)
         }
         
     }
