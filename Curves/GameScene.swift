@@ -232,6 +232,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
                 itemList[i].removeFromParent()
             }
             itemList.removeAll()
+            for var i = 0; i < bombList.count; i = i+1{
+                bombList[i].removeFromParent()
+            }
+            bombList.removeAll()
             waitForRunning()
             
             dead = false
@@ -471,32 +475,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
             let location = touch.locationInNode(self)
             if leftBtn.containsPoint(location){
                 
-                if !switchDirBool{
+//                if !switchDirBool{
                     changeDirectionL()
                     myTimer1 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionL), userInfo: nil, repeats: true)
-                }else{
-                    changeDirectionR()
-                    
-                    myTimer2 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionR), userInfo: nil, repeats: true)
-                }
+//                }else{
+//                    changeDirectionR()
+//                    
+//                    myTimer2 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionR), userInfo: nil, repeats: true)
+//                }
                 
                 
             }
             else if rightBtn.containsPoint(location){
                 
-                if !switchDirBool{
+//                if !switchDirBool{
                     changeDirectionR()
                     
                     myTimer2 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionR), userInfo: nil, repeats: true)
-                }else{
-                    changeDirectionL()
-                    myTimer1 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionL), userInfo: nil, repeats: true)
-                }
+//                }else{
+//                    changeDirectionL()
+//                    myTimer1 = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(GameScene.changeDirectionL), userInfo: nil, repeats: true)
+//                }
                 
             }
         }
         
     }
+    
     
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -506,16 +511,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     
     //Linkskurve
     func changeDirectionL(){
-        //        print(timer.userInfo)
         let alt = pointToRadian(wayPoints[0])
-        wayPoints[0] = radianToPoint(alt+curveRadius)
+        if switchDirBool {
+            wayPoints[0] = radianToPoint(alt-curveRadius)
+        }else{
+            wayPoints[0] = radianToPoint(alt+curveRadius)
+        }
         changeDirection(wayPoints[0])
     }
     
     //Rechtskurve
     func changeDirectionR(){
         let alt = pointToRadian(wayPoints[0])
-        wayPoints[0] = radianToPoint(alt-curveRadius)
+        if switchDirBool {
+            wayPoints[0] = radianToPoint(alt+curveRadius)
+        }else{
+            wayPoints[0] = radianToPoint(alt-curveRadius)
+        }
         changeDirection(wayPoints[0])
         
     }
@@ -829,6 +841,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     func switchDir(){
         switchDirBool = true
         _ = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.normalDir), userInfo: nil, repeats: false)
+        
         
     }
     
