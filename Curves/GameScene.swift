@@ -90,6 +90,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     var switchDirBool = false
     
 //    var firstTime = true
+    var running = false
     
     var positionList = [CGPoint]()
     
@@ -203,6 +204,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         
         randomStartingPosition()
         loadPlayers()
+        waitForRunning()
     }
     
     // Clear GameArea, remove Items and set new player locations if game is not over
@@ -230,6 +232,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
                 itemList[i].removeFromParent()
             }
             itemList.removeAll()
+            waitForRunning()
             
             dead = false
             scoreView.hidden = true
@@ -371,7 +374,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
             curves[i].lineNode.path = nil
             curves[i].lineNode.lineWidth = lineThickness
             curves[i].lineNode.strokeColor = self.hexStringToUIColor(players[i].color)
-            lineContainer.addChild(curves[i].lineNode)
+            if running {
+                lineContainer.addChild(curves[i].lineNode)
+            }
             
         }
         
@@ -416,6 +421,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         return SKColor(red: CGFloat(pixel[0]) / 255.0, green: CGFloat(pixel[1]) / 255.0, blue: CGFloat(pixel[2]) / 255.0, alpha: CGFloat(pixel[3]) / 255.0)
     }
     
+    func waitForRunning(){
+        running = false
+        NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: #selector(GameScene.setRunning), userInfo: nil, repeats: false)
+    }
+    
+    func setRunning(){
+        running = true
+    }
     
     //***********************************************************************************
     //***********************************************************************************
@@ -522,7 +535,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
                 let holeTimer = NSTimer.scheduledTimerWithTimeInterval(gapLength, target: self, selector: #selector(GameScene.makeHole), userInfo: nil, repeats: false)
                 
             }else if gapTimer{
-                lineContainer.addChild(lineNode)
+                if running {
+                    lineContainer.addChild(lineNode)
+                }
             }
             
         }
@@ -572,9 +587,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
                 makeItems(pos, nameRandom: nameRandom)
             }
         }
-        if !dead{
+        if !dead {
             drawLine()
-            addLinesToTexture()
+            if running{
+                addLinesToTexture()
+            }
         }
         
         
