@@ -782,17 +782,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     
     
     func increaseSpeed(){
-        curveSpeed = 2
-        gapLength = 0.09
-        xCurve = xCurve * 2
-        yCurve = yCurve * 2
+        curveSpeed = curveSpeed * 2
+        gapLength = gapLength / 2
+//        xCurve = xCurve * 2
+//        yCurve = yCurve * 2
         curveRadius = curveRadius * (3 / 2)
         _ = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.lowerSpeed), userInfo: nil, repeats: false)
     }
     
     func lowerSpeed(){
-        curveSpeed = 1
-        gapLength = 0.17
+        curveSpeed = curveSpeed / 2
+        gapLength = gapLength * 2
         curveRadius = curveRadius * (2 / 3)
         //        xCurve = xCurve / 2
         //        yCurve = yCurve / 2
