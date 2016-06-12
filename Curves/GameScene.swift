@@ -202,25 +202,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         randomStartingPosition()
         
         loadPlayers()
-        newRound()
+//        newRound()
     }
     
     
     func newRound(){
         let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
         FIRDatabase.database().reference().child("RunningGame/"+self.gameID+"/Players").child(pID).child("dead").setValue(false)
-//        gameArea = SKShapeNode(rect: CGRect(x: 2 * btnWidth + 10, y: 5, width: view!.frame.width - (4*btnWidth+20), height: view!.frame.height - 10))
-//        gameArea.lineWidth = 5
-//        gameArea.strokeColor = SKColor.whiteColor()
-//        texture = SKTexture()
-//        lineCanvas = SKSpriteNode(color:SKColor.clearColor(),size:view!.frame.size)
-//        lineCanvas!.anchorPoint = CGPointZero
-//        lineCanvas!.position = CGPointZero
-//        randomStartingPosition()
-//        texture = SKTexture()
-//        lineContainer = SKNode()
-//        lineCanvas = SKSpriteNode()
+        lineContainer.removeAllChildren()
+        lineCanvas = SKSpriteNode(color:SKColor.clearColor(),size:view!.frame.size)
+        lineCanvas!.anchorPoint = CGPointZero
+        lineCanvas!.position = CGPointZero
+        lineContainer.addChild(lineCanvas!)
+        texture = SKTexture()
+        addLinesToTexture()
         randomStartingPosition()
+        for var i = 0; i < itemList.count; i = i+1{
+            itemList[i].removeFromParent()
+        }
+        itemList.removeAll()
+        
         dead = false
         scoreView.hidden = true
     }
@@ -852,6 +853,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         }else{
             cell.textLabel?.textColor = hexStringToUIColor(player[0].color)
         }
+        cell.textLabel?.font = UIFont.boldSystemFontOfSize(25)
         cell.textLabel?.text = scores[indexPath.row].1
         cell.detailTextLabel?.text = String(scores[indexPath.row].2)
         return cell
