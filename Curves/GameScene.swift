@@ -119,6 +119,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         scaleMode = .ResizeFill
         backgroundColor = SKColor.blackColor()
         
+        // music
+        let backgroundMusic = SKAudioNode(fileNamed: "tetris.mp3")
+        backgroundMusic.autoplayLooped = true
+        addChild(backgroundMusic)
+        
         physicsWorld.contactDelegate = self
         
         leftBtn = SKShapeNode(rectOfSize: CGSize(width: 2 * btnWidth, height: view.frame.height / 2))
