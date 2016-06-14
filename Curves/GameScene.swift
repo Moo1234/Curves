@@ -75,10 +75,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     var myTimer1 : NSTimer = NSTimer()
     var myTimer2 : NSTimer = NSTimer()
     var jumpTimer: NSTimer = NSTimer()
-    
+    var barTimer : NSTimer = NSTimer()
     
     
     // Vars for Items
+    
+    let itemTime1 = 5.0
+    let itemTime2 = 8.0
+    let itemTime3 = 3.0
+    
     var bomb = SKSpriteNode()
     var bombList = [SKSpriteNode]()
     var item = SKSpriteNode()
@@ -107,6 +112,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     var maxScoreLabel = UILabel()
     var scoreTableView: UITableView = UITableView()
     
+    var progList = [UIProgressView]()
+    var progBars = [Float]()
+    
+    
     //***********************************************************************************
     //***********************************************************************************
     //                                  Variablen End
@@ -119,6 +128,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         scaleMode = .ResizeFill
         backgroundColor = SKColor.blackColor()
         
+        
+        
         // music
         let backgroundMusic = SKAudioNode(fileNamed: "tetris.mp3")
         backgroundMusic.autoplayLooped = true
@@ -128,8 +139,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         
         leftBtn = SKShapeNode(rectOfSize: CGSize(width: 2 * btnWidth, height: view.frame.height / 2))
         rightBtn = SKShapeNode(rectOfSize: CGSize(width: 2 * btnWidth, height: view.frame.height / 2))
-        
-        
         
         gameArea = SKShapeNode(rect: CGRect(x: 2 * btnWidth + 10, y: 5, width: view.frame.width - (4*btnWidth+20), height: view.frame.height - 10))
         gameArea.lineWidth = 5
@@ -165,6 +174,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         rightBtnImage = SKSpriteNode(imageNamed: "rightBtn")
         rightBtnImage.position = CGPoint(x: view.frame.width - btnWidth, y: view.frame.height / 4)
         rightBtnImage.setScale(1.2)
+        
         
         addChild(p1)
         addChild(gameArea)
@@ -695,10 +705,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     
     func didBeginContact(contact: SKPhysicsContact) {
         let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
+        var itemName = ""
+        
+        
+        
+        
         if (contact.bodyA.categoryBitMask == PhysicsCat.itemCat) || contact.bodyB.categoryBitMask == PhysicsCat.itemCat{
             for var i = 0; i < itemList.count; i = i+1{
                 if contact.bodyB.node!.position == itemList[i].position{
                     itemList[i].removeFromParent()
+                    itemName = contact.bodyB.node!.name!
                     
                     switch contact.bodyB.node!.name!{
                         
@@ -714,7 +730,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
                         break
                     }
                     
-                    
+                    if itemName != "bombItem" {
+                        createProgressBar(itemName)
+                    }
                 }
                 
             }
@@ -744,7 +762,41 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
             //      p1.physicsBody?.dynamic = false
             checkAllDead()
         }
+        
+        
     }
+    
+    func createProgressBar(itemName: String){
+        var prog = UIProgressView()
+        progList.append(prog)
+        let barID: Int = progList.count-1
+        prog = UIProgressView(frame: CGRectMake(view!.frame.width - 40 , view!.frame.minY + CGFloat(progList.count*20) , 40, 50))
+        self.view!.addSubview(prog)
+        let itemIcon = SKSpriteNode(imageNamed: itemName)
+        itemIcon.position = CGPoint(x: view!.frame.width - 55 , y: view!.frame.maxY - CGFloat(progList.count*20))
+        itemIcon.setScale(0.3)
+        self.addChild(itemIcon)
+        let bar:Float = 0.0
+        progBars.append(bar)
+        
+        barTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(GameScene.refreshBar), userInfo: Int(barID), repeats: true)
+        
+    }
+    
+    func refreshBar(){
+        
+        let index = (barTimer.userInfo) as! Int
+        print(progBars[index])
+        dispatch_async(dispatch_get_main_queue(), {
+            self.progBars[index] = self.progBars[index] + 0.02
+            self.progList[index].setProgress(self.progBars[index], animated: true)
+        })
+        if progBars[index] >= 1.0 {
+            barTimer.invalidate()
+        }
+        
+    }
+
     
     func checkAllDead(){
         
@@ -812,8 +864,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
 //        xCurve = xCurve * 2
 //        yCurve = yCurve * 2
         curveRadius = curveRadius * (3 / 2)
-        _ = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(GameScene.lowerSpeed), userInfo: nil, repeats: false)
+        NSTimer.scheduledTimerWithTimeInterval(itemTime1, target: self, selector: #selector(GameScene.lowerSpeed), userInfo: nil, repeats: false)
+        
+        //barTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(GameScene.refreshBar), userInfo: nil, repeats: true)
+       
     }
+    
     
     func lowerSpeed(){
         curveSpeed = curveSpeed / 2
