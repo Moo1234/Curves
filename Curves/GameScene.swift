@@ -114,6 +114,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     
     var progList = [UIProgressView]()
     var progBars = [Float]()
+    var progIcons = [SKSpriteNode]()
+    var progTimer = [NSTimer]()
     
     
     //***********************************************************************************
@@ -768,31 +770,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     
     func createProgressBar(itemName: String){
         var prog = UIProgressView()
+        var i = progList.count + 1
+        prog = UIProgressView(frame: CGRectMake(view!.frame.width - 40 , view!.frame.minY + CGFloat(i*20) , 40, 50))
+        
+        
         progList.append(prog)
         let barID: Int = progList.count-1
-        prog = UIProgressView(frame: CGRectMake(view!.frame.width - 40 , view!.frame.minY + CGFloat(progList.count*20) , 40, 50))
         self.view!.addSubview(prog)
         let itemIcon = SKSpriteNode(imageNamed: itemName)
-        itemIcon.position = CGPoint(x: view!.frame.width - 55 , y: view!.frame.maxY - CGFloat(progList.count*20))
+        itemIcon.position = CGPoint(x: view!.frame.width - 55 , y: view!.frame.maxY - CGFloat(i*20))
         itemIcon.setScale(0.3)
+        progIcons.append(itemIcon)
         self.addChild(itemIcon)
         let bar:Float = 0.0
         progBars.append(bar)
         
-        barTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(GameScene.refreshBar), userInfo: Int(barID), repeats: true)
+        NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(GameScene.refreshBar), userInfo: barID, repeats: true)
+        
         
     }
     
-    func refreshBar(){
-        
-        let index = (barTimer.userInfo) as! Int
-        print(progBars[index])
+    func refreshBar(val: NSTimer){
+        let barIndex = (val.userInfo) as! Int
         dispatch_async(dispatch_get_main_queue(), {
-            self.progBars[index] = self.progBars[index] + 0.02
-            self.progList[index].setProgress(self.progBars[index], animated: true)
+            self.progBars[barIndex] = self.progBars[barIndex] + 0.02
+            self.progList[barIndex].setProgress(self.progBars[barIndex], animated: true)
         })
-        if progBars[index] >= 1.0 {
-            barTimer.invalidate()
+        if progBars[barIndex] >= 1.0 {
+            val.invalidate()
+            progList[barIndex].removeFromSuperview()
+            progIcons[barIndex].removeFromParent()
         }
         
     }
