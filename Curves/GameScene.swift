@@ -47,7 +47,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     var lastPoint = CGPointZero
     var wayPoints: [CGPoint] = []
     var p1 = SKShapeNode(circleOfRadius: 2.0)
-    //    var p2 = SKShapeNode(circleOfRadius: 2.0)
+        var p2 = SKShapeNode(circleOfRadius: 2.0)
     var p1Size: CGFloat = 2.0
     var xCurve: CGFloat = 1.0
     var yCurve: CGFloat = 1.0
@@ -179,6 +179,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         
         
         addChild(p1)
+        addChild(p2)
         addChild(gameArea)
         addChild(leftBtn)
         addChild(leftBtnImage)
@@ -211,6 +212,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         maxScoreLabel.textAlignment = NSTextAlignment.Center
         maxScoreLabel.textColor = UIColor.whiteColor()
         
+        self.p2.fillColor = UIColor.blueColor()
+        self.p2.strokeColor = UIColor.blueColor()
         
         
         self.view?.addSubview(scoreView)
@@ -317,22 +320,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
                     
                     //let point = CGPoint(x: postArr3.objectForKey("PositionX") as! CGFloat, y: postArr3.objectForKey("PositionY") as! CGFloat)
                     var point = CGPoint()
+                    self.curves[i].point = SKShapeNode(circleOfRadius: 2)
+                    self.addChild(self.curves[i].point)
+                    
                     SocketIOManager.sharedInstance.getChatMessage { (messageInfo) -> Void in
                         
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            print("YO", messageInfo)
                             let xPos = messageInfo["xPos"] as! CGFloat
                             let yPos = messageInfo["yPos"] as! CGFloat
                             let pID = messageInfo["pID"] as! String
                             point = CGPoint(x: xPos, y: yPos)
-                        })
+                            self.p2.position = point
+                            self.drawLine2(0)
+//                        })
                         
                     }
                     self.curves[i].dead = postArr3.objectForKey("dead") as! Bool
-                    self.curves[i].position = point
+                    
                     self.curves[i].point.fillColor = self.hexStringToUIColor(self.players[i].color)
                     self.curves[i].point.strokeColor = self.hexStringToUIColor(self.players[i].color)
                    
-                    self.drawLine2(0)
                     
                     self.checkAllDead()
                 }
@@ -371,13 +379,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         }
         
         
-        SocketIOManager.sharedInstance.getChatMessage { (messageInfo) -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-               print("YO", messageInfo)
-            })
-            
-        }
+//        SocketIOManager.sharedInstance.getChatMessage { (messageInfo) -> Void in
+//            
+//            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//               print("YO", messageInfo)
+//            })
+//            
+//        }
         
         
         
@@ -458,7 +466,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         curves[i].wayPoints.append(CGPoint(x:x,y:y))
         
         
-        self.addLinesToTexture2(i)
+     //   self.addLinesToTexture2(i)
         
     }
     
@@ -670,7 +678,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
         if !dead {
             drawLine()
             if running{
-                addLinesToTexture()
+//                addLinesToTexture()
             }
         }
         
