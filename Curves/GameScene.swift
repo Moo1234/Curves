@@ -314,12 +314,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
                 // Get user value
                 if !(snap.value is NSNull) {
                     let postArr3 = snap.value as! NSDictionary
-                    let point = CGPoint(x: postArr3.objectForKey("PositionX") as! CGFloat, y: postArr3.objectForKey("PositionY") as! CGFloat)
+                    
+                    //let point = CGPoint(x: postArr3.objectForKey("PositionX") as! CGFloat, y: postArr3.objectForKey("PositionY") as! CGFloat)
+                    var point = CGPoint()
+                    SocketIOManager.sharedInstance.getChatMessage { (messageInfo) -> Void in
+                        
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            let xPos = messageInfo["xPos"] as! CGFloat
+                            let yPos = messageInfo["yPos"] as! CGFloat
+                            let pID = messageInfo["pID"] as! String
+                            point = CGPoint(x: xPos, y: yPos)
+                        })
+                        
+                    }
                     self.curves[i].dead = postArr3.objectForKey("dead") as! Bool
                     self.curves[i].position = point
                     self.curves[i].point.fillColor = self.hexStringToUIColor(self.players[i].color)
                     self.curves[i].point.strokeColor = self.hexStringToUIColor(self.players[i].color)
-                    self.drawLine2(i)
+                   
+                    self.drawLine2(0)
                     
                     self.checkAllDead()
                 }
@@ -356,6 +369,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
                 self.addChild(self.bomb)
             }
         }
+        
+        
+        SocketIOManager.sharedInstance.getChatMessage { (messageInfo) -> Void in
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+               print("YO", messageInfo)
+            })
+            
+        }
+        
+        
+        
+        
         
         // load other players
         //            self.ref.child("RunningGame/"+self.gameID).child("Players").observeEventType(.Value) { (snap: FIRDataSnapshot) in
@@ -605,10 +631,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate, UITableViewDataSource, UITab
     func pushLine(){
         let pID: String = (FIRAuth.auth()?.currentUser?.uid)!
         if self.gameID != "" {
-            self.ref.child("RunningGame/"+self.gameID+"/Players").child(pID).updateChildValues(["pID": pID, "PositionX": self.p1.position.x,"PositionY": self.p1.position.y])
+            //self.ref.child("RunningGame/"+self.gameID+"/Players").child(pID).updateChildValues(["pID": pID, "PositionX": self.p1.position.x,"PositionY": self.p1.position.y])
+            
+            SocketIOManager.sharedInstance.sendMessage(pID, xPos: self.p1.position.x, yPos: self.p1.position.y)
+            
         }
         //        self.ref.child("p"+String(playerID)+"/PositionX").setValue(p1.position.x)
         //        self.ref.child("p"+String(playerID)+"/PositionY").setValue(p1.position.y)
+        
+        
         
     }
     

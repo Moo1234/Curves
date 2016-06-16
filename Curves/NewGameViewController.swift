@@ -16,7 +16,7 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
     @IBOutlet weak var gameNameLabel: UITextField!
     
     
-    
+    var users = [[String: AnyObject]]()
     var game = Game()
     
     var gameId = 0
@@ -105,6 +105,16 @@ class NewGameViewController: UIViewController, NSURLSessionDelegate, UITableView
                     if self.game.playerObject[0].playerID == pID {
                         FIRDatabase.database().reference().child("Games").child(String(self.gameId)).removeValue()
                     }
+                    SocketIOManager.sharedInstance.connectToServerWithID(pID, completionHandler: { (userList) -> Void in
+//                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                            if userList != nil {
+//                                self.users = userList
+//                            }
+//                        })
+
+                        
+                    })
+                    
                     self.performSegueWithIdentifier("startGame", sender:self)
                     NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(self.removePlayersInGames), userInfo: nil, repeats: true)
                 }
